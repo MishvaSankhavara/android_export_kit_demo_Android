@@ -24,10 +24,10 @@ private sealed class Screen {
     object Editor : Screen()
 }
 
-// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
 // MainActivity — single-activity architecture
 // Replaces Flutter's runApp + MaterialApp + Navigator
-// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
 
 class MainActivity : ComponentActivity() {
 
