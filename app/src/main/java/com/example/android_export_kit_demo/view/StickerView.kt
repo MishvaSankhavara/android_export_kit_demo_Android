@@ -105,7 +105,8 @@ fun StickerView(
 
     // Sync from ViewModel on external changes (undo/redo/reset)
     // Using a stability threshold to prevent "blinking" caused by micro-rounding differences
-    LaunchedEffect(layer.x, layer.y, layer.width, layer.height, layer.rotation, scale, layer.fontSize, layer.photoScale, layer.photoPanX, layer.photoPanY, updateCount) {
+    LaunchedEffect(layer.x, layer.y, layer.width, layer.height, layer.rotation, scale, layer.fontSize, layer.photoScale, layer.photoPanX, layer.photoPanY, 
+        layer.backgroundColor, layer.backgroundOpacity, layer.backgroundRadius, layer.shadowColor, layer.shadowBlur, layer.shadowOffsetX, layer.shadowOffsetY, updateCount) {
         val targetX = layer.x * scale
         val targetY = layer.y * scale
         val targetW = layer.width * scale
@@ -302,7 +303,7 @@ fun StickerView(
                 .fillMaxSize()
                 .then(
                     if (layer.backgroundColor != android.graphics.Color.TRANSPARENT)
-                        Modifier.background(Color(layer.backgroundColor), RoundedCornerShape((layer.backgroundRadius * scale).dp)) else Modifier
+                        Modifier.background(Color(layer.backgroundColor).copy(alpha = layer.backgroundOpacity.coerceIn(0f, 1f)), RoundedCornerShape((layer.backgroundRadius * scale).dp)) else Modifier
                 )
                 .graphicsLayer {
                     scaleX = if (layer.flipH) -1f else 1f

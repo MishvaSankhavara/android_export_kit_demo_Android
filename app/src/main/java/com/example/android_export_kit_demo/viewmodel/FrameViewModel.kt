@@ -328,6 +328,11 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
         layer.backgroundRadius = radius; notifyLayersChanged()
     }
 
+    fun updateLayerBackgroundOpacity(layer: FrameLayer, opacity: Float, skipUndo: Boolean = false) {
+        if (!skipUndo) pushUndo()
+        layer.backgroundOpacity = opacity; notifyLayersChanged()
+    }
+
     fun updateLayerTextCase(layer: FrameLayer, textCase: String) {
         pushUndo(); layer.textCase = textCase; notifyLayersChanged()
     }
@@ -337,8 +342,57 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
         layer.font = font; notifyLayersChanged()
     }
 
+    fun updateLayerCurve(layer: FrameLayer, curve: Float, skipUndo: Boolean = false) {
+        if (!skipUndo) pushUndo()
+        layer.curve = curve; notifyLayersChanged()
+    }
+
+    fun applyTextPreset(layer: FrameLayer, presetId: String) {
+        pushUndo()
+        when (presetId) {
+            "Modern" -> {
+                layer.font = "Roboto"
+                layer.color = Color.BLACK
+                layer.isBold = true
+                layer.strokeWidth = 0f
+                layer.shadowBlur = 0f
+            }
+            "Elegant" -> {
+                layer.font = "Serif"
+                layer.color = Color.parseColor("#444444")
+                layer.isBold = false
+                layer.isItalic = true
+                layer.shadowBlur = 4f
+                layer.shadowColor = Color.LTGRAY
+            }
+            "Neon" -> {
+                layer.font = "Cursive"
+                layer.color = Color.WHITE
+                layer.strokeColor = Color.CYAN
+                layer.strokeWidth = 2f
+                layer.shadowColor = Color.CYAN
+                layer.shadowBlur = 10f
+            }
+            "Outline" -> {
+                layer.color = Color.TRANSPARENT
+                layer.strokeColor = Color.BLACK
+                layer.strokeWidth = 1.5f
+                layer.shadowBlur = 0f
+            }
+        }
+        notifyLayersChanged()
+    }
+
     fun updateLayerJustification(layer: FrameLayer, align: String) {
         pushUndo(); layer.justification = align; notifyLayersChanged()
+    }
+
+    fun updateLayerLetterSpacing(layer: FrameLayer, spacing: Float) {
+        pushUndo(); layer.letterSpacing = spacing; notifyLayersChanged()
+    }
+
+    fun updateLayerLineHeight(layer: FrameLayer, height: Float) {
+        pushUndo(); layer.lineHeight = height; notifyLayersChanged()
     }
 
     fun toggleLayerVisibility(layer: FrameLayer) {

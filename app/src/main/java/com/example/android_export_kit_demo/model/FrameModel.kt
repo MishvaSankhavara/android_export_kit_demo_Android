@@ -115,6 +115,7 @@ data class FrameLayer(
     var textCase: String = "none", // 'none', 'lowercase', 'uppercase', 'titlecase'
     var textScript: String = "normal", // 'normal', 'subscript', 'superscript'
     var backgroundRadius: Float = 0f,
+    var backgroundOpacity: Float = 1f,
     var strokes: MutableList<DrawingStroke>? = null,
 
     // Image Adjustments
@@ -124,7 +125,10 @@ data class FrameLayer(
     var warmth: Float = 0f,       // -1.0 to 1.0
     var fade: Float = 0f,         // 0.0 to 1.0
     var highlights: Float = 1f,   // 0.0 to 2.0
-    var shadows: Float = 1f       // 0.0 to 2.0
+    var shadows: Float = 1f,      // 0.0 to 2.0
+    var curve: Float = 0f,         // -1.0 to 1.0 (Angle or strength of arc)
+    var letterSpacing: Float = 0f,
+    var lineHeight: Float = 0f
 ) {
     // Original values for reset
     val origX: Float = x
@@ -167,10 +171,14 @@ data class FrameLayer(
         flipV = false
         filter = "none"
         backgroundRadius = 0f
+        backgroundOpacity = 1f
         brightness = 0f
         contrast = 1f
         saturation = 1f
         warmth = 0f
+        curve = 0f
+        letterSpacing = 0f
+        lineHeight = 0f
     }
 
     fun toJson(): Map<String, Any?> = mapOf(
@@ -211,6 +219,7 @@ data class FrameLayer(
         "flipV" to flipV,
         "filter" to filter,
         "backgroundRadius" to backgroundRadius,
+        "backgroundOpacity" to backgroundOpacity,
         "brightness" to brightness,
         "contrast" to contrast,
         "saturation" to saturation,
@@ -218,6 +227,9 @@ data class FrameLayer(
         "fade" to fade,
         "highlights" to highlights,
         "shadows" to shadows,
+        "curve" to curve,
+        "letterSpacing" to letterSpacing,
+        "lineHeight" to lineHeight,
         "strokes" to strokes?.map { it.toJson() }
     )
 
@@ -262,6 +274,7 @@ data class FrameLayer(
         flipV: Boolean? = null,
         filter: String? = null,
         backgroundRadius: Float? = null,
+        backgroundOpacity: Float? = null,
         brightness: Float? = null,
         contrast: Float? = null,
         saturation: Float? = null,
@@ -269,6 +282,9 @@ data class FrameLayer(
         fade: Float? = null,
         highlights: Float? = null,
         shadows: Float? = null,
+        curve: Float? = null,
+        letterSpacing: Float? = null,
+        lineHeight: Float? = null,
         strokes: MutableList<DrawingStroke>? = null
     ): FrameLayer = FrameLayer(
         id = this.id,
@@ -320,6 +336,9 @@ data class FrameLayer(
         fade = fade ?: this.fade,
         highlights = highlights ?: this.highlights,
         shadows = shadows ?: this.shadows,
+        curve = curve ?: this.curve,
+        letterSpacing = letterSpacing ?: this.letterSpacing,
+        lineHeight = lineHeight ?: this.lineHeight,
         strokes = strokes ?: this.strokes
     )
 
@@ -395,6 +414,7 @@ data class FrameLayer(
                 flipV = json["flipV"] as? Boolean ?: false,
                 filter = json["filter"] as? String ?: "none",
                 backgroundRadius = (json["backgroundRadius"] as? Number)?.toFloat() ?: 0f,
+                backgroundOpacity = (json["backgroundOpacity"] as? Number)?.toFloat() ?: 1f,
                 brightness = (json["brightness"] as? Number)?.toFloat() ?: 0f,
                 contrast = (json["contrast"] as? Number)?.toFloat() ?: 1f,
                 saturation = (json["saturation"] as? Number)?.toFloat() ?: 1f,
@@ -402,6 +422,9 @@ data class FrameLayer(
                 fade = (json["fade"] as? Number)?.toFloat() ?: 0f,
                 highlights = (json["highlights"] as? Number)?.toFloat() ?: 1f,
                 shadows = (json["shadows"] as? Number)?.toFloat() ?: 1f,
+                curve = (json["curve"] as? Number)?.toFloat() ?: 0f,
+                letterSpacing = (json["letterSpacing"] as? Number)?.toFloat() ?: 0f,
+                lineHeight = (json["lineHeight"] as? Number)?.toFloat() ?: 0f,
                 strokes = strokesJson?.map { DrawingStroke.fromJson(it) }?.toMutableList()
             )
         }

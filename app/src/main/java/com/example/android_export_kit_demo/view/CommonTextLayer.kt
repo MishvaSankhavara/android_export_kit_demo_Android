@@ -23,7 +23,14 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.android_export_kit_demo.model.FrameLayer
-import kotlin.math.max
+import com.example.android_export_kit_demo.model.LayerType
+import kotlin.math.*
+import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import android.graphics.Path
+import android.graphics.Rect
+import android.graphics.Typeface
+import androidx.compose.ui.graphics.toArgb
 
 /**
  * CommonTextLayer — Unified text renderer for both template text and added stickers.
@@ -51,7 +58,6 @@ fun CommonTextLayer(
         else -> TextAlign.Center
     }
 
-    // Shadow calculation
     val fontFamily = when(layer.font?.lowercase()) {
         "serif" -> FontFamily.Serif
         "sans-serif", "arial", "verdana", "trebuchet", "roboto" -> FontFamily.SansSerif
@@ -82,7 +88,9 @@ fun CommonTextLayer(
         }.let { if (it.isEmpty()) TextDecoration.None else TextDecoration.combine(it) },
         textAlign = textAlign,
         fontSize = scaledFontSize.sp,
-        shadow = shadow
+        shadow = shadow,
+        letterSpacing = layer.letterSpacing.sp,
+        lineHeight = if (layer.lineHeight != 0f) (scaledFontSize * (1 + layer.lineHeight)).sp else androidx.compose.ui.unit.TextUnit.Unspecified
     )
 
     // Stroke Style
@@ -99,6 +107,11 @@ fun CommonTextLayer(
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .then(
+                if (layer.backgroundColor != android.graphics.Color.TRANSPARENT) {
+                    Modifier.background(Color(layer.backgroundColor).copy(alpha = layer.backgroundOpacity), RoundedCornerShape((layer.backgroundRadius * scale).dp))
+                } else Modifier
+            )
             .then(
                 if (isEditingInline && isSelected) Modifier.border(
                     1.dp, Color(0xFF5C9EFF).copy(alpha = 0.5f), RoundedCornerShape(4.dp)
@@ -140,44 +153,106 @@ fun CommonTextLayer(
                 "lowercase" -> (layer.text ?: "").lowercase()
                 "uppercase" -> (layer.text ?: "").uppercase()
                 "titlecase" -> (layer.text ?: "").split(" ")
-                    .joinToString(" ") { it.replaceFirstChar { c -> c.uppercase() } }
+                    .joinToString(" ") { it.replaceFirstChar { it.uppercase() } }
                 else -> layer.text ?: ""
             }
             
-            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
-                if (strokeStyle != null) {
+            if (layer.curve != 0f) {
+                // Curved Text Rendering
+                androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxSize()) {
+                    val w = size.width
+                    val h = size.height
+                    
+                    drawIntoCanvas { canvas ->
+                        val nativeCanvas = canvas.nativeCanvas
+                        val nativePaint = android.graphics.Paint().apply {
+                            color = layer.color
+                            textSize = scaledFontSize * density
+                            isAntiAlias = true
+                            this.textAlign = when (layer.justification.lowercase()) {
+                                "left" -> android.graphics.Paint.Align.LEFT
+                                "right" -> android.graphics.Paint.Align.RIGHT
+                                else -> android.graphics.Paint.Align.CENTER
+                            }
+                            typeface = when (layer.font?.lowercase()) {
+                                "serif" -> Typeface.SERIF
+                                "monospace" -> Typeface.MONOSPACE
+                                else -> Typeface.DEFAULT
+                            }
+                            if (layer.isBold) isFakeBoldText = true
+                        }
+
+                        val path = Path()
+                        val arcRadius = w * 0.8f / (abs(layer.curve) + 0.1f)
+                        val angle = 120f * layer.curve
+                        val rectF = android.graphics.RectF(
+                            w / 2f - arcRadius,
+                            if (layer.curve > 0) h / 2f else h / 2f - arcRadius * 2f,
+                            w / 2f + arcRadius,
+                            if (layer.curve > 0) h / 2f + arcRadius * 2f else h / 2f
+                        )
+                        
+                        if (layer.curve > 0) {
+                            path.addArc(rectF, 180f + (180f - angle) / 2f, angle)
+                        } else {
+                            path.addArc(rectF, (180f - abs(angle)) / 2f, abs(angle))
+                        }
+
+                        // Draw Stroke first
+                        if (hasStroke) {
+                            val strokePaint = android.graphics.Paint(nativePaint).apply {
+                                color = layer.strokeColor
+                                this.style = android.graphics.Paint.Style.STROKE
+                                strokeWidth = layer.strokeWidth * scale * density
+                            }
+                            nativeCanvas.drawTextOnPath(display, path, 0f, 0f, strokePaint)
+                        }
+
+                        // Draw Shadow if exists
+                        if (shadow != null) {
+                            nativePaint.setShadowLayer(shadow.blurRadius, shadow.offset.x, shadow.offset.y, shadow.color.toArgb())
+                        }
+
+                        nativeCanvas.drawTextOnPath(display, path, 0f, 0f, nativePaint)
+                    }
+                }
+            } else {
+                // Static Fill/Stroke Overlay
+                Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
+                    if (strokeStyle != null) {
+                        Text(
+                            text = display,
+                            style = strokeStyle,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
                     Text(
                         text = display,
-                        style = strokeStyle,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-                Text(
-                    text = display,
-                    style = style,
-                    modifier = Modifier.fillMaxWidth(),
-                    onTextLayout = { result ->
-                        val curW = wState.floatValue * density
-                        val curH = hState.floatValue * density
-                        val reqW = result.size.width.toFloat()
-                        val reqH = result.size.height.toFloat()
+                        style = style,
+                        modifier = Modifier.fillMaxWidth(),
+                        onTextLayout = { result ->
+                            val curW = wState.floatValue * density
+                            val curH = hState.floatValue * density
+                            val reqW = result.size.width.toFloat()
+                            val reqH = result.size.height.toFloat()
 
-                        if ((reqW > curW + 2f || reqH > curH + 2f) && isSelected) {
-                            val newW = max(curW, reqW) / density
-                            val newH = max(curH, reqH) / density
-                            wState.floatValue = newW
-                            hState.floatValue = newH
-                            onTransform(layer, null, null, newW / scale, newH / scale, null, null)
-                        } else {
-                            if ((result.hasVisualOverflow || result.size.height > curH) && fontScale > 0.1f) {
-                                val ratio = curH / result.size.height
-                                if (ratio < 0.99f) {
-                                    fontScale *= (ratio * 0.95f)
+                            if ((reqW > curW + 2f || reqH > curH + 2f) && isSelected) {
+                                val newW = max(curW, reqW) / density
+                                val newH = max(curH, reqH) / density
+                                wState.floatValue = newW
+                                hState.floatValue = newH
+                                onTransform(layer, null, null, newW / scale, newH / scale, null, null)
+                            } else {
+                                if ((result.hasVisualOverflow || result.size.height > curH) && fontScale > 0.1f) {
+                                    val ratio = curH / result.size.height
+                                    if (ratio < 0.99f) {
+                                        fontScale *= (ratio * 0.95f)
+                                    }
                                 }
                             }
                         }
-                    }
-                )
+                    )
+                }
             }
         }
     }

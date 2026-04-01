@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.icons.automirrored.filled.*
 import androidx.compose.material3.*
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
@@ -35,10 +36,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.foundation.lazy.grid.*
 import com.example.android_export_kit_demo.model.DrawingStroke
 import com.example.android_export_kit_demo.model.FrameLayer
 import kotlin.math.abs
+import kotlin.math.roundToInt
 import com.frameeditor.R
 import androidx.compose.foundation.Image
 import androidx.compose.ui.layout.ContentScale
@@ -542,6 +546,10 @@ private fun GenActionItem(icon: ImageVector, label: String, onTap: () -> Unit) {
     }
 }
 
+enum class TextEditorTab {
+    Keyboard, Font, Style, Preset, Curve, Size
+}
+
 @Composable
 private fun TextEditorBar(
     layer: FrameLayer,
@@ -553,93 +561,105 @@ private fun TextEditorBar(
     viewModel: FrameViewModel,
     frame: FrameModel
 ) {
-    val showSubEditor = activeSubEditor != null && activeSubEditor.isNotEmpty() && activeSubEditor != "Edit Text"
+    if (layer.isLocked) return
 
-    Column(modifier = Modifier.fillMaxWidth().animateContentSize(tween(200))) {
-        // Sub-editor panel — animated in/out above the input row
-        AnimatedVisibility(
-            visible = showSubEditor,
-            enter = expandVertically(tween(200)) + fadeIn(tween(150)),
-            exit  = shrinkVertically(tween(200)) + fadeOut(tween(150))
-        ) {
-            Column {
-                Divider(thickness = 1.dp, color = Color.LightGray)
-                Box(modifier = Modifier.heightIn(max = 280.dp)) {
-                    if (showSubEditor) SubEditorContent(activeSubEditor!!, layer, viewModel, frame, onClose = onDone)
-                }
-            }
-        }
+    var currentTab by remember(layer.id) { mutableStateOf(TextEditorTab.Font) }
 
-        Divider(thickness = 1.dp, color = Color.LightGray)
-
-        // Text input field + Done button
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White)
+            .animateContentSize(tween(300))
+    ) {
+        // 1. Top Action Icons Row
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(horizontal = 12.dp, vertical = 4.dp), 
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp) // Subtle spacing between weight items
         ) {
-            OutlinedTextField(
-                value = textInput,
-                onValueChange = onTextInputChange,
-                modifier = Modifier.weight(1f),
-                textStyle = LocalTextStyle.current.copy(
-                    textAlign = TextAlign.Center,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium
-                ),
-                placeholder = {
-                    Text(
-                        "Enter text…",
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                        color = Color.Black.copy(alpha = 0.3f),
-                        fontSize = 16.sp
-                    )
-                },
-                singleLine = true,
-                shape = RoundedCornerShape(12.dp),
-                enabled = !layer.isLocked,
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color(0xFFA259FF),
-                    unfocusedBorderColor = Color(0xFFDDDDDD),
-                    cursorColor = Color(0xFFA259FF),
-                    disabledBorderColor = Color(0xFFEEEEEE),
-                    disabledTextColor = Color.Gray
-                )
-            )
-            Spacer(Modifier.width(8.dp))
-            // Done button — uses onDone to properly null out activeSubEditor
-            Box(
+            TextEditorTabIcon(Icons.Default.Keyboard, "Keyboard", currentTab == TextEditorTab.Keyboard, Modifier.weight(1f)) { currentTab = TextEditorTab.Keyboard }
+            TextEditorTabIcon(Icons.Default.TextFields, "Font", currentTab == TextEditorTab.Font, Modifier.weight(1f)) { currentTab = TextEditorTab.Font }
+            TextEditorTabIcon(Icons.Default.Palette, "Style", currentTab == TextEditorTab.Style, Modifier.weight(1f)) { currentTab = TextEditorTab.Style }
+            TextEditorTabIcon(Icons.Default.Star, "Preset", currentTab == TextEditorTab.Preset, Modifier.weight(1f)) { currentTab = TextEditorTab.Preset }
+            TextEditorTabIcon(Icons.Default.Abc, "Curve", currentTab == TextEditorTab.Curve, Modifier.weight(1f)) { currentTab = TextEditorTab.Curve }
+            
+            // Done Checkmark styled same as tabs for uniformity
+            Column(
                 modifier = Modifier
-                    .size(44.dp)
-                    .background(Color(0xFFA259FF), RoundedCornerShape(12.dp))
-                    .clickable { onDone() },
-                contentAlignment = Alignment.Center
+                    .weight(1f)
+                    .clickable(onClick = onDone)
+                    .padding(vertical = 4.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
-                Icon(Icons.Default.Check, contentDescription = "Done", tint = Color.White, modifier = Modifier.size(22.dp))
+                Icon(Icons.Default.Check, "Done", tint = Color.Black, modifier = Modifier.size(28.dp)) // Slightly larger checkmark as in original
             }
         }
 
-        Divider(thickness = 1.dp, color = Color.LightGray)
+        Divider(thickness = 0.5.dp, color = Color.LightGray.copy(alpha = 0.5f))
 
-        // Tool icons row
-        Row(
+        // 2. Tab Content Box
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .horizontalScroll(rememberScrollState())
-                .padding(horizontal = 8.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .height(200.dp) // Professional fixed height
         ) {
-            TextToolIcon(Icons.Outlined.Palette, "Color", activeSubEditor == "Color", enabled = !layer.isLocked) { onOpenSubEditor("Color") }
-            TextToolIcon(Icons.Outlined.FontDownload, "Fonts", activeSubEditor == "Fonts", enabled = !layer.isLocked) { onOpenSubEditor("Fonts") }
-            TextToolIcon(Icons.Default.TextFormat, "Format", activeSubEditor == "Format", enabled = !layer.isLocked) { onOpenSubEditor("Format") }
-            TextToolIcon(Icons.Default.Tune, "Opacity", activeSubEditor == "Opacity", enabled = !layer.isLocked) { onOpenSubEditor("Opacity") }
-            TextToolIcon(Icons.Default.ControlCamera, "Move", false, enabled = !layer.isLocked) { onOpenSubEditor("Move") }
-            TextToolIcon(Icons.Default.FlipToFront, "Front", false, enabled = !layer.isLocked) { viewModel.bringLayerToFront(layer) }
-            TextToolIcon(if (layer.isLocked) Icons.Default.Lock else Icons.Default.LockOpen, if (layer.isLocked) "Unlock" else "Lock", false, enabled = true) { viewModel.toggleLayerLock(layer) }
-            TextToolIcon(Icons.Outlined.Delete, "Delete", false, color = Color.Red) { viewModel.deleteLayer(layer); viewModel.deselectAll() }
+            when (currentTab) {
+                TextEditorTab.Keyboard -> KeyboardPanelContent(layer, textInput, onTextInputChange)
+                TextEditorTab.Font -> AdvancedFontPanelContent(viewModel, layer)
+                TextEditorTab.Style -> StylePanelContent(viewModel, layer)
+                TextEditorTab.Preset -> PresetPanelContent(viewModel, layer)
+                TextEditorTab.Curve -> CurvePanelContent(viewModel, layer)
+                TextEditorTab.Size -> ResizePanelContent(viewModel, layer)
+            }
         }
+    }
+}
+
+@Composable
+private fun TextEditorTabIcon(icon: ImageVector, label: String, isSelected: Boolean, modifier: Modifier = Modifier, onClick: () -> Unit) {
+    Column(
+        modifier = modifier
+            .clip(RoundedCornerShape(8.dp))
+            .background(if (isSelected) Color(0xFFF0F4FF) else Color.Transparent)
+            .clickable(onClick = onClick)
+            .padding(vertical = 4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = label,
+            tint = if (isSelected) Color(0xFF3F51B5) else Color.Gray,
+            modifier = Modifier.size(20.dp)
+        )
+        Text(
+            text = label,
+            fontSize = 9.sp,
+            color = if (isSelected) Color(0xFF3F51B5) else Color.Gray,
+            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+        )
+    }
+}
+
+@Composable
+private fun KeyboardPanelContent(layer: FrameLayer, textInput: String, onTextInputChange: (String) -> Unit) {
+    Box(modifier = Modifier.fillMaxSize().padding(24.dp), contentAlignment = Alignment.TopCenter) {
+        OutlinedTextField(
+            value = textInput,
+            onValueChange = onTextInputChange,
+            modifier = Modifier.fillMaxWidth(),
+            textStyle = TextStyle(textAlign = TextAlign.Center, fontSize = 18.sp, fontWeight = FontWeight.Medium),
+            placeholder = { Text("Enter text...", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center, color = Color.Gray) },
+            shape = RoundedCornerShape(16.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color(0xFF3F51B5),
+                unfocusedBorderColor = Color(0xFFEEEEEE),
+                cursorColor = Color(0xFF3F51B5)
+            )
+        )
     }
 }
 
@@ -773,7 +793,7 @@ private fun SubEditorContent(
         "Filters" -> FilterAdjustPanelContent(viewModel, layer, onClose)
         "Stickers" -> StickersPanelContent(viewModel)
         "Opacity" -> if (layer != null) OpacityPanelContent(viewModel, layer)
-        "Fonts" -> if (layer != null) FontPanelContent(viewModel, layer)
+        "Fonts" -> if (layer != null) AdvancedFontPanelContent(viewModel, layer)
         "Font Size" -> if (layer != null) FontSizePanelContent(viewModel, layer)
         "Color" -> if (layer != null) ColorPanelContent(viewModel, layer)
         "Background" -> if (layer != null) BGColorPanelContent(viewModel, layer)
@@ -1322,62 +1342,432 @@ private fun OpacityPanelContent(viewModel: FrameViewModel, layer: FrameLayer) {
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun FontPanelContent(viewModel: FrameViewModel, layer: FrameLayer) {
+private fun AdvancedFontPanelContent(viewModel: FrameViewModel, layer: FrameLayer) {
     val fonts = listOf(
         "Roboto", "Serif", "Sans-Serif", "Cursive", "Monospace",
         "Georgia", "Verdana", "Courier", "Trebuchet", "Impact", "Arial", "Times"
     )
     val displayNames = listOf(
-        "Roboto", "Serif", "Sans", "Cursive", "Mono",
-        "Georgia", "Verdana", "Courier", "Trebuchet", "Impact", "Arial Blk", "Times NR"
+        "Roboto-Medium", "Roboto-Bold", "Permanent Marker", "BEBAS", "Roboto-Thin", "Caviar Dreams", "Aleo", "Amatic SC", "Daniel", "Satisfy", "Lobster", "Bangers"
     )
+    
+    // Simple category mapping based on indexes for demonstration
+    val fontCategories = listOf("Regular", "Bold", "Handwritten", "Doodle", "Decorative", "English", "Regular", "Handwritten", "Doodle", "Decorative", "English", "Decorative")
+    
+    val categories = listOf("All", "My", "Hot", "Bold", "Handwritten", "Regular", "English", "Doodle", "Decorative", "Espanol")
+    var selectedCat by remember { mutableStateOf("All") }
 
-    Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp).verticalScroll(rememberScrollState())) {
-        // Font Grid
-        FlowRow(
-            modifier = Modifier.fillMaxWidth(),
-            maxItemsInEachRow = 4,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+    val filteredIndices = remember(selectedCat) {
+        if (selectedCat == "All") displayNames.indices.toList()
+        else if (selectedCat == "My") displayNames.indices.toList() // Mock same as All
+        else if (selectedCat == "Hot") displayNames.indices.toList() // Mock same as All
+        else if (selectedCat == "Espanol") displayNames.indices.toList() // Mock
+        else {
+            displayNames.indices.filter { fontCategories.getOrElse(it) { "Regular" } == selectedCat }
+        }
+    }
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        // Category Tabs
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            fonts.forEachIndexed { index, font ->
-                val isSel = layer.font == font
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .aspectRatio(1f)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(if (isSel) Color(0xFFF0F0F0) else Color(0xFFF9F9F9))
-                        .border(1.dp, if (isSel) AppColors.Primary else Color.Transparent, RoundedCornerShape(12.dp))
-                        .clickable { viewModel.updateLayerFont(layer, font) },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            "AaBb",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Black,
-                            fontFamily = when(font) {
-                                "Serif" -> FontFamily.Serif
-                                "Monospace" -> FontFamily.Monospace
-                                "Cursive" -> FontFamily.Cursive
-                                else -> FontFamily.Default
-                            }
-                        )
-                        Spacer(Modifier.height(4.dp))
-                        Text(
-                            displayNames[index],
-                            fontSize = 10.sp,
-                            color = Color.Gray
+            Icon(Icons.Default.Storefront, null, tint = Color.Gray, modifier = Modifier.size(28.dp))
+            Spacer(Modifier.width(12.dp))
+            Icon(Icons.Default.Folder, null, tint = Color.Gray, modifier = Modifier.size(28.dp))
+            Spacer(Modifier.width(12.dp))
+            LazyRow(
+                modifier = Modifier.weight(1f),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                items(categories) { cat ->
+                    val isSel = selectedCat == cat
+                    Box(
+                        modifier = Modifier
+                            .height(32.dp)
+                            .widthIn(min = 60.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(if (isSel) Color(0xFF3F51B5) else Color(0xFFF5F5F5))
+                            .clickable { selectedCat = cat }
+                            .padding(horizontal = 12.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        androidx.compose.material3.Text(
+                            text = cat, 
+                            fontSize = 11.sp, 
+                            color = if (isSel) Color.White else Color.Gray, 
+                            fontWeight = if (isSel) FontWeight.Bold else FontWeight.Normal
                         )
                     }
                 }
             }
         }
 
+        // Font Grid
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(3),
+            contentPadding = PaddingValues(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            modifier = Modifier.weight(1f)
+        ) {
+            items(filteredIndices) { idx ->
+                val name = displayNames[idx]
+                val fontName = fonts.getOrElse(idx) { "Roboto" }
+                val isSel = layer.font == fontName
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(65.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(if (isSel) Color(0xFFEEEEEE) else Color(0xFFF9F9F9))
+                        .border(1.dp, if (isSel) Color(0xFF3F51B5) else Color.Transparent, RoundedCornerShape(8.dp))
+                        .clickable { viewModel.updateLayerFont(layer, fontName) },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        androidx.compose.material3.Text(
+                            text = "Collage", 
+                            fontSize = 16.sp, 
+                            fontWeight = FontWeight.Bold, 
+                            color = Color.Black,
+                            fontFamily = getFontFamily(fontName)
+                        )
+                        androidx.compose.material3.Text(name, fontSize = 8.sp, color = Color.Gray)
+                    }
+                }
+            }
+        }
+    }
+}
+
+private fun getFontFamily(fontName: String): FontFamily {
+    return when (fontName.lowercase()) {
+        "serif" -> FontFamily.Serif
+        "monospace" -> FontFamily.Monospace
+        "cursive" -> FontFamily.Cursive
+        "sans-serif" -> FontFamily.SansSerif
+        else -> FontFamily.Default
+    }
+}
+
+private enum class StyleSubTab(val label: String) {
+    Text("Text"), Background("Background"), Border("Border"), Shadow("Shadow"), Align("Align")
+}
+
+@Composable
+private fun StylePanelContent(viewModel: FrameViewModel, layer: FrameLayer) {
+    var selectedSubTab by remember { mutableStateOf(StyleSubTab.Text) }
+    
+    Column(modifier = Modifier.fillMaxSize()) {
+        // 1. Sub-tab Selection (Pills)
+        LazyRow(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 10.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            items(StyleSubTab.values()) { tab ->
+                val isSel = selectedSubTab == tab
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(if (isSel) Color(0xFF3F51B5) else Color(0xFFF0F0F0))
+                        .clickable { selectedSubTab = tab }
+                        .padding(horizontal = 16.dp, vertical = 6.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = tab.label,
+                        fontSize = 12.sp,
+                        color = if (isSel) Color.White else Color.Gray,
+                        fontWeight = if (isSel) FontWeight.Bold else FontWeight.Normal
+                    )
+                }
+            }
+        }
+
+        HorizontalDivider(thickness = 0.5.dp, color = Color.LightGray.copy(alpha = 0.3f))
+
+        // 2. Sub-tab Content
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp)
+        ) {
+            when (selectedSubTab) {
+                StyleSubTab.Text -> TextStyleContent(viewModel, layer)
+                StyleSubTab.Background -> BackgroundStyleContent(viewModel, layer)
+                StyleSubTab.Border -> BorderStyleContent(viewModel, layer)
+                StyleSubTab.Shadow -> ShadowStyleContent(viewModel, layer)
+                StyleSubTab.Align -> AlignStyleContent(viewModel, layer)
+            }
+        }
+    }
+}
+
+@Composable
+private fun TextStyleContent(viewModel: FrameViewModel, layer: FrameLayer) {
+    // Color Picker
+    StyleColorRow(
+        selectedColor = layer.color,
+        onColorSelected = { viewModel.updateLayerColor(layer, it.toArgb()) }
+    )
+    
+    // Sliders
+    StyleSlider("FontSize", layer.fontSize, 8f, 200f, Icons.Default.TextFields) { viewModel.updateLayerFontSize(layer, it) }
+    StyleSlider("Opacity", layer.opacity * 100f, 0f, 100f, Icons.Default.GridOn) { viewModel.updateLayerOpacity(layer, it / 100f) }
+}
+
+@Composable
+private fun BackgroundStyleContent(viewModel: FrameViewModel, layer: FrameLayer) {
+    StyleColorRow(
+        selectedColor = layer.backgroundColor,
+        showNone = true,
+        onColorSelected = { viewModel.updateLayerBackgroundColor(layer, it.toArgb()) }
+    )
+    
+    StyleSlider("Opacity", layer.backgroundOpacity * 100f, 0f, 100f, Icons.Default.GridOn) { viewModel.updateLayerBackgroundOpacity(layer, it / 100f) }
+    StyleSlider("Radius", layer.backgroundRadius, 0f, 50f, Icons.Default.RoundedCorner) { viewModel.updateLayerBackgroundRadius(layer, it) }
+}
+
+@Composable
+private fun BorderStyleContent(viewModel: FrameViewModel, layer: FrameLayer) {
+    StyleColorRow(
+        selectedColor = layer.strokeColor,
+        showNone = true,
+        onColorSelected = { viewModel.updateLayerStroke(layer, color = it.toArgb()) }
+    )
+    
+    StyleSlider("Width", layer.strokeWidth, 0f, 20f, Icons.Default.LineWeight) { viewModel.updateLayerStroke(layer, width = it) }
+}
+
+@Composable
+private fun ShadowStyleContent(viewModel: FrameViewModel, layer: FrameLayer) {
+    StyleColorRow(
+        selectedColor = layer.shadowColor,
+        showNone = true,
+        onColorSelected = { viewModel.updateLayerShadow(layer, color = it.toArgb()) }
+    )
+    
+    StyleSlider("Blur", layer.shadowBlur, 0f, 30f, Icons.Default.BlurOn) { viewModel.updateLayerShadow(layer, blur = it) }
+    StyleSlider("Offset", layer.shadowOffsetX, -20f, 20f, Icons.Default.OpenWith) { viewModel.updateLayerShadow(layer, offsetX = it, offsetY = it) }
+}
+
+@Composable
+private fun AlignStyleContent(viewModel: FrameViewModel, layer: FrameLayer) {
+    Column(verticalArrangement = Arrangement.spacedBy(0.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            // Group 1: Formatting (U, B, I, S)
+            StyleGroup {
+                StyleGroupButton(onClick = { viewModel.toggleLayerUnderline(layer) }, isSelected = layer.isUnderline) {
+                    Icon(Icons.Default.FormatUnderlined, null, tint = if (layer.isUnderline) Color(0xFF3F51B5) else Color.Gray, modifier = Modifier.size(20.dp))
+                }
+                StyleGroupButton(onClick = { viewModel.toggleLayerBold(layer) }, isSelected = layer.isBold) {
+                    Icon(Icons.Default.FormatBold, null, tint = if (layer.isBold) Color(0xFF3F51B5) else Color.Gray, modifier = Modifier.size(20.dp))
+                }
+                StyleGroupButton(onClick = { viewModel.toggleLayerItalic(layer) }, isSelected = layer.isItalic) {
+                    Icon(Icons.Default.FormatItalic, null, tint = if (layer.isItalic) Color(0xFF3F51B5) else Color.Gray, modifier = Modifier.size(20.dp))
+                }
+                StyleGroupButton(onClick = { viewModel.toggleLayerStrikethrough(layer) }, isSelected = layer.isStrikethrough) {
+                    Icon(Icons.Default.StrikethroughS, null, tint = if (layer.isStrikethrough) Color(0xFF3F51B5) else Color.Gray, modifier = Modifier.size(20.dp))
+                }
+            }
+            
+            // Group 2: Alignment
+            StyleGroup {
+                StyleGroupButton(onClick = { viewModel.updateLayerJustification(layer, "left") }, isSelected = layer.justification == "left") {
+                    Icon(Icons.AutoMirrored.Filled.FormatAlignLeft, null, tint = if (layer.justification == "left") Color(0xFF3F51B5) else Color.Gray, modifier = Modifier.size(20.dp))
+                }
+                StyleGroupButton(onClick = { viewModel.updateLayerJustification(layer, "center") }, isSelected = layer.justification == "center") {
+                    Icon(Icons.Default.FormatAlignCenter, null, tint = if (layer.justification == "center") Color(0xFF3F51B5) else Color.Gray, modifier = Modifier.size(20.dp))
+                }
+                StyleGroupButton(onClick = { viewModel.updateLayerJustification(layer, "right") }, isSelected = layer.justification == "right") {
+                    Icon(Icons.AutoMirrored.Filled.FormatAlignRight, null, tint = if (layer.justification == "right") Color(0xFF3F51B5) else Color.Gray, modifier = Modifier.size(20.dp))
+                }
+            }
+
+            // Group 3: Case
+            StyleGroup {
+                StyleGroupButton(onClick = { viewModel.updateLayerTextCase(layer, "titlecase") }, isSelected = layer.textCase == "titlecase") {
+                    Text("Ao", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = if (layer.textCase == "titlecase") Color(0xFF3F51B5) else Color.Gray)
+                }
+                StyleGroupButton(onClick = { viewModel.updateLayerTextCase(layer, "uppercase") }, isSelected = layer.textCase == "uppercase") {
+                    Text("AA", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = if (layer.textCase == "uppercase") Color(0xFF3F51B5) else Color.Gray)
+                }
+                StyleGroupButton(onClick = { viewModel.updateLayerTextCase(layer, "none") }, isSelected = layer.textCase == "none") {
+                    Text("Aa", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = if (layer.textCase == "none") Color(0xFF3F51B5) else Color.Gray)
+                }
+                StyleGroupButton(onClick = { viewModel.updateLayerTextCase(layer, "lowercase") }, isSelected = layer.textCase == "lowercase") {
+                    Text("aa", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = if (layer.textCase == "lowercase") Color(0xFF3F51B5) else Color.Gray)
+                }
+            }
+        }
+
+        StyleSlider("Spacing", layer.letterSpacing * 10f, -10f, 50f, Icons.Default.FormatSize) { viewModel.updateLayerLetterSpacing(layer, it / 10f) }
+        StyleSlider("LineHeight", layer.lineHeight * 50f, -50f, 100f, Icons.Default.FormatLineSpacing) { viewModel.updateLayerLineHeight(layer, it / 50f) }
+    }
+}
+
+@Composable
+private fun StyleGroup(content: @Composable RowScope.() -> Unit) {
+    Row(
+        modifier = Modifier
+            .clip(RoundedCornerShape(8.dp))
+            .background(Color(0xFFF5F5F5))
+            .padding(2.dp),
+        horizontalArrangement = Arrangement.spacedBy(2.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        content = content
+    )
+}
+
+@Composable
+private fun StyleGroupButton(onClick: () -> Unit, isSelected: Boolean, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+    Box(
+        modifier = modifier
+            .size(32.dp)
+            .clip(RoundedCornerShape(4.dp))
+            .background(if (isSelected) Color(0xFFE8EAF6) else Color.Transparent)
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        content()
+    }
+}
+
+// Remove unused AlignmentButton and CaseButton
+
+@Composable
+private fun StyleSlider(label: String, value: Float, min: Float, max: Float, icon: ImageVector, onValueChange: (Float) -> Unit) {
+    var internalValue by remember(value) { mutableStateOf(value) }
+    
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+        Icon(icon, null, tint = Color.Gray, modifier = Modifier.size(22.dp))
+        Spacer(Modifier.width(8.dp))
+        Slider(
+            value = internalValue,
+            onValueChange = { 
+                internalValue = it
+                onValueChange(it)
+            },
+            valueRange = min..max,
+            modifier = Modifier.weight(1f),
+            colors = SliderDefaults.colors(thumbColor = Color(0xFF3F51B5), activeTrackColor = Color(0xFF3F51B5).copy(alpha = 0.5f))
+        )
+        Spacer(Modifier.width(5.dp))
+        Text("${internalValue.roundToInt()}", fontSize = 12.sp, color = Color.Gray, modifier = Modifier.width(20.dp), textAlign = TextAlign.End)
+    }
+}
+
+@Composable
+private fun StyleColorRow(selectedColor: Int, showNone: Boolean = false, onColorSelected: (Color) -> Unit) {
+    val colors = listOf(
+        Color.White, Color.LightGray, Color.Gray, Color.DarkGray, Color.Black,
+        Color(0xFFFFCCCC), Color(0xFFFF9999), Color(0xFFFF6666), Color(0xFFFF3333),
+        Color(0xFFCCFFCC), Color(0xFF99FF99), Color(0xFF66FF66), Color(0xFF33FF33),
+        Color(0xFFCCCCFF), Color(0xFF9999FF), Color(0xFF6666FF), Color(0xFF3333FF)
+    )
+    
+    LazyRow(
+        modifier = Modifier.fillMaxWidth().height(36.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        item {
+            Box(
+                modifier = Modifier.size(28.dp).clip(CircleShape).background(Color(0xFFF5F5F5)).clickable { /* Picker */ },
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(Icons.Default.Colorize, null, tint = Color.Gray, modifier = Modifier.size(16.dp))
+            }
+        }
+        
+        if (showNone) {
+            item {
+                val isNone = selectedColor == android.graphics.Color.TRANSPARENT
+                Box(
+                    modifier = Modifier
+                        .size(28.dp)
+                        .clip(CircleShape)
+                        .background(if (isNone) Color(0xFFE8EAF6) else Color.Transparent)
+                        .border(1.dp, if (isNone) Color(0xFF3F51B5) else Color.LightGray, CircleShape)
+                        .clickable { onColorSelected(Color.Transparent) },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(Icons.Default.Block, null, tint = if (isNone) Color(0xFF3F51B5) else Color.Gray, modifier = Modifier.size(16.dp))
+                }
+            }
+        }
+
+        items(colors) { color ->
+            val isSel = selectedColor == color.toArgb()
+            Box(
+                modifier = Modifier
+                    .size(28.dp)
+                    .clip(CircleShape)
+                    .background(color)
+                    .border(if (isSel) 2.dp else 1.dp, if (isSel) Color(0xFF3F51B5) else Color.LightGray, CircleShape)
+                    .clickable { onColorSelected(color) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun PresetPanelContent(viewModel: FrameViewModel, layer: FrameLayer) {
+    val presets = listOf("Modern", "Elegant", "Neon", "Outline", "3D", "Retro", "Glow", "Vibrant")
+    
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(3),
+        contentPadding = PaddingValues(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+        modifier = Modifier.fillMaxSize()
+    ) {
+        items(presets) { preset: String ->
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(60.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Color(0xFFF5F5F5))
+                    .clickable { viewModel.applyTextPreset(layer, preset) },
+                contentAlignment = Alignment.Center
+            ) {
+                androidx.compose.material3.Text(preset, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+            }
+        }
+    }
+}
+
+@Composable
+private fun CurvePanelContent(viewModel: FrameViewModel, layer: FrameLayer) {
+    Column(
+        modifier = Modifier.fillMaxSize().padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text("Curve Strength", fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = Color.Gray)
+        Spacer(Modifier.height(16.dp))
+        Slider(
+            value = layer.curve,
+            onValueChange = { viewModel.updateLayerCurve(layer, it) },
+            valueRange = -1f..1f,
+            modifier = Modifier.fillMaxWidth(),
+            colors = SliderDefaults.colors(thumbColor = Color(0xFF3F51B5), activeTrackColor = Color(0xFF3F51B5))
+        )
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Text("Down", fontSize = 11.sp, color = Color.Gray)
+            Text("None", fontSize = 11.sp, color = Color.Gray)
+            Text("Up", fontSize = 11.sp, color = Color.Gray)
+        }
     }
 }
 
@@ -1607,6 +1997,55 @@ private fun ColorRow(selColorInt: Int, showNone: Boolean = false, onCh: (Color) 
     }
 }
 
+
+@Composable
+private fun ColorRowSlim(selColorInt: Int, showNone: Boolean = false, onCh: (Color) -> Unit) {
+    val colors = buildList {
+        if (showNone) add(Color.Transparent)
+        addAll(listOf(
+            Color.Black, Color.White, 
+            Color(0xFFF44336), Color(0xFFE91E63), Color(0xFF9C27B0), Color(0xFF673AB7),
+            Color(0xFF3F51B5), Color(0xFF2196F3), Color(0xFF03A9F4), Color(0xFF00BCD4),
+            Color(0xFF009688), Color(0xFF4CAF50), Color(0xFF8BC34A), Color(0xFFCDDC39),
+            Color(0xFFFFEB3B), Color(0xFFFFC107), Color(0xFFFF9800), Color(0xFFFF5722),
+            Color(0xFF795548), Color(0xFF9E9E9E), Color(0xFF607D8B)
+        ))
+    }
+    LazyRow(
+        modifier = Modifier.fillMaxWidth().height(40.dp),
+        contentPadding = PaddingValues(horizontal = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        items(colors) { c ->
+            val isNone = c == Color.Transparent
+            val isSel = if (isNone) selColorInt == android.graphics.Color.TRANSPARENT else c.toArgb() == selColorInt
+            Box(
+                modifier = Modifier
+                    .size(28.dp)
+                    .background(if (isNone) Color.White else c, CircleShape)
+                    .border(
+                        width = if (isSel) 2.dp else 1.dp,
+                        color = if (isSel) Color(0xFF3F51B5) else Color.LightGray.copy(alpha = 0.5f),
+                        shape = CircleShape
+                    )
+                    .clickable { onCh(c) },
+                contentAlignment = Alignment.Center
+            ) {
+                if (isNone) {
+                    Icon(Icons.Default.Block, null, tint = Color.Red, modifier = Modifier.size(16.dp))
+                } else if (isSel) {
+                    Icon(
+                        Icons.Default.Check,
+                        null,
+                        tint = if (c == Color.White || c == Color.Yellow || c == Color.Cyan) Color.Black else Color.White,
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+            }
+        }
+    }
+}
 
 private fun uriToFile(context: Context, uri: Uri): File? {
     return try {
