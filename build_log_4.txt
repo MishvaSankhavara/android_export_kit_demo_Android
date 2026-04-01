@@ -1,0 +1,243 @@
+Initialized native services in: /Users/apple/.gradle/native
+Initialized jansi services in: /Users/apple/.gradle/native
+Found daemon DaemonInfo{pid=98314, address=[36cd0d91-6f3f-41a7-b903-a249534261bf port:52110, addresses:[/127.0.0.1]], state=Idle, lastBusy=1773150876342, context=DefaultDaemonContext[uid=199d7acf-5c13-4ba6-a59c-c5c4082b119c,javaHome=/Users/apple/Library/Java/JavaVirtualMachines/jbr-21.0.10/Contents/Home,javaVersion=21,javaVendor=JetBrains s.r.o.,daemonRegistryDir=/Users/apple/.gradle/daemon,pid=98314,idleTimeout=10800000,priority=NORMAL,applyInstrumentationAgent=true,nativeServicesMode=ENABLED,daemonOpts=-Xmx2048m,-Dfile.encoding=UTF-8,-Duser.country=IN,-Duser.language=en,-Duser.variant]} however its context does not match the desired criteria.
+JVM is incompatible.
+Wanted: DaemonRequestContext{jvmCriteria=Compatible with Java 17, any vendor, nativeImageCapable=false (from gradle/gradle-daemon-jvm.properties), daemonOpts=[-Xmx2048m, -Dfile.encoding=UTF-8, -Duser.country=IN, -Duser.language=en, -Duser.variant], applyInstrumentationAgent=true, nativeServicesMode=ENABLED, priority=NORMAL}
+Actual: DefaultDaemonContext[uid=199d7acf-5c13-4ba6-a59c-c5c4082b119c,javaHome=/Users/apple/Library/Java/JavaVirtualMachines/jbr-21.0.10/Contents/Home,javaVersion=21,javaVendor=JetBrains s.r.o.,daemonRegistryDir=/Users/apple/.gradle/daemon,pid=98314,idleTimeout=10800000,priority=NORMAL,applyInstrumentationAgent=true,nativeServicesMode=ENABLED,daemonOpts=-Xmx2048m,-Dfile.encoding=UTF-8,-Duser.country=IN,-Duser.language=en,-Duser.variant]
+
+  Looking for a different daemon...
+The client will now receive all logging from the daemon (pid: 97783). The daemon log file: /Users/apple/.gradle/daemon/9.2.1/daemon-97783.out.log
+Starting 9th build in daemon [uptime: 19 mins 38.982 secs, performance: 99%, GC rate: 0.00/s, heap usage: 0% of 2 GiB]
+Using 8 worker leases.
+Operational build model parameters: {requiresToolingModels=false, parallelProjectExecution=false, configureOnDemand=false, configurationCache=false, configurationCacheParallelStore=false, configurationCacheParallelLoad=true, isolatedProjects=false, parallelProjectConfiguration=false, intermediateModelCache=false, parallelToolingApiActions=false, invalidateCoupledProjects=false, modelAsProjectDependency=false, resilientModelBuilding=false}
+Now considering [/Volumes/Work/Shubh/android_export_kit_demo] as hierarchies to watch
+Watching the file system is configured to be enabled if available
+File system watching is active
+Starting Build
+Resolved plugin [id: 'org.gradle.toolchains.foojay-resolver-convention', version: '1.0.0']
+Settings evaluated using settings file '/Volumes/Work/Shubh/android_export_kit_demo/settings.gradle.kts'.
+Projects loaded. Root project using build file '/Volumes/Work/Shubh/android_export_kit_demo/build.gradle.kts'.
+Included projects: [root project 'android_export_kit_demo', project ':app']
+
+> Configure project :
+Evaluating root project 'android_export_kit_demo' using build file '/Volumes/Work/Shubh/android_export_kit_demo/build.gradle.kts'.
+Resolved plugin [id: 'com.android.application', version: '8.3.0', apply: false]
+Resolved plugin [id: 'com.android.library', version: '8.3.0', apply: false]
+Resolved plugin [id: 'org.jetbrains.kotlin.android', version: '2.0.0', apply: false]
+Resolved plugin [id: 'org.jetbrains.kotlin.plugin.compose', version: '2.0.0', apply: false]
+
+> Configure project :app
+Evaluating project ':app' using build file '/Volumes/Work/Shubh/android_export_kit_demo/app/build.gradle.kts'.
+Resolved plugin [id: 'com.android.application']
+Resolved plugin [id: 'org.jetbrains.kotlin.android']
+Resolved plugin [id: 'org.jetbrains.kotlin.plugin.compose']
+Using default execution profile
+Using Kotlin Gradle Plugin gradle85 variant
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+All projects evaluated.
+Task path ':app:compileDebugKotlin' matched project ':app'
+Task name matched 'compileDebugKotlin'
+Selected primary task 'compileDebugKotlin' from project :app
+Tasks to be executed: [task ':app:checkKotlinGradlePluginConfigurationErrors', task ':app:preBuild', task ':app:preDebugBuild', task ':app:checkDebugAarMetadata', task ':app:generateDebugResValues', task ':app:mapDebugSourceSetPaths', task ':app:generateDebugResources', task ':app:mergeDebugResources', task ':app:packageDebugResources', task ':app:parseDebugLocalResources', task ':app:createDebugCompatibleScreenManifests', task ':app:extractDeepLinksDebug', task ':app:processDebugMainManifest', task ':app:processDebugManifest', task ':app:processDebugManifestForPackage', task ':app:processDebugResources', task ':app:compileDebugKotlin']
+Tasks that were excluded: []
+Resolve mutations for :app:checkKotlinGradlePluginConfigurationErrors (Thread[Execution worker,5,main]) started.
+:app:checkKotlinGradlePluginConfigurationErrors (Thread[Execution worker,5,main]) started.
+
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+Skipping task ':app:checkKotlinGradlePluginConfigurationErrors' as task onlyIf 'errorDiagnostics are present' is false.
+Resolve mutations for :app:preBuild (Thread[Execution worker,5,main]) started.
+:app:preBuild (Thread[Execution worker Thread 3,5,main]) started.
+
+> Task :app:preBuild UP-TO-DATE
+Skipping task ':app:preBuild' as it has no actions.
+Resolve mutations for :app:preDebugBuild (Thread[Execution worker Thread 3,5,main]) started.
+:app:preDebugBuild (Thread[included builds,5,main]) started.
+
+> Task :app:preDebugBuild UP-TO-DATE
+Skipping task ':app:preDebugBuild' as it has no actions.
+Resolve mutations for :app:checkDebugAarMetadata (Thread[included builds,5,main]) started.
+:app:checkDebugAarMetadata (Thread[included builds,5,main]) started.
+
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+Caching disabled for task ':app:checkDebugAarMetadata' because:
+  Build cache is disabled
+  Caching has been disabled for the task
+Skipping task ':app:checkDebugAarMetadata' as it is up-to-date.
+Resolve mutations for :app:generateDebugResValues (Thread[included builds,5,main]) started.
+:app:generateDebugResValues (Thread[included builds,5,main]) started.
+
+> Task :app:generateDebugResValues UP-TO-DATE
+Caching disabled for task ':app:generateDebugResValues' because:
+  Build cache is disabled
+Skipping task ':app:generateDebugResValues' as it is up-to-date.
+Resolve mutations for :app:mapDebugSourceSetPaths (Thread[included builds,5,main]) started.
+:app:mapDebugSourceSetPaths (Thread[included builds,5,main]) started.
+
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+Caching disabled for task ':app:mapDebugSourceSetPaths' because:
+  Build cache is disabled
+  Caching has been disabled for the task
+Skipping task ':app:mapDebugSourceSetPaths' as it is up-to-date.
+Resolve mutations for :app:generateDebugResources (Thread[included builds,5,main]) started.
+:app:generateDebugResources (Thread[included builds,5,main]) started.
+
+> Task :app:generateDebugResources UP-TO-DATE
+Caching disabled for task ':app:generateDebugResources' because:
+  Build cache is disabled
+Skipping task ':app:generateDebugResources' as it is up-to-date.
+Resolve mutations for :app:mergeDebugResources (Thread[included builds,5,main]) started.
+:app:mergeDebugResources (Thread[included builds,5,main]) started.
+
+> Task :app:mergeDebugResources UP-TO-DATE
+Caching disabled for task ':app:mergeDebugResources' because:
+  Build cache is disabled
+Skipping task ':app:mergeDebugResources' as it is up-to-date.
+Resolve mutations for :app:packageDebugResources (Thread[included builds,5,main]) started.
+:app:packageDebugResources (Thread[included builds,5,main]) started.
+
+> Task :app:packageDebugResources UP-TO-DATE
+Caching disabled for task ':app:packageDebugResources' because:
+  Build cache is disabled
+Skipping task ':app:packageDebugResources' as it is up-to-date.
+Resolve mutations for :app:parseDebugLocalResources (Thread[included builds,5,main]) started.
+:app:parseDebugLocalResources (Thread[included builds,5,main]) started.
+
+> Task :app:parseDebugLocalResources UP-TO-DATE
+Caching disabled for task ':app:parseDebugLocalResources' because:
+  Build cache is disabled
+Skipping task ':app:parseDebugLocalResources' as it is up-to-date.
+Resolve mutations for :app:createDebugCompatibleScreenManifests (Thread[included builds,5,main]) started.
+:app:createDebugCompatibleScreenManifests (Thread[included builds,5,main]) started.
+
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+Caching disabled for task ':app:createDebugCompatibleScreenManifests' because:
+  Build cache is disabled
+  Caching has been disabled for the task
+Skipping task ':app:createDebugCompatibleScreenManifests' as it is up-to-date.
+Resolve mutations for :app:extractDeepLinksDebug (Thread[included builds,5,main]) started.
+:app:extractDeepLinksDebug (Thread[included builds,5,main]) started.
+
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+Caching disabled for task ':app:extractDeepLinksDebug' because:
+  Build cache is disabled
+Skipping task ':app:extractDeepLinksDebug' as it is up-to-date.
+Resolve mutations for :app:processDebugMainManifest (Thread[included builds,5,main]) started.
+:app:processDebugMainManifest (Thread[included builds,5,main]) started.
+
+> Task :app:processDebugMainManifest UP-TO-DATE
+Caching disabled for task ':app:processDebugMainManifest' because:
+  Build cache is disabled
+Skipping task ':app:processDebugMainManifest' as it is up-to-date.
+Resolve mutations for :app:processDebugManifest (Thread[included builds,5,main]) started.
+:app:processDebugManifest (Thread[included builds,5,main]) started.
+
+> Task :app:processDebugManifest UP-TO-DATE
+Caching disabled for task ':app:processDebugManifest' because:
+  Build cache is disabled
+Skipping task ':app:processDebugManifest' as it is up-to-date.
+Resolve mutations for :app:processDebugManifestForPackage (Thread[included builds,5,main]) started.
+:app:processDebugManifestForPackage (Thread[Execution worker Thread 2,5,main]) started.
+
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+Custom actions are attached to task ':app:processDebugManifestForPackage'.
+Caching disabled for task ':app:processDebugManifestForPackage' because:
+  Build cache is disabled
+Skipping task ':app:processDebugManifestForPackage' as it is up-to-date.
+Resolve mutations for :app:processDebugResources (Thread[Execution worker Thread 2,5,main]) started.
+:app:processDebugResources (Thread[Execution worker Thread 2,5,main]) started.
+
+> Task :app:processDebugResources UP-TO-DATE
+Caching disabled for task ':app:processDebugResources' because:
+  Build cache is disabled
+Skipping task ':app:processDebugResources' as it is up-to-date.
+Resolve mutations for :app:compileDebugKotlin (Thread[Execution worker Thread 2,5,main]) started.
+:app:compileDebugKotlin (Thread[Execution worker Thread 2,5,main]) started.
+
+> Task :app:compileDebugKotlin
+Caching disabled for task ':app:compileDebugKotlin' because:
+  Build cache is disabled
+Task ':app:compileDebugKotlin' is not up-to-date because:
+  Input property 'sources' file /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/model/FrameModel.kt has changed.
+  Input property 'sources' file /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/editor/FrameEditorScreen.kt has changed.
+  Input property 'sources' file /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/view/FrameCanvasView.kt has changed.
+  and more...
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/java', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/java', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/java', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/java', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/java', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/java', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/java', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/java', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/java', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/java', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/java', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/java', not found
+Kotlin source files: /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/viewmodel/FrameViewModel.kt, /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/home/MainActivity.kt, /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/home/SelectPhotoScreen.kt, /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/home/HomeScreen.kt, /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/editor/FrameEditorScreen.kt, /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/repository/FrameRepository.kt, /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/AppTheme.kt, /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/model/FrameModel.kt, /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/view/StickerView.kt, /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/view/FrameCanvasView.kt, /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/service/FrameService.kt
+Java source files: 
+Script source files: 
+Script file extensions: 
+Using Kotlin/JVM incremental compilation
+[KOTLIN] Kotlin compilation 'jdkHome' argument: null
+Options for KOTLIN DAEMON: IncrementalCompilationOptions(super=CompilationOptions(compilerMode=INCREMENTAL_COMPILER, targetPlatform=JVM, reportCategories=[0, 3], reportSeverity=2, requestedCompilationResults=[0], kotlinScriptExtensions=[]), areFileChangesKnown=true, modifiedFiles=[/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/model/FrameModel.kt, /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/editor/FrameEditorScreen.kt, /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/view/FrameCanvasView.kt, /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/view/StickerView.kt, /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/viewmodel/FrameViewModel.kt], deletedFiles=[], classpathChanges=NoChanges, workingDir=/Volumes/Work/Shubh/android_export_kit_demo/app/build/kotlin/compileDebugKotlin/cacheable, multiModuleICSettings=MultiModuleICSettings(buildHistoryFile=/Volumes/Work/Shubh/android_export_kit_demo/app/build/kotlin/compileDebugKotlin/local-state/build-history.bin, useModuleDetection=true), usePreciseJavaTracking=true, icFeatures=IncrementalCompilationFeatures(withAbiSnapshot=false, preciseCompilationResultsBackup=true, keepIncrementalCompilationCachesInMemory=true, enableUnsafeIncrementalCompilationForMultiplatform=false), outputFiles=[/Volumes/Work/Shubh/android_export_kit_demo/app/build/tmp/kotlin-classes/debug, /Volumes/Work/Shubh/android_export_kit_demo/app/build/kotlin/compileDebugKotlin/cacheable, /Volumes/Work/Shubh/android_export_kit_demo/app/build/kotlin/compileDebugKotlin/local-state])
+w: file:///Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/editor/FrameEditorScreen.kt:95:43 '@property:Deprecated(...) val Icons.Filled.Undo: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Undo.
+w: file:///Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/editor/FrameEditorScreen.kt:105:43 '@property:Deprecated(...) val Icons.Filled.Redo: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Redo.
+w: file:///Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/editor/FrameEditorScreen.kt:130:17 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/editor/FrameEditorScreen.kt:297:13 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/editor/FrameEditorScreen.kt:437:38 '@property:Deprecated(...) val Icons.Filled.RotateRight: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.RotateRight.
+w: file:///Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/editor/FrameEditorScreen.kt:462:34 '@property:Deprecated(...) val Icons.Filled.RotateRight: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.RotateRight.
+w: file:///Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/editor/FrameEditorScreen.kt:505:13 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/editor/FrameEditorScreen.kt:539:33 '@property:Deprecated(...) val Icons.Filled.KeyboardArrowLeft: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.KeyboardArrowLeft.
+w: file:///Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/editor/FrameEditorScreen.kt:545:33 '@property:Deprecated(...) val Icons.Filled.KeyboardArrowRight: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.KeyboardArrowRight.
+w: file:///Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/editor/FrameEditorScreen.kt:816:9 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/editor/FrameEditorScreen.kt:820:37 '@property:Deprecated(...) val Icons.Filled.FormatAlignLeft: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.FormatAlignLeft.
+w: file:///Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/editor/FrameEditorScreen.kt:822:37 '@property:Deprecated(...) val Icons.Filled.FormatAlignRight: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.FormatAlignRight.
+w: file:///Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/editor/FrameEditorScreen.kt:824:9 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/editor/FrameEditorScreen.kt:828:9 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/view/FrameCanvasView.kt:511:51 '@property:Deprecated(...) val Icons.Filled.RotateRight: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.RotateRight.
+w: file:///Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/view/StickerView.kt:484:45 '@property:Deprecated(...) val Icons.Filled.RotateRight: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.RotateRight.
+w: file:///Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/repository/FrameRepository.kt:94:66 Unchecked cast of 'org.json.JSONObject' to 'kotlin.collections.Map<kotlin.String, kotlin.Any>'.
+w: file:///Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/home/HomeScreen.kt:80:59 '@property:Deprecated(...) val Icons.Filled.List: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.List.
+w: file:///Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/home/HomeScreen.kt:266:31 '@property:Deprecated(...) val Icons.Filled.ArrowForwardIos: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowForwardIos.
+Finished executing kotlin compiler using DAEMON strategy
+
+[Incubating] Problems report is available at: file:///Volumes/Work/Shubh/android_export_kit_demo/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.2.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 5s
+14 actionable tasks: 1 executed, 13 up-to-date
+Watched directory hierarchies: [/Volumes/Work/Shubh/android_export_kit_demo]
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.2.1/userguide/configuration_cache_enabling.html

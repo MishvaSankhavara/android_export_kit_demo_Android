@@ -1,0 +1,885 @@
+Initialized native services in: /Users/apple/.gradle/native
+Initialized jansi services in: /Users/apple/.gradle/native
+Found daemon DaemonInfo{pid=98314, address=[36cd0d91-6f3f-41a7-b903-a249534261bf port:52110, addresses:[/127.0.0.1]], state=Idle, lastBusy=1773150876342, context=DefaultDaemonContext[uid=199d7acf-5c13-4ba6-a59c-c5c4082b119c,javaHome=/Users/apple/Library/Java/JavaVirtualMachines/jbr-21.0.10/Contents/Home,javaVersion=21,javaVendor=JetBrains s.r.o.,daemonRegistryDir=/Users/apple/.gradle/daemon,pid=98314,idleTimeout=10800000,priority=NORMAL,applyInstrumentationAgent=true,nativeServicesMode=ENABLED,daemonOpts=-Xmx2048m,-Dfile.encoding=UTF-8,-Duser.country=IN,-Duser.language=en,-Duser.variant]} however its context does not match the desired criteria.
+JVM is incompatible.
+Wanted: DaemonRequestContext{jvmCriteria=Compatible with Java 17, any vendor, nativeImageCapable=false (from gradle/gradle-daemon-jvm.properties), daemonOpts=[-Xmx2048m, -Dfile.encoding=UTF-8, -Duser.country=IN, -Duser.language=en, -Duser.variant], applyInstrumentationAgent=true, nativeServicesMode=ENABLED, priority=NORMAL}
+Actual: DefaultDaemonContext[uid=199d7acf-5c13-4ba6-a59c-c5c4082b119c,javaHome=/Users/apple/Library/Java/JavaVirtualMachines/jbr-21.0.10/Contents/Home,javaVersion=21,javaVendor=JetBrains s.r.o.,daemonRegistryDir=/Users/apple/.gradle/daemon,pid=98314,idleTimeout=10800000,priority=NORMAL,applyInstrumentationAgent=true,nativeServicesMode=ENABLED,daemonOpts=-Xmx2048m,-Dfile.encoding=UTF-8,-Duser.country=IN,-Duser.language=en,-Duser.variant]
+
+  Looking for a different daemon...
+The client will now receive all logging from the daemon (pid: 97783). The daemon log file: /Users/apple/.gradle/daemon/9.2.1/daemon-97783.out.log
+Starting 8th build in daemon [uptime: 18 mins 50.35 secs, performance: 99%, GC rate: 0.00/s, heap usage: 0% of 2 GiB]
+Using 8 worker leases.
+Operational build model parameters: {requiresToolingModels=false, parallelProjectExecution=false, configureOnDemand=false, configurationCache=false, configurationCacheParallelStore=false, configurationCacheParallelLoad=true, isolatedProjects=false, parallelProjectConfiguration=false, intermediateModelCache=false, parallelToolingApiActions=false, invalidateCoupledProjects=false, modelAsProjectDependency=false, resilientModelBuilding=false}
+Now considering [/Volumes/Work/Shubh/android_export_kit_demo] as hierarchies to watch
+Watching the file system is configured to be enabled if available
+File system watching is active
+Starting Build
+Resolved plugin [id: 'org.gradle.toolchains.foojay-resolver-convention', version: '1.0.0']
+Settings evaluated using settings file '/Volumes/Work/Shubh/android_export_kit_demo/settings.gradle.kts'.
+Projects loaded. Root project using build file '/Volumes/Work/Shubh/android_export_kit_demo/build.gradle.kts'.
+Included projects: [root project 'android_export_kit_demo', project ':app']
+
+> Configure project :
+Evaluating root project 'android_export_kit_demo' using build file '/Volumes/Work/Shubh/android_export_kit_demo/build.gradle.kts'.
+Resolved plugin [id: 'com.android.application', version: '8.3.0', apply: false]
+Resolved plugin [id: 'com.android.library', version: '8.3.0', apply: false]
+Resolved plugin [id: 'org.jetbrains.kotlin.android', version: '2.0.0', apply: false]
+Resolved plugin [id: 'org.jetbrains.kotlin.plugin.compose', version: '2.0.0', apply: false]
+
+> Configure project :app
+Evaluating project ':app' using build file '/Volumes/Work/Shubh/android_export_kit_demo/app/build.gradle.kts'.
+Resolved plugin [id: 'com.android.application']
+Resolved plugin [id: 'org.jetbrains.kotlin.android']
+Resolved plugin [id: 'org.jetbrains.kotlin.plugin.compose']
+Using default execution profile
+Using Kotlin Gradle Plugin gradle85 variant
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+All projects evaluated.
+Task path ':app:compileDebugKotlin' matched project ':app'
+Task name matched 'compileDebugKotlin'
+Selected primary task 'compileDebugKotlin' from project :app
+Tasks to be executed: [task ':app:checkKotlinGradlePluginConfigurationErrors', task ':app:preBuild', task ':app:preDebugBuild', task ':app:checkDebugAarMetadata', task ':app:generateDebugResValues', task ':app:mapDebugSourceSetPaths', task ':app:generateDebugResources', task ':app:mergeDebugResources', task ':app:packageDebugResources', task ':app:parseDebugLocalResources', task ':app:createDebugCompatibleScreenManifests', task ':app:extractDeepLinksDebug', task ':app:processDebugMainManifest', task ':app:processDebugManifest', task ':app:processDebugManifestForPackage', task ':app:processDebugResources', task ':app:compileDebugKotlin']
+Tasks that were excluded: []
+Resolve mutations for :app:checkKotlinGradlePluginConfigurationErrors (Thread[Execution worker,5,main]) started.
+:app:checkKotlinGradlePluginConfigurationErrors (Thread[Execution worker,5,main]) started.
+
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+Skipping task ':app:checkKotlinGradlePluginConfigurationErrors' as task onlyIf 'errorDiagnostics are present' is false.
+Resolve mutations for :app:preBuild (Thread[Execution worker,5,main]) started.
+:app:preBuild (Thread[Execution worker,5,main]) started.
+
+> Task :app:preBuild UP-TO-DATE
+Skipping task ':app:preBuild' as it has no actions.
+Resolve mutations for :app:preDebugBuild (Thread[Execution worker,5,main]) started.
+:app:preDebugBuild (Thread[Execution worker,5,main]) started.
+
+> Task :app:preDebugBuild UP-TO-DATE
+Skipping task ':app:preDebugBuild' as it has no actions.
+Resolve mutations for :app:checkDebugAarMetadata (Thread[Execution worker,5,main]) started.
+:app:checkDebugAarMetadata (Thread[Execution worker,5,main]) started.
+
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+Caching disabled for task ':app:checkDebugAarMetadata' because:
+  Build cache is disabled
+  Caching has been disabled for the task
+Skipping task ':app:checkDebugAarMetadata' as it is up-to-date.
+Resolve mutations for :app:generateDebugResValues (Thread[Execution worker,5,main]) started.
+:app:generateDebugResValues (Thread[Execution worker,5,main]) started.
+
+> Task :app:generateDebugResValues UP-TO-DATE
+Caching disabled for task ':app:generateDebugResValues' because:
+  Build cache is disabled
+Skipping task ':app:generateDebugResValues' as it is up-to-date.
+Resolve mutations for :app:mapDebugSourceSetPaths (Thread[Execution worker,5,main]) started.
+:app:mapDebugSourceSetPaths (Thread[Execution worker,5,main]) started.
+
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+Caching disabled for task ':app:mapDebugSourceSetPaths' because:
+  Build cache is disabled
+  Caching has been disabled for the task
+Skipping task ':app:mapDebugSourceSetPaths' as it is up-to-date.
+Resolve mutations for :app:generateDebugResources (Thread[Execution worker,5,main]) started.
+:app:generateDebugResources (Thread[Execution worker,5,main]) started.
+
+> Task :app:generateDebugResources UP-TO-DATE
+Caching disabled for task ':app:generateDebugResources' because:
+  Build cache is disabled
+Skipping task ':app:generateDebugResources' as it is up-to-date.
+Resolve mutations for :app:mergeDebugResources (Thread[Execution worker,5,main]) started.
+:app:mergeDebugResources (Thread[Execution worker,5,main]) started.
+
+> Task :app:mergeDebugResources UP-TO-DATE
+Caching disabled for task ':app:mergeDebugResources' because:
+  Build cache is disabled
+Skipping task ':app:mergeDebugResources' as it is up-to-date.
+Resolve mutations for :app:packageDebugResources (Thread[Execution worker,5,main]) started.
+:app:packageDebugResources (Thread[Execution worker,5,main]) started.
+
+> Task :app:packageDebugResources UP-TO-DATE
+Caching disabled for task ':app:packageDebugResources' because:
+  Build cache is disabled
+Skipping task ':app:packageDebugResources' as it is up-to-date.
+Resolve mutations for :app:parseDebugLocalResources (Thread[Execution worker,5,main]) started.
+:app:parseDebugLocalResources (Thread[Execution worker,5,main]) started.
+
+> Task :app:parseDebugLocalResources UP-TO-DATE
+Caching disabled for task ':app:parseDebugLocalResources' because:
+  Build cache is disabled
+Skipping task ':app:parseDebugLocalResources' as it is up-to-date.
+Resolve mutations for :app:createDebugCompatibleScreenManifests (Thread[Execution worker,5,main]) started.
+:app:createDebugCompatibleScreenManifests (Thread[Execution worker,5,main]) started.
+
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+Caching disabled for task ':app:createDebugCompatibleScreenManifests' because:
+  Build cache is disabled
+  Caching has been disabled for the task
+Skipping task ':app:createDebugCompatibleScreenManifests' as it is up-to-date.
+Resolve mutations for :app:extractDeepLinksDebug (Thread[Execution worker,5,main]) started.
+:app:extractDeepLinksDebug (Thread[Execution worker,5,main]) started.
+
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+Caching disabled for task ':app:extractDeepLinksDebug' because:
+  Build cache is disabled
+Skipping task ':app:extractDeepLinksDebug' as it is up-to-date.
+Resolve mutations for :app:processDebugMainManifest (Thread[Execution worker,5,main]) started.
+:app:processDebugMainManifest (Thread[Execution worker,5,main]) started.
+
+> Task :app:processDebugMainManifest
+Caching disabled for task ':app:processDebugMainManifest' because:
+  Build cache is disabled
+Task ':app:processDebugMainManifest' is not up-to-date because:
+  Value of input property 'optionalFeatures' has changed for task ':app:processDebugMainManifest'
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/131fb67a7f0a98085979ed92a34b2d36/transformed/navigation-common-2.7.7/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/93c89c15c7257ba8c868ad1c6aec64a7/transformed/navigation-runtime-2.7.7/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/9d150e1629af734b5db083e2acaed93f/transformed/navigation-common-ktx-2.7.7/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/ee9dce3ed724a57e91a775441b165a6f/transformed/navigation-runtime-ktx-2.7.7/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/e49ec6436f86e4b5d309c36168d41eab/transformed/navigation-compose-2.7.7/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/a6950116d286cdc0fa148a6e9b8b75f3/transformed/material-1.12.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/b3f4a7ba5cd7de880318687c16bf77cf/transformed/constraintlayout-2.0.1/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/c8e00de9ea88ab94be1e622a15417d44/transformed/coil-compose-2.6.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/442a989f90bc7842bfff4362e73621a0/transformed/coil-compose-base-2.6.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/fdcc8da726bd913d908b7e76173ee1f6/transformed/coil-2.6.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/0ddc607e433e6e2f3f8066d0e063c56c/transformed/coil-base-2.6.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/33e1ae61e75972027272f873ae6e12d1/transformed/appcompat-resources-1.6.1/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/23e9e358a4e8094f16be5212f543374e/transformed/appcompat-1.6.1/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/985a84d67231101575b84e9cb6c57f85/transformed/material3-release/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/6097fa74326a2708d12b9041861677bc/transformed/material-ripple-release/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/02cb6edee4b1ba00713d48972acb348c/transformed/material-icons-core-release/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/6b457cb27ee33557f1c19498a9be5986/transformed/material-icons-extended-release/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/45238a4ed941a3fd1913dcc47c2ffeab/transformed/material-release/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/8f3b806a3f05aff263098535995e135a/transformed/foundation-layout-release/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/59884b1dac153dd6ba5faad9b378adef/transformed/foundation-release/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/e84adae7b96e406cbfad8a135ff86871/transformed/animation-core-release/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/a5df24a949e7750c954f752d399abc35/transformed/animation-release/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/de9cd6bddcedd720f06ac040253a7112/transformed/ui-tooling-data-release/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/2a5b63d957abe9c02146bc13a694e746/transformed/ui-unit-release/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/6b37c87f03c898ae0d43f97c2548236b/transformed/ui-text-release/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/570cdacb9345ef547bead253f82a8114/transformed/ui-util-release/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/bb97c291c74449250680e7888c6579d9/transformed/ui-geometry-release/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/595deb968355000855804063dc1029c6/transformed/ui-tooling-preview-release/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/6857a4db71d78af64402bea6c1ef479f/transformed/ui-tooling-release/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/2e7255cb5ae8591fd068da32f208ed22/transformed/ui-graphics-release/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/ede982586b1d68547af06b4c39d1e5e2/transformed/ui-test-manifest-1.6.1/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/5ce57f7e1f9784ded1436c40fce8fe36/transformed/accompanist-drawablepainter-0.32.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/4fe985b165432bba5c46c036e196ad5f/transformed/ui-release/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/b46260947d7ff1eb19789f6cb6af98ce/transformed/activity-ktx-1.8.2/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/9ef5671e694067ed0d456d23027b5f01/transformed/activity-compose-1.8.2/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/19f6a1f3c724f3894e2b47f296dc4244/transformed/viewpager2-1.0.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/3f853e20b0813f6387363b2a4f9b021d/transformed/fragment-1.3.6/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/e36616998a8388dd9ae761f74a1bdac8/transformed/activity-1.8.2/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/90f222b0006ad34d1390c457070f9615/transformed/savedstate-ktx-1.2.1/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/4255e24839b0dc20f0b7559890b2e8a6/transformed/savedstate-1.2.1/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/ab66a25b27d660234bf6b67798e1e16e/transformed/emoji2-views-helper-1.3.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/5d9d0350f73f817296b62959516d6f31/transformed/emoji2-1.3.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/c17d0dfe529ca8a1933c2cabe13e5638/transformed/transition-1.5.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/c77b2131ed26334a4fb300a0b1a19ec0/transformed/dynamicanimation-1.0.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/d8c7898612e1438adb4ff7654da0bf49/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/e87f7ce5fef07865ad9a26fbe555c1d3/transformed/loader-1.0.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/05bb28fec7e2d4e35313445012bad0f0/transformed/lifecycle-livedata-core-ktx-2.7.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/cd8ab6cb5ee1bc2908959842e60d775b/transformed/lifecycle-livedata-2.7.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/1896f75438747f519cb65b4bd4d40fec/transformed/lifecycle-process-2.7.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/1956fe3c301fc0fc93c3fc69c87157ba/transformed/lifecycle-livedata-core-2.7.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/0524c4aa3e9a62920cd8b1b48adc1f74/transformed/lifecycle-viewmodel-savedstate-2.7.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/bed5bf4e09b0d4f1e6f5c62102f94f64/transformed/lifecycle-viewmodel-ktx-2.7.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/78996b4e32e45000ce3523c6c5a14003/transformed/lifecycle-viewmodel-2.7.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/d587567499ccfed02153e3f330e7f026/transformed/coordinatorlayout-1.1.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/080304dbafd303da3736e922dab6bc34/transformed/drawerlayout-1.1.1/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/2eeaf4988e5ebd5cb267756c612e44f2/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/80216c661633c3c3c431397dac00319b/transformed/vectordrawable-1.1.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/e1aaeae05a5d1fe083f8367f36b481e2/transformed/recyclerview-1.1.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/90ae2c45d1ca50edd6055f56563ac665/transformed/viewpager-1.0.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/f5eeb838de8f286cb7c952a19efb8a11/transformed/customview-1.1.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/73e97ce534395fac5a94b5727f06264a/transformed/autofill-1.0.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/a6ecc4375938654ce54173fbca8e290b/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/bebe8dfaa26d0e56981c07d2e121c3a3/transformed/core-ktx-1.13.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/e5589b78cc5fd512c5578e4ee6421fc1/transformed/core-1.13.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/8c53219dbd4aebc46df8996ca370861a/transformed/lifecycle-runtime-2.7.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/972d870b324e90209f1de17bc8f422af/transformed/lifecycle-runtime-compose-2.7.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/173aec7174bd6b826a5a09a157714392/transformed/lifecycle-viewmodel-compose-2.7.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/72cf115a93801c64bdcbc930b310b8a4/transformed/lifecycle-runtime-ktx-2.7.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/5cc6b50ef537f5033e291ba348363b9a/transformed/runtime-saveable-release/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/46445abc446d934ebd9008da3ba3a0e3/transformed/runtime-release/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/43b74b7c2bf57cac3540172d0092b1a4/transformed/annotation-experimental-1.4.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/90016b2a49a300eb2a99d6560f842e06/transformed/versionedparcelable-1.1.1/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/13ac00c9b5651b0f6f805bb8399d69e9/transformed/cardview-1.0.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/4446bbaee6073230b4ffcb1978c9c7aa/transformed/cursoradapter-1.0.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/4e9fea0f4f93be07e1f72daf3c74ccf1/transformed/core-runtime-2.2.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/d8bf5c0e00ccc2b51f00b40aa1ca3706/transformed/profileinstaller-1.3.1/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/1453bd861d608fabde3a097f1e0c14ed/transformed/startup-runtime-1.1.1/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/9077360fbce646d037cd05ca52678dac/transformed/tracing-1.0.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/8afe7ef760e6342b865957a3230f3c99/transformed/documentfile-1.0.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/af48e8a2833c07c98289674d550659a4/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/a9374fb4e06a59bf7352725c877106cf/transformed/print-1.0.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/eb2276e3017291534bd18d3b1efc7ee1/transformed/interpolator-1.0.0/AndroidManifest.xml
+Loading library manifest /Users/apple/.gradle/caches/9.2.1/transforms/9e0d2451371d5a7242ee2f2bb3d33b7c/transformed/exifinterface-1.3.7/AndroidManifest.xml
+Merging main manifest /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml
+
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/131fb67a7f0a98085979ed92a34b2d36/transformed/navigation-common-2.7.7/AndroidManifest.xml
+Merging manifest with lower [androidx.navigation:navigation-common:2.7.7] AndroidManifest.xml:17:1-22:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.navigation:navigation-common:2.7.7] AndroidManifest.xml:20:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/93c89c15c7257ba8c868ad1c6aec64a7/transformed/navigation-runtime-2.7.7/AndroidManifest.xml
+Merging manifest with lower [androidx.navigation:navigation-runtime:2.7.7] AndroidManifest.xml:17:1-22:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.navigation:navigation-runtime:2.7.7] AndroidManifest.xml:20:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/9d150e1629af734b5db083e2acaed93f/transformed/navigation-common-ktx-2.7.7/AndroidManifest.xml
+Merging manifest with lower [androidx.navigation:navigation-common-ktx:2.7.7] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.navigation:navigation-common-ktx:2.7.7] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/ee9dce3ed724a57e91a775441b165a6f/transformed/navigation-runtime-ktx-2.7.7/AndroidManifest.xml
+Merging manifest with lower [androidx.navigation:navigation-runtime-ktx:2.7.7] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.navigation:navigation-runtime-ktx:2.7.7] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/e49ec6436f86e4b5d309c36168d41eab/transformed/navigation-compose-2.7.7/AndroidManifest.xml
+Merging manifest with lower [androidx.navigation:navigation-compose:2.7.7] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.navigation:navigation-compose:2.7.7] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/a6950116d286cdc0fa148a6e9b8b75f3/transformed/material-1.12.0/AndroidManifest.xml
+Merging manifest with lower [com.google.android.material:material:1.12.0] AndroidManifest.xml:17:1-24:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [com.google.android.material:material:1.12.0] AndroidManifest.xml:20:5-44
+application defined in both files...
+Merging application with lower [com.google.android.material:material:1.12.0] AndroidManifest.xml:22:5-20
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/b3f4a7ba5cd7de880318687c16bf77cf/transformed/constraintlayout-2.0.1/AndroidManifest.xml
+Merging manifest with lower [androidx.constraintlayout:constraintlayout:2.0.1] AndroidManifest.xml:2:1-11:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.constraintlayout:constraintlayout:2.0.1] AndroidManifest.xml:5:5-7:41
+application defined in both files...
+Merging application with lower [androidx.constraintlayout:constraintlayout:2.0.1] AndroidManifest.xml:9:5-20
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/c8e00de9ea88ab94be1e622a15417d44/transformed/coil-compose-2.6.0/AndroidManifest.xml
+Merging manifest with lower [io.coil-kt:coil-compose:2.6.0] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [io.coil-kt:coil-compose:2.6.0] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/442a989f90bc7842bfff4362e73621a0/transformed/coil-compose-base-2.6.0/AndroidManifest.xml
+Merging manifest with lower [io.coil-kt:coil-compose-base:2.6.0] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [io.coil-kt:coil-compose-base:2.6.0] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/fdcc8da726bd913d908b7e76173ee1f6/transformed/coil-2.6.0/AndroidManifest.xml
+Merging manifest with lower [io.coil-kt:coil:2.6.0] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [io.coil-kt:coil:2.6.0] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/0ddc607e433e6e2f3f8066d0e063c56c/transformed/coil-base-2.6.0/AndroidManifest.xml
+Merging manifest with lower [io.coil-kt:coil-base:2.6.0] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [io.coil-kt:coil-base:2.6.0] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/33e1ae61e75972027272f873ae6e12d1/transformed/appcompat-resources-1.6.1/AndroidManifest.xml
+Merging manifest with lower [androidx.appcompat:appcompat-resources:1.6.1] AndroidManifest.xml:17:1-22:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.appcompat:appcompat-resources:1.6.1] AndroidManifest.xml:20:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/23e9e358a4e8094f16be5212f543374e/transformed/appcompat-1.6.1/AndroidManifest.xml
+Merging manifest with lower [androidx.appcompat:appcompat:1.6.1] AndroidManifest.xml:17:1-22:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.appcompat:appcompat:1.6.1] AndroidManifest.xml:20:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/985a84d67231101575b84e9cb6c57f85/transformed/material3-release/AndroidManifest.xml
+Merging manifest with lower [androidx.compose.material3:material3-android:1.2.0] AndroidManifest.xml:17:1-22:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.compose.material3:material3-android:1.2.0] AndroidManifest.xml:20:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/6097fa74326a2708d12b9041861677bc/transformed/material-ripple-release/AndroidManifest.xml
+Merging manifest with lower [androidx.compose.material:material-ripple-android:1.6.1] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.compose.material:material-ripple-android:1.6.1] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/02cb6edee4b1ba00713d48972acb348c/transformed/material-icons-core-release/AndroidManifest.xml
+Merging manifest with lower [androidx.compose.material:material-icons-core-android:1.6.1] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.compose.material:material-icons-core-android:1.6.1] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/6b457cb27ee33557f1c19498a9be5986/transformed/material-icons-extended-release/AndroidManifest.xml
+Merging manifest with lower [androidx.compose.material:material-icons-extended-android:1.6.1] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.compose.material:material-icons-extended-android:1.6.1] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/45238a4ed941a3fd1913dcc47c2ffeab/transformed/material-release/AndroidManifest.xml
+Merging manifest with lower [androidx.compose.material:material-android:1.6.1] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.compose.material:material-android:1.6.1] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/8f3b806a3f05aff263098535995e135a/transformed/foundation-layout-release/AndroidManifest.xml
+Merging manifest with lower [androidx.compose.foundation:foundation-layout-android:1.6.1] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.compose.foundation:foundation-layout-android:1.6.1] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/59884b1dac153dd6ba5faad9b378adef/transformed/foundation-release/AndroidManifest.xml
+Merging manifest with lower [androidx.compose.foundation:foundation-android:1.6.1] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.compose.foundation:foundation-android:1.6.1] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/e84adae7b96e406cbfad8a135ff86871/transformed/animation-core-release/AndroidManifest.xml
+Merging manifest with lower [androidx.compose.animation:animation-core-android:1.6.1] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.compose.animation:animation-core-android:1.6.1] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/a5df24a949e7750c954f752d399abc35/transformed/animation-release/AndroidManifest.xml
+Merging manifest with lower [androidx.compose.animation:animation-android:1.6.1] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.compose.animation:animation-android:1.6.1] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/de9cd6bddcedd720f06ac040253a7112/transformed/ui-tooling-data-release/AndroidManifest.xml
+Merging manifest with lower [androidx.compose.ui:ui-tooling-data-android:1.6.1] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.compose.ui:ui-tooling-data-android:1.6.1] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/2a5b63d957abe9c02146bc13a694e746/transformed/ui-unit-release/AndroidManifest.xml
+Merging manifest with lower [androidx.compose.ui:ui-unit-android:1.6.1] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.compose.ui:ui-unit-android:1.6.1] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/6b37c87f03c898ae0d43f97c2548236b/transformed/ui-text-release/AndroidManifest.xml
+Merging manifest with lower [androidx.compose.ui:ui-text-android:1.6.1] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.compose.ui:ui-text-android:1.6.1] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/570cdacb9345ef547bead253f82a8114/transformed/ui-util-release/AndroidManifest.xml
+Merging manifest with lower [androidx.compose.ui:ui-util-android:1.6.1] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.compose.ui:ui-util-android:1.6.1] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/bb97c291c74449250680e7888c6579d9/transformed/ui-geometry-release/AndroidManifest.xml
+Merging manifest with lower [androidx.compose.ui:ui-geometry-android:1.6.1] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.compose.ui:ui-geometry-android:1.6.1] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/595deb968355000855804063dc1029c6/transformed/ui-tooling-preview-release/AndroidManifest.xml
+Merging manifest with lower [androidx.compose.ui:ui-tooling-preview-android:1.6.1] AndroidManifest.xml:17:1-22:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.compose.ui:ui-tooling-preview-android:1.6.1] AndroidManifest.xml:20:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/6857a4db71d78af64402bea6c1ef479f/transformed/ui-tooling-release/AndroidManifest.xml
+Merging manifest with lower [androidx.compose.ui:ui-tooling-android:1.6.1] AndroidManifest.xml:17:1-28:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.compose.ui:ui-tooling-android:1.6.1] AndroidManifest.xml:20:5-44
+application defined in both files...
+Merging application with lower [androidx.compose.ui:ui-tooling-android:1.6.1] AndroidManifest.xml:22:5-26:19
+Adopted [activity: null]
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/2e7255cb5ae8591fd068da32f208ed22/transformed/ui-graphics-release/AndroidManifest.xml
+Merging manifest with lower [androidx.compose.ui:ui-graphics-android:1.6.1] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.compose.ui:ui-graphics-android:1.6.1] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/ede982586b1d68547af06b4c39d1e5e2/transformed/ui-test-manifest-1.6.1/AndroidManifest.xml
+Merging manifest with lower [androidx.compose.ui:ui-test-manifest:1.6.1] AndroidManifest.xml:17:1-28:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.compose.ui:ui-test-manifest:1.6.1] AndroidManifest.xml:20:5-44
+application defined in both files...
+Merging application with lower [androidx.compose.ui:ui-test-manifest:1.6.1] AndroidManifest.xml:22:5-26:19
+Adopted [activity: null]
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/5ce57f7e1f9784ded1436c40fce8fe36/transformed/accompanist-drawablepainter-0.32.0/AndroidManifest.xml
+Merging manifest with lower [com.google.accompanist:accompanist-drawablepainter:0.32.0] AndroidManifest.xml:17:1-23:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [com.google.accompanist:accompanist-drawablepainter:0.32.0] AndroidManifest.xml:21:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/4fe985b165432bba5c46c036e196ad5f/transformed/ui-release/AndroidManifest.xml
+Merging manifest with lower [androidx.compose.ui:ui-android:1.6.1] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.compose.ui:ui-android:1.6.1] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/b46260947d7ff1eb19789f6cb6af98ce/transformed/activity-ktx-1.8.2/AndroidManifest.xml
+Merging manifest with lower [androidx.activity:activity-ktx:1.8.2] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.activity:activity-ktx:1.8.2] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/9ef5671e694067ed0d456d23027b5f01/transformed/activity-compose-1.8.2/AndroidManifest.xml
+Merging manifest with lower [androidx.activity:activity-compose:1.8.2] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.activity:activity-compose:1.8.2] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/19f6a1f3c724f3894e2b47f296dc4244/transformed/viewpager2-1.0.0/AndroidManifest.xml
+Merging manifest with lower [androidx.viewpager2:viewpager2:1.0.0] AndroidManifest.xml:17:1-24:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.viewpager2:viewpager2:1.0.0] AndroidManifest.xml:20:5-22:41
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/3f853e20b0813f6387363b2a4f9b021d/transformed/fragment-1.3.6/AndroidManifest.xml
+Merging manifest with lower [androidx.fragment:fragment:1.3.6] AndroidManifest.xml:17:1-24:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.fragment:fragment:1.3.6] AndroidManifest.xml:20:5-22:41
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/e36616998a8388dd9ae761f74a1bdac8/transformed/activity-1.8.2/AndroidManifest.xml
+Merging manifest with lower [androidx.activity:activity:1.8.2] AndroidManifest.xml:17:1-22:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.activity:activity:1.8.2] AndroidManifest.xml:20:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/90f222b0006ad34d1390c457070f9615/transformed/savedstate-ktx-1.2.1/AndroidManifest.xml
+Merging manifest with lower [androidx.savedstate:savedstate-ktx:1.2.1] AndroidManifest.xml:17:1-22:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.savedstate:savedstate-ktx:1.2.1] AndroidManifest.xml:20:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/4255e24839b0dc20f0b7559890b2e8a6/transformed/savedstate-1.2.1/AndroidManifest.xml
+Merging manifest with lower [androidx.savedstate:savedstate:1.2.1] AndroidManifest.xml:17:1-22:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.savedstate:savedstate:1.2.1] AndroidManifest.xml:20:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/ab66a25b27d660234bf6b67798e1e16e/transformed/emoji2-views-helper-1.3.0/AndroidManifest.xml
+Merging manifest with lower [androidx.emoji2:emoji2-views-helper:1.3.0] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.emoji2:emoji2-views-helper:1.3.0] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/5d9d0350f73f817296b62959516d6f31/transformed/emoji2-1.3.0/AndroidManifest.xml
+Merging manifest with lower [androidx.emoji2:emoji2:1.3.0] AndroidManifest.xml:17:1-35:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.emoji2:emoji2:1.3.0] AndroidManifest.xml:21:5-44
+application defined in both files...
+Merging application with lower [androidx.emoji2:emoji2:1.3.0] AndroidManifest.xml:23:5-33:19
+Adopted [provider: null]
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/c17d0dfe529ca8a1933c2cabe13e5638/transformed/transition-1.5.0/AndroidManifest.xml
+Merging manifest with lower [androidx.transition:transition:1.5.0] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.transition:transition:1.5.0] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/c77b2131ed26334a4fb300a0b1a19ec0/transformed/dynamicanimation-1.0.0/AndroidManifest.xml
+Merging manifest with lower [androidx.dynamicanimation:dynamicanimation:1.0.0] AndroidManifest.xml:17:1-22:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.dynamicanimation:dynamicanimation:1.0.0] AndroidManifest.xml:20:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/d8c7898612e1438adb4ff7654da0bf49/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml
+Merging manifest with lower [androidx.legacy:legacy-support-core-utils:1.0.0] AndroidManifest.xml:17:1-22:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.legacy:legacy-support-core-utils:1.0.0] AndroidManifest.xml:20:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/e87f7ce5fef07865ad9a26fbe555c1d3/transformed/loader-1.0.0/AndroidManifest.xml
+Merging manifest with lower [androidx.loader:loader:1.0.0] AndroidManifest.xml:17:1-22:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.loader:loader:1.0.0] AndroidManifest.xml:20:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/05bb28fec7e2d4e35313445012bad0f0/transformed/lifecycle-livedata-core-ktx-2.7.0/AndroidManifest.xml
+Merging manifest with lower [androidx.lifecycle:lifecycle-livedata-core-ktx:2.7.0] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.lifecycle:lifecycle-livedata-core-ktx:2.7.0] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/cd8ab6cb5ee1bc2908959842e60d775b/transformed/lifecycle-livedata-2.7.0/AndroidManifest.xml
+Merging manifest with lower [androidx.lifecycle:lifecycle-livedata:2.7.0] AndroidManifest.xml:17:1-22:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.lifecycle:lifecycle-livedata:2.7.0] AndroidManifest.xml:20:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/1896f75438747f519cb65b4bd4d40fec/transformed/lifecycle-process-2.7.0/AndroidManifest.xml
+Merging manifest with lower [androidx.lifecycle:lifecycle-process:2.7.0] AndroidManifest.xml:17:1-35:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.lifecycle:lifecycle-process:2.7.0] AndroidManifest.xml:21:5-44
+application defined in both files...
+Merging application with lower [androidx.lifecycle:lifecycle-process:2.7.0] AndroidManifest.xml:23:5-33:19
+provider#androidx.startup.InitializationProvider defined in both files...
+Merging provider#androidx.startup.InitializationProvider with lower [androidx.lifecycle:lifecycle-process:2.7.0] AndroidManifest.xml:24:9-32:20
+Adopted [meta-data: null]
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/1956fe3c301fc0fc93c3fc69c87157ba/transformed/lifecycle-livedata-core-2.7.0/AndroidManifest.xml
+Merging manifest with lower [androidx.lifecycle:lifecycle-livedata-core:2.7.0] AndroidManifest.xml:17:1-22:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.lifecycle:lifecycle-livedata-core:2.7.0] AndroidManifest.xml:20:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/0524c4aa3e9a62920cd8b1b48adc1f74/transformed/lifecycle-viewmodel-savedstate-2.7.0/AndroidManifest.xml
+Merging manifest with lower [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.7.0] AndroidManifest.xml:17:1-22:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.7.0] AndroidManifest.xml:20:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/bed5bf4e09b0d4f1e6f5c62102f94f64/transformed/lifecycle-viewmodel-ktx-2.7.0/AndroidManifest.xml
+Merging manifest with lower [androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/78996b4e32e45000ce3523c6c5a14003/transformed/lifecycle-viewmodel-2.7.0/AndroidManifest.xml
+Merging manifest with lower [androidx.lifecycle:lifecycle-viewmodel:2.7.0] AndroidManifest.xml:17:1-22:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.lifecycle:lifecycle-viewmodel:2.7.0] AndroidManifest.xml:20:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/d587567499ccfed02153e3f330e7f026/transformed/coordinatorlayout-1.1.0/AndroidManifest.xml
+Merging manifest with lower [androidx.coordinatorlayout:coordinatorlayout:1.1.0] AndroidManifest.xml:17:1-24:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.coordinatorlayout:coordinatorlayout:1.1.0] AndroidManifest.xml:20:5-22:41
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/080304dbafd303da3736e922dab6bc34/transformed/drawerlayout-1.1.1/AndroidManifest.xml
+Merging manifest with lower [androidx.drawerlayout:drawerlayout:1.1.1] AndroidManifest.xml:17:1-24:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.drawerlayout:drawerlayout:1.1.1] AndroidManifest.xml:20:5-22:41
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/2eeaf4988e5ebd5cb267756c612e44f2/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml
+Merging manifest with lower [androidx.vectordrawable:vectordrawable-animated:1.1.0] AndroidManifest.xml:17:1-24:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.vectordrawable:vectordrawable-animated:1.1.0] AndroidManifest.xml:20:5-22:41
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/80216c661633c3c3c431397dac00319b/transformed/vectordrawable-1.1.0/AndroidManifest.xml
+Merging manifest with lower [androidx.vectordrawable:vectordrawable:1.1.0] AndroidManifest.xml:17:1-24:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.vectordrawable:vectordrawable:1.1.0] AndroidManifest.xml:20:5-22:41
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/e1aaeae05a5d1fe083f8367f36b481e2/transformed/recyclerview-1.1.0/AndroidManifest.xml
+Merging manifest with lower [androidx.recyclerview:recyclerview:1.1.0] AndroidManifest.xml:17:1-24:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.recyclerview:recyclerview:1.1.0] AndroidManifest.xml:20:5-22:41
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/90ae2c45d1ca50edd6055f56563ac665/transformed/viewpager-1.0.0/AndroidManifest.xml
+Merging manifest with lower [androidx.viewpager:viewpager:1.0.0] AndroidManifest.xml:17:1-22:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.viewpager:viewpager:1.0.0] AndroidManifest.xml:20:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/f5eeb838de8f286cb7c952a19efb8a11/transformed/customview-1.1.0/AndroidManifest.xml
+Merging manifest with lower [androidx.customview:customview:1.1.0] AndroidManifest.xml:17:1-24:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.customview:customview:1.1.0] AndroidManifest.xml:20:5-22:41
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/73e97ce534395fac5a94b5727f06264a/transformed/autofill-1.0.0/AndroidManifest.xml
+Merging manifest with lower [androidx.autofill:autofill:1.0.0] AndroidManifest.xml:17:1-24:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.autofill:autofill:1.0.0] AndroidManifest.xml:20:5-22:41
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/a6ecc4375938654ce54173fbca8e290b/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml
+Merging manifest with lower [androidx.customview:customview-poolingcontainer:1.0.0] AndroidManifest.xml:17:1-23:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.customview:customview-poolingcontainer:1.0.0] AndroidManifest.xml:20:5-21:38
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/bebe8dfaa26d0e56981c07d2e121c3a3/transformed/core-ktx-1.13.0/AndroidManifest.xml
+Merging manifest with lower [androidx.core:core-ktx:1.13.0] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.core:core-ktx:1.13.0] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/e5589b78cc5fd512c5578e4ee6421fc1/transformed/core-1.13.0/AndroidManifest.xml
+Merging manifest with lower [androidx.core:core:1.13.0] AndroidManifest.xml:17:1-30:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.core:core:1.13.0] AndroidManifest.xml:20:5-44
+Adopted [permission: null]
+Adopted [uses-permission: null]
+application defined in both files...
+Merging application with lower [androidx.core:core:1.13.0] AndroidManifest.xml:28:5-89
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/8c53219dbd4aebc46df8996ca370861a/transformed/lifecycle-runtime-2.7.0/AndroidManifest.xml
+Merging manifest with lower [androidx.lifecycle:lifecycle-runtime:2.7.0] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.lifecycle:lifecycle-runtime:2.7.0] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/972d870b324e90209f1de17bc8f422af/transformed/lifecycle-runtime-compose-2.7.0/AndroidManifest.xml
+Merging manifest with lower [androidx.lifecycle:lifecycle-runtime-compose:2.7.0] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.lifecycle:lifecycle-runtime-compose:2.7.0] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/173aec7174bd6b826a5a09a157714392/transformed/lifecycle-viewmodel-compose-2.7.0/AndroidManifest.xml
+Merging manifest with lower [androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/72cf115a93801c64bdcbc930b310b8a4/transformed/lifecycle-runtime-ktx-2.7.0/AndroidManifest.xml
+Merging manifest with lower [androidx.lifecycle:lifecycle-runtime-ktx:2.7.0] AndroidManifest.xml:17:1-22:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.lifecycle:lifecycle-runtime-ktx:2.7.0] AndroidManifest.xml:20:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/5cc6b50ef537f5033e291ba348363b9a/transformed/runtime-saveable-release/AndroidManifest.xml
+Merging manifest with lower [androidx.compose.runtime:runtime-saveable-android:1.6.1] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.compose.runtime:runtime-saveable-android:1.6.1] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/46445abc446d934ebd9008da3ba3a0e3/transformed/runtime-release/AndroidManifest.xml
+Merging manifest with lower [androidx.compose.runtime:runtime-android:1.6.1] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.compose.runtime:runtime-android:1.6.1] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/43b74b7c2bf57cac3540172d0092b1a4/transformed/annotation-experimental-1.4.0/AndroidManifest.xml
+Merging manifest with lower [androidx.annotation:annotation-experimental:1.4.0] AndroidManifest.xml:2:1-7:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.annotation:annotation-experimental:1.4.0] AndroidManifest.xml:5:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/90016b2a49a300eb2a99d6560f842e06/transformed/versionedparcelable-1.1.1/AndroidManifest.xml
+Merging manifest with lower [androidx.versionedparcelable:versionedparcelable:1.1.1] AndroidManifest.xml:17:1-27:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.versionedparcelable:versionedparcelable:1.1.1] AndroidManifest.xml:20:5-22:41
+application defined in both files...
+Merging application with lower [androidx.versionedparcelable:versionedparcelable:1.1.1] AndroidManifest.xml:24:5-25:19
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/13ac00c9b5651b0f6f805bb8399d69e9/transformed/cardview-1.0.0/AndroidManifest.xml
+Merging manifest with lower [androidx.cardview:cardview:1.0.0] AndroidManifest.xml:17:1-22:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.cardview:cardview:1.0.0] AndroidManifest.xml:20:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/4446bbaee6073230b4ffcb1978c9c7aa/transformed/cursoradapter-1.0.0/AndroidManifest.xml
+Merging manifest with lower [androidx.cursoradapter:cursoradapter:1.0.0] AndroidManifest.xml:17:1-22:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.cursoradapter:cursoradapter:1.0.0] AndroidManifest.xml:20:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/4e9fea0f4f93be07e1f72daf3c74ccf1/transformed/core-runtime-2.2.0/AndroidManifest.xml
+Merging manifest with lower [androidx.arch.core:core-runtime:2.2.0] AndroidManifest.xml:17:1-22:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.arch.core:core-runtime:2.2.0] AndroidManifest.xml:20:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/d8bf5c0e00ccc2b51f00b40aa1ca3706/transformed/profileinstaller-1.3.1/AndroidManifest.xml
+Merging manifest with lower [androidx.profileinstaller:profileinstaller:1.3.1] AndroidManifest.xml:17:1-55:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.profileinstaller:profileinstaller:1.3.1] AndroidManifest.xml:21:5-44
+application defined in both files...
+Merging application with lower [androidx.profileinstaller:profileinstaller:1.3.1] AndroidManifest.xml:23:5-53:19
+provider#androidx.startup.InitializationProvider defined in both files...
+Merging provider#androidx.startup.InitializationProvider with lower [androidx.profileinstaller:profileinstaller:1.3.1] AndroidManifest.xml:24:9-32:20
+Adopted [meta-data: null]
+Adopted [receiver: null]
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/1453bd861d608fabde3a097f1e0c14ed/transformed/startup-runtime-1.1.1/AndroidManifest.xml
+Merging manifest with lower [androidx.startup:startup-runtime:1.1.1] AndroidManifest.xml:17:1-33:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.startup:startup-runtime:1.1.1] AndroidManifest.xml:21:5-23:41
+application defined in both files...
+Merging application with lower [androidx.startup:startup-runtime:1.1.1] AndroidManifest.xml:25:5-31:19
+provider#androidx.startup.InitializationProvider defined in both files...
+Merging provider#androidx.startup.InitializationProvider with lower [androidx.startup:startup-runtime:1.1.1] AndroidManifest.xml:26:9-30:34
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/9077360fbce646d037cd05ca52678dac/transformed/tracing-1.0.0/AndroidManifest.xml
+Merging manifest with lower [androidx.tracing:tracing:1.0.0] AndroidManifest.xml:17:1-24:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.tracing:tracing:1.0.0] AndroidManifest.xml:20:5-22:41
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/8afe7ef760e6342b865957a3230f3c99/transformed/documentfile-1.0.0/AndroidManifest.xml
+Merging manifest with lower [androidx.documentfile:documentfile:1.0.0] AndroidManifest.xml:17:1-22:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.documentfile:documentfile:1.0.0] AndroidManifest.xml:20:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/af48e8a2833c07c98289674d550659a4/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml
+Merging manifest with lower [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] AndroidManifest.xml:17:1-22:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] AndroidManifest.xml:20:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/a9374fb4e06a59bf7352725c877106cf/transformed/print-1.0.0/AndroidManifest.xml
+Merging manifest with lower [androidx.print:print:1.0.0] AndroidManifest.xml:17:1-22:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.print:print:1.0.0] AndroidManifest.xml:20:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/eb2276e3017291534bd18d3b1efc7ee1/transformed/interpolator-1.0.0/AndroidManifest.xml
+Merging manifest with lower [androidx.interpolator:interpolator:1.0.0] AndroidManifest.xml:17:1-22:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.interpolator:interpolator:1.0.0] AndroidManifest.xml:20:5-44
+Merging library manifest /Users/apple/.gradle/caches/9.2.1/transforms/9e0d2451371d5a7242ee2f2bb3d33b7c/transformed/exifinterface-1.3.7/AndroidManifest.xml
+Merging manifest with lower [androidx.exifinterface:exifinterface:1.3.7] AndroidManifest.xml:17:1-24:12
+uses-sdk defined in both files...
+Merging uses-sdk with lower [androidx.exifinterface:exifinterface:1.3.7] AndroidManifest.xml:20:5-22:41
+Merging result: SUCCESS
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.frameeditor"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="24"
+9        android:targetSdkVersion="34" />
+10
+11    <uses-permission
+11-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:5:5-6:37
+12        android:name="android.permission.READ_EXTERNAL_STORAGE"
+12-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:5:22-77
+13        android:maxSdkVersion="32" />
+13-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:6:9-35
+14    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+14-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:7:5-75
+14-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:7:22-73
+15    <uses-permission
+15-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:8:5-9:37
+16        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+16-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:8:22-78
+17        android:maxSdkVersion="28" />
+17-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:9:9-35
+18
+19    <permission
+19-->[androidx.core:core:1.13.0] /Users/apple/.gradle/caches/9.2.1/transforms/e5589b78cc5fd512c5578e4ee6421fc1/transformed/core-1.13.0/AndroidManifest.xml:22:5-24:47
+20        android:name="com.frameeditor.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+20-->[androidx.core:core:1.13.0] /Users/apple/.gradle/caches/9.2.1/transforms/e5589b78cc5fd512c5578e4ee6421fc1/transformed/core-1.13.0/AndroidManifest.xml:23:9-81
+21        android:protectionLevel="signature" />
+21-->[androidx.core:core:1.13.0] /Users/apple/.gradle/caches/9.2.1/transforms/e5589b78cc5fd512c5578e4ee6421fc1/transformed/core-1.13.0/AndroidManifest.xml:24:9-44
+22
+23    <uses-permission android:name="com.frameeditor.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+23-->[androidx.core:core:1.13.0] /Users/apple/.gradle/caches/9.2.1/transforms/e5589b78cc5fd512c5578e4ee6421fc1/transformed/core-1.13.0/AndroidManifest.xml:26:5-97
+23-->[androidx.core:core:1.13.0] /Users/apple/.gradle/caches/9.2.1/transforms/e5589b78cc5fd512c5578e4ee6421fc1/transformed/core-1.13.0/AndroidManifest.xml:26:22-94
+24
+25    <application
+25-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:11:5-46:19
+26        android:allowBackup="true"
+26-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:12:9-35
+27        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+27-->[androidx.core:core:1.13.0] /Users/apple/.gradle/caches/9.2.1/transforms/e5589b78cc5fd512c5578e4ee6421fc1/transformed/core-1.13.0/AndroidManifest.xml:28:18-86
+28        android:debuggable="true"
+29        android:extractNativeLibs="false"
+30        android:icon="@mipmap/ic_launcher"
+30-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:13:9-43
+31        android:label="@string/app_name"
+31-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:14:9-41
+32        android:roundIcon="@mipmap/ic_launcher_round"
+32-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:15:9-54
+33        android:supportsRtl="true"
+33-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:16:9-35
+34        android:theme="@style/Theme.FrameEditor" >
+34-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:17:9-49
+35        <activity
+35-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:19:9-27:20
+36            android:name="com.example.android_export_kit_demo.ui.home.MainActivity"
+36-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:20:13-84
+37            android:exported="true"
+37-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:21:13-36
+38            android:windowSoftInputMode="adjustResize" >
+38-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:22:13-55
+39            <intent-filter>
+39-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:23:13-26:29
+40                <action android:name="android.intent.action.MAIN" />
+40-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:24:17-68
+40-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:24:25-66
+41
+42                <category android:name="android.intent.category.LAUNCHER" />
+42-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:25:17-76
+42-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:25:27-74
+43            </intent-filter>
+44        </activity>
+45        <activity
+45-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:29:9-33:57
+46            android:name="com.example.android_export_kit_demo.ui.editor.FrameEditorActivity"
+46-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:30:13-93
+47            android:exported="false"
+47-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:31:13-37
+48            android:theme="@style/Theme.FrameEditor.Editor"
+48-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:32:13-60
+49            android:windowSoftInputMode="adjustResize" />
+49-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:33:13-55
+50
+51        <!-- FileProvider for sharing exported images -->
+52        <provider
+53            android:name="androidx.core.content.FileProvider"
+53-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:37:13-62
+54            android:authorities="com.frameeditor.provider"
+54-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:38:13-60
+55            android:exported="false"
+55-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:39:13-37
+56            android:grantUriPermissions="true" >
+56-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:40:13-47
+57            <meta-data
+57-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:41:13-43:53
+58                android:name="android.support.FILE_PROVIDER_PATHS"
+58-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:42:17-67
+59                android:resource="@xml/file_paths" />
+59-->/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/AndroidManifest.xml:43:17-51
+60        </provider>
+61
+62        <activity
+62-->[androidx.compose.ui:ui-tooling-android:1.6.1] /Users/apple/.gradle/caches/9.2.1/transforms/6857a4db71d78af64402bea6c1ef479f/transformed/ui-tooling-release/AndroidManifest.xml:23:9-25:39
+63            android:name="androidx.compose.ui.tooling.PreviewActivity"
+63-->[androidx.compose.ui:ui-tooling-android:1.6.1] /Users/apple/.gradle/caches/9.2.1/transforms/6857a4db71d78af64402bea6c1ef479f/transformed/ui-tooling-release/AndroidManifest.xml:24:13-71
+64            android:exported="true" />
+64-->[androidx.compose.ui:ui-tooling-android:1.6.1] /Users/apple/.gradle/caches/9.2.1/transforms/6857a4db71d78af64402bea6c1ef479f/transformed/ui-tooling-release/AndroidManifest.xml:25:13-36
+65        <activity
+65-->[androidx.compose.ui:ui-test-manifest:1.6.1] /Users/apple/.gradle/caches/9.2.1/transforms/ede982586b1d68547af06b4c39d1e5e2/transformed/ui-test-manifest-1.6.1/AndroidManifest.xml:23:9-25:39
+66            android:name="androidx.activity.ComponentActivity"
+66-->[androidx.compose.ui:ui-test-manifest:1.6.1] /Users/apple/.gradle/caches/9.2.1/transforms/ede982586b1d68547af06b4c39d1e5e2/transformed/ui-test-manifest-1.6.1/AndroidManifest.xml:24:13-63
+67            android:exported="true" />
+67-->[androidx.compose.ui:ui-test-manifest:1.6.1] /Users/apple/.gradle/caches/9.2.1/transforms/ede982586b1d68547af06b4c39d1e5e2/transformed/ui-test-manifest-1.6.1/AndroidManifest.xml:25:13-36
+68
+69        <provider
+69-->[androidx.emoji2:emoji2:1.3.0] /Users/apple/.gradle/caches/9.2.1/transforms/5d9d0350f73f817296b62959516d6f31/transformed/emoji2-1.3.0/AndroidManifest.xml:24:9-32:20
+70            android:name="androidx.startup.InitializationProvider"
+70-->[androidx.emoji2:emoji2:1.3.0] /Users/apple/.gradle/caches/9.2.1/transforms/5d9d0350f73f817296b62959516d6f31/transformed/emoji2-1.3.0/AndroidManifest.xml:25:13-67
+71            android:authorities="com.frameeditor.androidx-startup"
+71-->[androidx.emoji2:emoji2:1.3.0] /Users/apple/.gradle/caches/9.2.1/transforms/5d9d0350f73f817296b62959516d6f31/transformed/emoji2-1.3.0/AndroidManifest.xml:26:13-68
+72            android:exported="false" >
+72-->[androidx.emoji2:emoji2:1.3.0] /Users/apple/.gradle/caches/9.2.1/transforms/5d9d0350f73f817296b62959516d6f31/transformed/emoji2-1.3.0/AndroidManifest.xml:27:13-37
+73            <meta-data
+73-->[androidx.emoji2:emoji2:1.3.0] /Users/apple/.gradle/caches/9.2.1/transforms/5d9d0350f73f817296b62959516d6f31/transformed/emoji2-1.3.0/AndroidManifest.xml:29:13-31:52
+74                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+74-->[androidx.emoji2:emoji2:1.3.0] /Users/apple/.gradle/caches/9.2.1/transforms/5d9d0350f73f817296b62959516d6f31/transformed/emoji2-1.3.0/AndroidManifest.xml:30:17-75
+75                android:value="androidx.startup" />
+75-->[androidx.emoji2:emoji2:1.3.0] /Users/apple/.gradle/caches/9.2.1/transforms/5d9d0350f73f817296b62959516d6f31/transformed/emoji2-1.3.0/AndroidManifest.xml:31:17-49
+76            <meta-data
+76-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/apple/.gradle/caches/9.2.1/transforms/1896f75438747f519cb65b4bd4d40fec/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:29:13-31:52
+77                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+77-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/apple/.gradle/caches/9.2.1/transforms/1896f75438747f519cb65b4bd4d40fec/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:30:17-78
+78                android:value="androidx.startup" />
+78-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/apple/.gradle/caches/9.2.1/transforms/1896f75438747f519cb65b4bd4d40fec/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:31:17-49
+79            <meta-data
+79-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/apple/.gradle/caches/9.2.1/transforms/d8bf5c0e00ccc2b51f00b40aa1ca3706/transformed/profileinstaller-1.3.1/AndroidManifest.xml:29:13-31:52
+80                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+80-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/apple/.gradle/caches/9.2.1/transforms/d8bf5c0e00ccc2b51f00b40aa1ca3706/transformed/profileinstaller-1.3.1/AndroidManifest.xml:30:17-85
+81                android:value="androidx.startup" />
+81-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/apple/.gradle/caches/9.2.1/transforms/d8bf5c0e00ccc2b51f00b40aa1ca3706/transformed/profileinstaller-1.3.1/AndroidManifest.xml:31:17-49
+82        </provider>
+83
+84        <receiver
+84-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/apple/.gradle/caches/9.2.1/transforms/d8bf5c0e00ccc2b51f00b40aa1ca3706/transformed/profileinstaller-1.3.1/AndroidManifest.xml:34:9-52:20
+85            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+85-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/apple/.gradle/caches/9.2.1/transforms/d8bf5c0e00ccc2b51f00b40aa1ca3706/transformed/profileinstaller-1.3.1/AndroidManifest.xml:35:13-76
+86            android:directBootAware="false"
+86-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/apple/.gradle/caches/9.2.1/transforms/d8bf5c0e00ccc2b51f00b40aa1ca3706/transformed/profileinstaller-1.3.1/AndroidManifest.xml:36:13-44
+87            android:enabled="true"
+87-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/apple/.gradle/caches/9.2.1/transforms/d8bf5c0e00ccc2b51f00b40aa1ca3706/transformed/profileinstaller-1.3.1/AndroidManifest.xml:37:13-35
+88            android:exported="true"
+88-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/apple/.gradle/caches/9.2.1/transforms/d8bf5c0e00ccc2b51f00b40aa1ca3706/transformed/profileinstaller-1.3.1/AndroidManifest.xml:38:13-36
+89            android:permission="android.permission.DUMP" >
+89-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/apple/.gradle/caches/9.2.1/transforms/d8bf5c0e00ccc2b51f00b40aa1ca3706/transformed/profileinstaller-1.3.1/AndroidManifest.xml:39:13-57
+90            <intent-filter>
+90-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/apple/.gradle/caches/9.2.1/transforms/d8bf5c0e00ccc2b51f00b40aa1ca3706/transformed/profileinstaller-1.3.1/AndroidManifest.xml:40:13-42:29
+91                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+91-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/apple/.gradle/caches/9.2.1/transforms/d8bf5c0e00ccc2b51f00b40aa1ca3706/transformed/profileinstaller-1.3.1/AndroidManifest.xml:41:17-91
+91-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/apple/.gradle/caches/9.2.1/transforms/d8bf5c0e00ccc2b51f00b40aa1ca3706/transformed/profileinstaller-1.3.1/AndroidManifest.xml:41:25-88
+92            </intent-filter>
+93            <intent-filter>
+93-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/apple/.gradle/caches/9.2.1/transforms/d8bf5c0e00ccc2b51f00b40aa1ca3706/transformed/profileinstaller-1.3.1/AndroidManifest.xml:43:13-45:29
+94                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+94-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/apple/.gradle/caches/9.2.1/transforms/d8bf5c0e00ccc2b51f00b40aa1ca3706/transformed/profileinstaller-1.3.1/AndroidManifest.xml:44:17-85
+94-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/apple/.gradle/caches/9.2.1/transforms/d8bf5c0e00ccc2b51f00b40aa1ca3706/transformed/profileinstaller-1.3.1/AndroidManifest.xml:44:25-82
+95            </intent-filter>
+96            <intent-filter>
+96-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/apple/.gradle/caches/9.2.1/transforms/d8bf5c0e00ccc2b51f00b40aa1ca3706/transformed/profileinstaller-1.3.1/AndroidManifest.xml:46:13-48:29
+97                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+97-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/apple/.gradle/caches/9.2.1/transforms/d8bf5c0e00ccc2b51f00b40aa1ca3706/transformed/profileinstaller-1.3.1/AndroidManifest.xml:47:17-88
+97-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/apple/.gradle/caches/9.2.1/transforms/d8bf5c0e00ccc2b51f00b40aa1ca3706/transformed/profileinstaller-1.3.1/AndroidManifest.xml:47:25-85
+98            </intent-filter>
+99            <intent-filter>
+99-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/apple/.gradle/caches/9.2.1/transforms/d8bf5c0e00ccc2b51f00b40aa1ca3706/transformed/profileinstaller-1.3.1/AndroidManifest.xml:49:13-51:29
+100                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+100-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/apple/.gradle/caches/9.2.1/transforms/d8bf5c0e00ccc2b51f00b40aa1ca3706/transformed/profileinstaller-1.3.1/AndroidManifest.xml:50:17-95
+100-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/apple/.gradle/caches/9.2.1/transforms/d8bf5c0e00ccc2b51f00b40aa1ca3706/transformed/profileinstaller-1.3.1/AndroidManifest.xml:50:25-92
+101            </intent-filter>
+102        </receiver>
+103    </application>
+104
+105</manifest>
+
+Merged manifest saved to /Volumes/Work/Shubh/android_export_kit_demo/app/build/intermediates/merged_manifest/debug/processDebugMainManifest/AndroidManifest.xml
+Resolve mutations for :app:processDebugManifest (Thread[Execution worker,5,main]) started.
+:app:processDebugManifest (Thread[Execution worker,5,main]) started.
+
+> Task :app:processDebugManifest
+Caching disabled for task ':app:processDebugManifest' because:
+  Build cache is disabled
+Task ':app:processDebugManifest' is not up-to-date because:
+  Input property 'mainMergedManifest' file /Volumes/Work/Shubh/android_export_kit_demo/app/build/intermediates/merged_manifest/debug/processDebugMainManifest/AndroidManifest.xml has changed.
+Resolve mutations for :app:processDebugManifestForPackage (Thread[Execution worker,5,main]) started.
+:app:processDebugManifestForPackage (Thread[Execution worker,5,main]) started.
+
+> Task :app:processDebugManifestForPackage
+Custom actions are attached to task ':app:processDebugManifestForPackage'.
+Caching disabled for task ':app:processDebugManifestForPackage' because:
+  Build cache is disabled
+Task ':app:processDebugManifestForPackage' is not up-to-date because:
+  Input property 'mergedManifests' file /Volumes/Work/Shubh/android_export_kit_demo/app/build/intermediates/merged_manifests/debug/processDebugManifest/AndroidManifest.xml has changed.
+Resolve mutations for :app:processDebugResources (Thread[Execution worker,5,main]) started.
+:app:processDebugResources (Thread[Execution worker,5,main]) started.
+
+> Task :app:processDebugResources
+Caching disabled for task ':app:processDebugResources' because:
+  Build cache is disabled
+Task ':app:processDebugResources' is not up-to-date because:
+  Value of input property 'useStableIds' has changed for task ':app:processDebugResources'
+The input changes require a full rebuild for incremental task ':app:processDebugResources'.
+AAPT2 aapt2-8.3.0-10880808-osx Daemon #0: starting
+Aapt output file /Volumes/Work/Shubh/android_export_kit_demo/app/build/intermediates/processed_res/debug/processDebugResources/out/resources-debug.ap_
+Resolve mutations for :app:compileDebugKotlin (Thread[Execution worker,5,main]) started.
+:app:compileDebugKotlin (Thread[Execution worker,5,main]) started.
+
+> Task :app:compileDebugKotlin FAILED
+Caching disabled for task ':app:compileDebugKotlin' because:
+  Build cache is disabled
+Task ':app:compileDebugKotlin' is not up-to-date because:
+  Input property 'sources' file /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/model/FrameModel.kt has changed.
+  Input property 'sources' file /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/editor/FrameEditorScreen.kt has changed.
+  Input property 'sources' file /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/view/FrameCanvasView.kt has changed.
+  and more...
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/java', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/java', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/java', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/java', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/java', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/java', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/java', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/java', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/java', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/java', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/java', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/kotlin', not found
+file or directory '/Volumes/Work/Shubh/android_export_kit_demo/app/src/debug/java', not found
+Kotlin source files: /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/viewmodel/FrameViewModel.kt, /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/home/MainActivity.kt, /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/home/SelectPhotoScreen.kt, /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/home/HomeScreen.kt, /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/editor/FrameEditorScreen.kt, /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/repository/FrameRepository.kt, /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/AppTheme.kt, /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/model/FrameModel.kt, /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/view/StickerView.kt, /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/view/FrameCanvasView.kt, /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/service/FrameService.kt
+Java source files: 
+Script source files: 
+Script file extensions: 
+Using Kotlin/JVM incremental compilation
+[KOTLIN] Kotlin compilation 'jdkHome' argument: null
+Options for KOTLIN DAEMON: IncrementalCompilationOptions(super=CompilationOptions(compilerMode=INCREMENTAL_COMPILER, targetPlatform=JVM, reportCategories=[0, 3], reportSeverity=2, requestedCompilationResults=[0], kotlinScriptExtensions=[]), areFileChangesKnown=true, modifiedFiles=[/Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/model/FrameModel.kt, /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/editor/FrameEditorScreen.kt, /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/view/FrameCanvasView.kt, /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/view/StickerView.kt, /Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/viewmodel/FrameViewModel.kt], deletedFiles=[], classpathChanges=NoChanges, workingDir=/Volumes/Work/Shubh/android_export_kit_demo/app/build/kotlin/compileDebugKotlin/cacheable, multiModuleICSettings=MultiModuleICSettings(buildHistoryFile=/Volumes/Work/Shubh/android_export_kit_demo/app/build/kotlin/compileDebugKotlin/local-state/build-history.bin, useModuleDetection=true), usePreciseJavaTracking=true, icFeatures=IncrementalCompilationFeatures(withAbiSnapshot=false, preciseCompilationResultsBackup=true, keepIncrementalCompilationCachesInMemory=true, enableUnsafeIncrementalCompilationForMultiplatform=false), outputFiles=[/Volumes/Work/Shubh/android_export_kit_demo/app/build/tmp/kotlin-classes/debug, /Volumes/Work/Shubh/android_export_kit_demo/app/build/kotlin/compileDebugKotlin/cacheable, /Volumes/Work/Shubh/android_export_kit_demo/app/build/kotlin/compileDebugKotlin/local-state])
+e: file:///Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/view/FrameCanvasView.kt:233:59 No value passed for parameter 'p5'.
+e: file:///Volumes/Work/Shubh/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/view/FrameCanvasView.kt:233:59 No value passed for parameter 'p6'.
+Finished executing kotlin compiler using DAEMON strategy
+Restoring task outputs to pre-compilation state
+AAPT2 aapt2-8.3.0-10880808-osx Daemon #0: shutdown
+
+[Incubating] Problems report is available at: file:///Volumes/Work/Shubh/android_export_kit_demo/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileDebugKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --debug option to get more log output.
+> Run with --scan to generate a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.2.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 3s
+14 actionable tasks: 5 executed, 9 up-to-date
+Watched directory hierarchies: [/Volumes/Work/Shubh/android_export_kit_demo]
