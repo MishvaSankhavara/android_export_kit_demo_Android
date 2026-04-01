@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import android.graphics.ColorMatrix as AndroidColorMatrix
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -426,7 +427,7 @@ private fun ImageLayerContent(layer: FrameLayer, w: Float, h: Float, scale: Floa
                     .build(),
                 contentDescription = layer.name,
                 contentScale = imgContentScale,
-                colorFilter = if (layer.filter != "none") filterToColorFilter(layer.filter) else null,
+                colorFilter = getCombinedColorFilter(layer),
                 modifier = Modifier
                     .size(imgW.dp, imgH.dp)
                     .graphicsLayer {
@@ -691,33 +692,157 @@ private fun DrawScope.drawRainbowStroke(stroke: DrawingStroke, canvasScale: Floa
 // Color filter helper (maps Flutter filter names to Compose ColorFilter)
 // ─────────────────────────────────────────────────────────────────────────────
 
-fun filterToColorFilter(filter: String): ColorFilter? = when (filter) {
-    "grayscale" -> ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(0f) })
-    "sepia" -> ColorFilter.colorMatrix(ColorMatrix(floatArrayOf(
-        0.393f, 0.769f, 0.189f, 0f, 0f,
-        0.349f, 0.686f, 0.168f, 0f, 0f,
-        0.272f, 0.534f, 0.131f, 0f, 0f,
-        0f,     0f,     0f,     1f, 0f
-    )))
-    "invert" -> ColorFilter.colorMatrix(ColorMatrix(floatArrayOf(
-        -1f, 0f, 0f, 0f, 255f,
-         0f,-1f, 0f, 0f, 255f,
-         0f, 0f,-1f, 0f, 255f,
-         0f, 0f, 0f, 1f,   0f
-    )))
-    "warm" -> ColorFilter.colorMatrix(ColorMatrix(floatArrayOf(
-        1.2f, 0f, 0f, 0f, 0f,
-         0f,  1f, 0f, 0f, 0f,
-         0f,  0f, 0.8f, 0f, 0f,
-         0f,  0f, 0f, 1f, 0f
-    )))
-    "cool" -> ColorFilter.colorMatrix(ColorMatrix(floatArrayOf(
-        0.8f, 0f, 0f, 0f, 0f,
-        0f,   1f, 0f, 0f, 0f,
-        0f,   0f, 1.2f, 0f, 0f,
-        0f,   0f, 0f,   1f, 0f
-    )))
-    else -> null
+fun getCombinedColorFilter(layer: FrameLayer): ColorFilter? {
+    val matrix = AndroidColorMatrix()
+    
+    // 1. Preset Filter
+    when (layer.filter) {
+        "grayscale" -> {
+            val m = AndroidColorMatrix()
+            m.setSaturation(0f)
+            matrix.postConcat(m)
+        }
+        "sepia" -> {
+            val m = AndroidColorMatrix(floatArrayOf(
+                0.393f, 0.769f, 0.189f, 0f, 0f,
+                0.349f, 0.686f, 0.168f, 0f, 0f,
+                0.272f, 0.534f, 0.131f, 0f, 0f,
+                0f,     0f,     0f,     1f, 0f
+            ))
+            matrix.postConcat(m)
+        }
+        "invert" -> {
+            val m = AndroidColorMatrix(floatArrayOf(
+                -1f, 0f, 0f, 0f, 255f,
+                 0f,-1f, 0f, 0f, 255f,
+                 0f, 0f,-1f, 0f, 255f,
+                 0f, 0f, 0f, 1f,   0f
+            ))
+            matrix.postConcat(m)
+        }
+        "warm" -> {
+            val m = AndroidColorMatrix(floatArrayOf(
+                1.2f, 0f, 0f, 0f, 0f,
+                 0f,  1f, 0f, 0f, 0f,
+                 0f,  0f, 0.8f, 0f, 0f,
+                 0f,  0f, 0f, 1f, 0f
+            ))
+            matrix.postConcat(m)
+        }
+        "cool" -> {
+            val m = AndroidColorMatrix(floatArrayOf(
+                0.8f, 0f, 0f, 0f, 0f,
+                0f,   1f, 0f, 0f, 0f,
+                0f,   0f, 1.2f, 0f, 0f,
+                0f,   0f, 0f,   1f, 0f
+            ))
+            matrix.postConcat(m)
+        }
+        "bright" -> {
+            val b = 0.15f * 255f
+            val m = AndroidColorMatrix(floatArrayOf(
+                1f, 0f, 0f, 0f, b,
+                0f, 1f, 0f, 0f, b,
+                0f, 0f, 1f, 0f, b,
+                0f, 0f, 0f, 1f, 0f
+            ))
+            matrix.postConcat(m)
+        }
+        "story" -> {
+            val m = AndroidColorMatrix()
+            m.setSaturation(0.8f)
+            matrix.postConcat(m)
+            val contrast = 1.15f
+            val t = (1.0f - contrast) / 2.0f * 255.0f
+            val mc = AndroidColorMatrix(floatArrayOf(
+                contrast, 0f, 0f, 0f, t,
+                0f, contrast, 0f, 0f, t,
+                0f, 0f, contrast, 0f, t,
+                0f, 0f, 0f, 1f, 0f
+            ))
+            matrix.postConcat(mc)
+        }
+    }
+
+    // 2. Brightness
+    if (layer.brightness != 0f) {
+        val b = layer.brightness * 255f
+        val m = AndroidColorMatrix(floatArrayOf(
+            1f, 0f, 0f, 0f, b,
+            0f, 1f, 0f, 0f, b,
+            0f, 0f, 1f, 0f, b,
+            0f, 0f, 0f, 1f, 0f
+        ))
+        matrix.postConcat(m)
+    }
+
+    // 3. Contrast
+    if (layer.contrast != 1f) {
+        val c = layer.contrast
+        val t = (1.0f - c) / 2.0f * 255.0f
+        val m = AndroidColorMatrix(floatArrayOf(
+            c,  0f, 0f, 0f, t,
+            0f, c,  0f, 0f, t,
+            0f, 0f, c,  0f, t,
+            0f, 0f, 0f, 1f, 0f
+        ))
+        matrix.postConcat(m)
+    }
+
+    // 4. Saturation
+    if (layer.saturation != 1f) {
+        val m = AndroidColorMatrix()
+        m.setSaturation(layer.saturation)
+        matrix.postConcat(m)
+    }
+
+    // 5. Warmth (Temperature)
+    if (layer.warmth != 0f) {
+        val w = layer.warmth * 0.15f
+        val m = AndroidColorMatrix(floatArrayOf(
+            1f + w, 0f,     0f, 0f, 0f,
+            0f,     1f,     0f, 0f, 0f,
+            0f,     0f,     1f - w, 0f, 0f,
+            0f,     0f,     0f, 1f, 0f
+        ))
+        matrix.postConcat(m)
+    }
+
+    // 5. Fade (lifts shadows)
+    if (layer.fade > 0f) {
+        val f = layer.fade
+        val fadeMatrix = AndroidColorMatrix(floatArrayOf(
+            1f - f, 0f, 0f, 0f, f * 255f,
+            0f, 1f - f, 0f, 0f, f * 255f,
+            0f, 0f, 1f - f, 0f, f * 255f,
+            0f, 0f, 0f, 1f, 0f
+        ))
+        matrix.postConcat(fadeMatrix)
+    }
+
+    // 6. Highlights (gain)
+    if (layer.highlights != 1f) {
+        val h = layer.highlights
+        val highlightsMatrix = AndroidColorMatrix(floatArrayOf(
+            h, 0f, 0f, 0f, 0f,
+            0f, h, 0f, 0f, 0f,
+            0f, 0f, h, 0f, 0f,
+            0f, 0f, 0f, 1f, 0f
+        ))
+        matrix.postConcat(highlightsMatrix)
+    }
+
+    // 7. Shadows (offset)
+    if (layer.shadows != 1f) {
+        val s = (layer.shadows - 1f) * 255f
+        val shadowsMatrix = AndroidColorMatrix(floatArrayOf(
+            1f, 0f, 0f, 0f, s,
+            0f, 1f, 0f, 0f, s,
+            0f, 0f, 1f, 0f, s,
+            0f, 0f, 0f, 1f, 0f
+        ))
+        matrix.postConcat(shadowsMatrix)
+    }
+
+    return ColorFilter.colorMatrix(ColorMatrix(matrix.array))
 }
-
-

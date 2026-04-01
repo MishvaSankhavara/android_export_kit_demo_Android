@@ -493,12 +493,142 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
         layer.filter = filter; notifyLayersChanged()
     }
 
+    fun updateLayerBrightness(layer: FrameLayer, value: Float, skipUndo: Boolean = false) {
+        if (!skipUndo) pushUndo()
+        layer.brightness = value; notifyLayersChanged()
+    }
+
+    fun updateLayerContrast(layer: FrameLayer, value: Float, skipUndo: Boolean = false) {
+        if (!skipUndo) pushUndo()
+        layer.contrast = value; notifyLayersChanged()
+    }
+
+    fun updateLayerSaturation(layer: FrameLayer, value: Float, skipUndo: Boolean = false) {
+        if (!skipUndo) pushUndo()
+        layer.saturation = value; notifyLayersChanged()
+    }
+
+    fun updateLayerWarmth(layer: FrameLayer, value: Float, skipUndo: Boolean = false) {
+        if (!skipUndo) pushUndo()
+        layer.warmth = value; notifyLayersChanged()
+    }
+
+    fun updateLayerFade(layer: FrameLayer, value: Float, skipUndo: Boolean = false) {
+        if (!skipUndo) pushUndo()
+        layer.fade = value; notifyLayersChanged()
+    }
+
+    fun updateLayerHighlights(layer: FrameLayer, value: Float, skipUndo: Boolean = false) {
+        if (!skipUndo) pushUndo()
+        layer.highlights = value; notifyLayersChanged()
+    }
+
+    fun updateLayerShadows(layer: FrameLayer, value: Float, skipUndo: Boolean = false) {
+        if (!skipUndo) pushUndo()
+        layer.shadows = value; notifyLayersChanged()
+    }
+
     fun applyGlobalFilter(filter: String) {
         val frame = _uiState.value.selectedFrame ?: return
         pushUndo()
         frame.layers.forEach { layer ->
-            if (layer.type == LayerType.IMAGE && layer.isPhotoSlot && layer.customImage != null) {
+            if (layer.type == LayerType.IMAGE && layer.isPhotoSlot && !layer.isBackground && layer.customImage != null) {
                 layer.filter = filter
+            }
+        }
+        notifyLayersChanged()
+    }
+
+    fun applyGlobalBrightness(value: Float) {
+        val frame = _uiState.value.selectedFrame ?: return
+        pushUndo()
+        frame.layers.forEach { layer ->
+            if (layer.type == LayerType.IMAGE && layer.isPhotoSlot && !layer.isBackground && layer.customImage != null) {
+                layer.brightness = value
+            }
+        }
+        notifyLayersChanged()
+    }
+
+    fun applyGlobalContrast(value: Float) {
+        val frame = _uiState.value.selectedFrame ?: return
+        pushUndo()
+        frame.layers.forEach { layer ->
+            if (layer.type == LayerType.IMAGE && layer.isPhotoSlot && !layer.isBackground && layer.customImage != null) {
+                layer.contrast = value
+            }
+        }
+        notifyLayersChanged()
+    }
+
+    fun applyGlobalSaturation(value: Float) {
+        val frame = _uiState.value.selectedFrame ?: return
+        pushUndo()
+        frame.layers.forEach { layer ->
+            if (layer.type == LayerType.IMAGE && layer.isPhotoSlot && !layer.isBackground && layer.customImage != null) {
+                layer.saturation = value
+            }
+        }
+        notifyLayersChanged()
+    }
+
+    fun applyGlobalWarmth(value: Float) {
+        val frame = _uiState.value.selectedFrame ?: return
+        pushUndo()
+        frame.layers.forEach { layer ->
+            if (layer.type == LayerType.IMAGE && layer.isPhotoSlot && !layer.isBackground && layer.customImage != null) {
+                layer.warmth = value
+            }
+        }
+        notifyLayersChanged()
+    }
+
+    fun applyGlobalFade(value: Float) {
+        val frame = _uiState.value.selectedFrame ?: return
+        pushUndo()
+        frame.layers.forEach { layer ->
+            if (layer.type == LayerType.IMAGE && layer.isPhotoSlot && !layer.isBackground && layer.customImage != null) {
+                layer.fade = value
+            }
+        }
+        notifyLayersChanged()
+    }
+
+    fun applyGlobalHighlights(value: Float) {
+        val frame = _uiState.value.selectedFrame ?: return
+        pushUndo()
+        frame.layers.forEach { layer ->
+            if (layer.type == LayerType.IMAGE && layer.isPhotoSlot && !layer.isBackground && layer.customImage != null) {
+                layer.highlights = value
+            }
+        }
+        notifyLayersChanged()
+    }
+
+    fun applyGlobalShadows(value: Float) {
+        val frame = _uiState.value.selectedFrame ?: return
+        pushUndo()
+        frame.layers.forEach { layer ->
+            if (layer.type == LayerType.IMAGE && layer.isPhotoSlot && !layer.isBackground && layer.customImage != null) {
+                layer.shadows = value
+            }
+        }
+        notifyLayersChanged()
+    }
+
+    fun resetGlobalFiltersAndAdjustments() {
+        val frame = _uiState.value.selectedFrame ?: return
+        pushUndo()
+        frame.layers.forEach { layer ->
+            if (layer.type == LayerType.IMAGE && layer.isPhotoSlot && !layer.isBackground && layer.customImage != null) {
+                layer.filter = "none"
+                layer.brightness = 0f
+                layer.contrast = 1f
+                layer.saturation = 1f
+                layer.warmth = 0f
+                layer.fade = 0f
+                layer.highlights = 1f
+                layer.shadows = 1f
             }
         }
         notifyLayersChanged()

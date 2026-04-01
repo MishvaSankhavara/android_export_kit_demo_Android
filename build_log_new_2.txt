@@ -1,0 +1,79 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.2.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+Warning: SDK processing. This version only understands SDK XML versions up to 3 but an SDK XML file of version 4 was encountered. This can happen if you use versions of Android Studio and the command-line tools that were released at different times.
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:mergeDebugShaders UP-TO-DATE
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :app:mergeDebugAssets UP-TO-DATE
+> Task :app:compressDebugAssets UP-TO-DATE
+> Task :app:checkDebugDuplicateClasses UP-TO-DATE
+> Task :app:desugarDebugFileDependencies UP-TO-DATE
+> Task :app:mergeExtDexDebug UP-TO-DATE
+> Task :app:mergeLibDexDebug UP-TO-DATE
+> Task :app:mergeDebugJniLibFolders UP-TO-DATE
+> Task :app:mergeDebugNativeLibs NO-SOURCE
+> Task :app:stripDebugDebugSymbols NO-SOURCE
+> Task :app:validateSigningDebug UP-TO-DATE
+> Task :app:writeDebugAppMetadata UP-TO-DATE
+> Task :app:writeDebugSigningConfigVersions UP-TO-DATE
+
+> Task :app:compileDebugKotlin
+w: file:///Volumes/Work/Mishva/Projects/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/editor/FrameEditorScreen.kt:119:17 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///Volumes/Work/Mishva/Projects/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/editor/FrameEditorScreen.kt:369:44 '@property:Deprecated(...) val Icons.Filled.Undo: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Undo.
+w: file:///Volumes/Work/Mishva/Projects/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/editor/FrameEditorScreen.kt:377:13 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///Volumes/Work/Mishva/Projects/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/editor/FrameEditorScreen.kt:558:17 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///Volumes/Work/Mishva/Projects/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/editor/FrameEditorScreen.kt:565:9 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///Volumes/Work/Mishva/Projects/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/editor/FrameEditorScreen.kt:616:9 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///Volumes/Work/Mishva/Projects/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/editor/FrameEditorScreen.kt:676:34 '@property:Deprecated(...) val Icons.Filled.RotateRight: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.RotateRight.
+w: file:///Volumes/Work/Mishva/Projects/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/editor/FrameEditorScreen.kt:748:13 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///Volumes/Work/Mishva/Projects/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/editor/FrameEditorScreen.kt:814:43 '@property:Deprecated(...) val Icons.Filled.KeyboardArrowLeft: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.KeyboardArrowLeft.
+w: file:///Volumes/Work/Mishva/Projects/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/editor/FrameEditorScreen.kt:820:43 '@property:Deprecated(...) val Icons.Filled.KeyboardArrowRight: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.KeyboardArrowRight.
+w: file:///Volumes/Work/Mishva/Projects/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/editor/FrameEditorScreen.kt:1047:32 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Indicator(modifier: Modifier = ..., height: Dp = ..., color: Color = ...): Unit' is deprecated. Use SecondaryIndicator instead.
+w: file:///Volumes/Work/Mishva/Projects/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/editor/FrameEditorScreen.kt:1157:41 '@property:Deprecated(...) val Icons.Filled.FormatAlignLeft: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.FormatAlignLeft.
+w: file:///Volumes/Work/Mishva/Projects/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/editor/FrameEditorScreen.kt:1159:41 '@property:Deprecated(...) val Icons.Filled.FormatAlignRight: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.FormatAlignRight.
+w: file:///Volumes/Work/Mishva/Projects/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/ui/feature/filter/FilterAdjustPanel.kt:85:13 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+e: file:///Volumes/Work/Mishva/Projects/android_export_kit_demo/app/src/main/java/com/example/android_export_kit_demo/view/StickerView.kt:439:66 Unresolved reference 'filterToColorFilter'.
+
+> Task :app:compileDebugKotlin FAILED
+
+[Incubating] Problems report is available at: file:///Volumes/Work/Mishva/Projects/android_export_kit_demo/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileDebugKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.2.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 24s
+26 actionable tasks: 1 executed, 25 up-to-date

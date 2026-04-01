@@ -115,7 +115,16 @@ data class FrameLayer(
     var textCase: String = "none", // 'none', 'lowercase', 'uppercase', 'titlecase'
     var textScript: String = "normal", // 'normal', 'subscript', 'superscript'
     var backgroundRadius: Float = 0f,
-    var strokes: MutableList<DrawingStroke>? = null
+    var strokes: MutableList<DrawingStroke>? = null,
+
+    // Image Adjustments
+    var brightness: Float = 0f,   // -1.0 to 1.0
+    var contrast: Float = 1f,     // 0.0 to 2.0
+    var saturation: Float = 1f,   // 0.0 to 2.0
+    var warmth: Float = 0f,       // -1.0 to 1.0
+    var fade: Float = 0f,         // 0.0 to 1.0
+    var highlights: Float = 1f,   // 0.0 to 2.0
+    var shadows: Float = 1f       // 0.0 to 2.0
 ) {
     // Original values for reset
     val origX: Float = x
@@ -158,6 +167,10 @@ data class FrameLayer(
         flipV = false
         filter = "none"
         backgroundRadius = 0f
+        brightness = 0f
+        contrast = 1f
+        saturation = 1f
+        warmth = 0f
     }
 
     fun toJson(): Map<String, Any?> = mapOf(
@@ -198,6 +211,13 @@ data class FrameLayer(
         "flipV" to flipV,
         "filter" to filter,
         "backgroundRadius" to backgroundRadius,
+        "brightness" to brightness,
+        "contrast" to contrast,
+        "saturation" to saturation,
+        "warmth" to warmth,
+        "fade" to fade,
+        "highlights" to highlights,
+        "shadows" to shadows,
         "strokes" to strokes?.map { it.toJson() }
     )
 
@@ -242,6 +262,13 @@ data class FrameLayer(
         flipV: Boolean? = null,
         filter: String? = null,
         backgroundRadius: Float? = null,
+        brightness: Float? = null,
+        contrast: Float? = null,
+        saturation: Float? = null,
+        warmth: Float? = null,
+        fade: Float? = null,
+        highlights: Float? = null,
+        shadows: Float? = null,
         strokes: MutableList<DrawingStroke>? = null
     ): FrameLayer = FrameLayer(
         id = this.id,
@@ -286,6 +313,13 @@ data class FrameLayer(
         flipV = flipV ?: this.flipV,
         filter = filter ?: this.filter,
         backgroundRadius = backgroundRadius ?: this.backgroundRadius,
+        brightness = brightness ?: this.brightness,
+        contrast = contrast ?: this.contrast,
+        saturation = saturation ?: this.saturation,
+        warmth = warmth ?: this.warmth,
+        fade = fade ?: this.fade,
+        highlights = highlights ?: this.highlights,
+        shadows = shadows ?: this.shadows,
         strokes = strokes ?: this.strokes
     )
 
@@ -361,6 +395,13 @@ data class FrameLayer(
                 flipV = json["flipV"] as? Boolean ?: false,
                 filter = json["filter"] as? String ?: "none",
                 backgroundRadius = (json["backgroundRadius"] as? Number)?.toFloat() ?: 0f,
+                brightness = (json["brightness"] as? Number)?.toFloat() ?: 0f,
+                contrast = (json["contrast"] as? Number)?.toFloat() ?: 1f,
+                saturation = (json["saturation"] as? Number)?.toFloat() ?: 1f,
+                warmth = (json["warmth"] as? Number)?.toFloat() ?: 0f,
+                fade = (json["fade"] as? Number)?.toFloat() ?: 0f,
+                highlights = (json["highlights"] as? Number)?.toFloat() ?: 1f,
+                shadows = (json["shadows"] as? Number)?.toFloat() ?: 1f,
                 strokes = strokesJson?.map { DrawingStroke.fromJson(it) }?.toMutableList()
             )
         }

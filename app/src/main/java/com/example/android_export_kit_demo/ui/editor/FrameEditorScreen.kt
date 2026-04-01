@@ -38,6 +38,11 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontFamily
 import com.example.android_export_kit_demo.model.DrawingStroke
 import com.example.android_export_kit_demo.model.FrameLayer
+import kotlin.math.abs
+import com.frameeditor.R
+import androidx.compose.foundation.Image
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import com.example.android_export_kit_demo.model.FrameModel
 import com.example.android_export_kit_demo.model.LayerType
 import com.example.android_export_kit_demo.AppColors
@@ -93,6 +98,10 @@ fun FrameEditorScreen(
         val sel = uiState.selectedLayer
         if (sel != null && sel.type == LayerType.TEXT) {
             textInput = sel.text ?: ""
+            // When selecting a text layer, close the Filter panel to switch to text editing
+            if (activeSubEditor == "Filters") {
+                activeSubEditor = null
+            }
         }
     }
 
@@ -135,7 +144,7 @@ fun FrameEditorScreen(
                             title = activeSubEditor ?: "",
                             onClose = { activeSubEditor = null },
                             content = {
-                                SubEditorContent(activeSubEditor!!, sel, viewModel, frame)
+                                SubEditorContent(activeSubEditor!!, sel, viewModel, frame, onClose = { activeSubEditor = null })
                             }
                         )
                     } else {
@@ -556,7 +565,7 @@ private fun TextEditorBar(
             Column {
                 Divider(thickness = 1.dp, color = Color.LightGray)
                 Box(modifier = Modifier.heightIn(max = 280.dp)) {
-                    if (showSubEditor) SubEditorContent(activeSubEditor, layer, viewModel, frame)
+                    if (showSubEditor) SubEditorContent(activeSubEditor!!, layer, viewModel, frame, onClose = onDone)
                 }
             }
         }
@@ -735,16 +744,18 @@ private fun IntegratedPanel(title: String, onClose: () -> Unit, content: @Compos
         tonalElevation = 4.dp
     ) {
         Column(modifier = Modifier.fillMaxWidth().navigationBarsPadding()) {
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 2.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(onClick = onClose) { Icon(Icons.Default.Close, null, modifier = Modifier.size(18.dp)) }
-                Text(title, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                IconButton(onClick = onClose) { Icon(Icons.Default.Check, null, modifier = Modifier.size(20.dp), tint = AppColors.Primary) }
+            if (title != "Filters") {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 2.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = onClose) { Icon(Icons.Default.Close, null, modifier = Modifier.size(18.dp)) }
+                    Text(title, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                    IconButton(onClick = onClose) { Icon(Icons.Default.Check, null, modifier = Modifier.size(20.dp), tint = AppColors.Primary) }
+                }
+                Divider(color = Color.LightGray.copy(alpha = 0.5f))
             }
-            Divider(color = Color.LightGray.copy(alpha = 0.5f))
             content()
         }
     }
@@ -755,10 +766,11 @@ private fun SubEditorContent(
     activeSubEditor: String,
     layer: FrameLayer?,
     viewModel: FrameViewModel,
-    frame: FrameModel
+    frame: FrameModel,
+    onClose: () -> Unit
 ) {
     when (activeSubEditor) {
-        "Filters" -> FiltersPanelContent(viewModel, layer)
+        "Filters" -> FilterAdjustPanelContent(viewModel, layer, onClose)
         "Stickers" -> StickersPanelContent(viewModel)
         "Opacity" -> if (layer != null) OpacityPanelContent(viewModel, layer)
         "Fonts" -> if (layer != null) FontPanelContent(viewModel, layer)
@@ -844,30 +856,364 @@ private fun CircleBtn(icon: ImageVector, color: Color? = null, onTap: () -> Unit
 
 // Sub Editor Content Panels
 @Composable
-private fun FiltersPanelContent(viewModel: FrameViewModel, layer: FrameLayer?) {
-    val filters = listOf("none" to "None", "grayscale" to "Grayscale", "sepia" to "Sepia", "invert" to "Invert", "warm" to "Warm", "cool" to "Cool")
-    LazyRow(modifier = Modifier.fillMaxWidth().height(140.dp).padding(vertical = 16.dp), contentPadding = PaddingValues(horizontal = 16.dp)) {
-        items(filters) { f ->
-            val isSelected = layer?.filter == f.first
+private fun FilterAdjustPanelContent(viewModel: FrameViewModel, layer: FrameLayer?, onClose: () -> Unit) {
+    var selectedTab by remember { mutableStateOf("FILTER") }
+    
+    Column(modifier = Modifier.fillMaxWidth().background(Color.White)) {
+        // Tab Switcher with Checkmark
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 15.dp)
+                .height(40.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Row(
+                modifier = Modifier.fillMaxHeight(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(
+                    modifier = Modifier.width(100.dp).clickable { selectedTab = "FILTER" },
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        "FILTER", 
+                        fontSize = 14.sp, 
+                        fontWeight = FontWeight.Bold,
+                        color = if (selectedTab == "FILTER") Color.Black else Color.Gray
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    if (selectedTab == "FILTER") {
+                        Box(Modifier.width(24.dp).height(2.dp).background(Color(0xFF3F51B5)))
+                    } else {
+                        Spacer(Modifier.height(2.dp))
+                    }
+                }
+                
+                Column(
+                    modifier = Modifier.width(100.dp).clickable { selectedTab = "ADJUST" },
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        "ADJUST", 
+                        fontSize = 14.sp, 
+                        fontWeight = FontWeight.Bold,
+                        color = if (selectedTab == "ADJUST") Color.Black else Color.Gray
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    if (selectedTab == "ADJUST") {
+                        Box(Modifier.width(24.dp).height(2.dp).background(Color(0xFF3F51B5)))
+                    } else {
+                        Spacer(Modifier.height(2.dp))
+                    }
+                }
+            }
+            
+            // Right Checkmark
+            IconButton(
+                onClick = onClose,
+                modifier = Modifier.align(Alignment.CenterEnd).padding(end = 8.dp)
+            ) {
+                Icon(Icons.Default.Check, null, modifier = Modifier.size(20.dp), tint = Color(0xFF3F51B5))
+            }
+        }
+        
+        Spacer(Modifier.height(12.dp))
+
+        if (selectedTab == "FILTER") {
+            FilterTabContent(viewModel, layer)
+        } else {
+            AdjustTabContent(viewModel, layer)
+        }
+    }
+}
+
+@Composable
+private fun FilterTabContent(viewModel: FrameViewModel, layer: FrameLayer?) {
+    val categoryFilters = mapOf(
+        "Trending" to listOf("none" to "ORIGINAL", "bright" to "BRIGHT", "story" to "STORY", "grayscale" to "NATURAL", "warm" to "WARM", "cool" to "DEW"),
+        "Foodie" to listOf("none" to "ORIGINAL", "warm" to "YUMMY", "bright" to "FRESH", "story" to "ZEST", "sepia" to "CRISP"),
+        "Light FX" to listOf("none" to "ORIGINAL", "cool" to "GLOW", "invert" to "NEON", "bright" to "FLARE", "story" to "BEAM"),
+        "Summer" to listOf("none" to "ORIGINAL", "bright" to "SUNNY", "warm" to "GOLDEN", "cool" to "BREEZE", "story" to "TROPIC"),
+        "Travel" to listOf("none" to "ORIGINAL", "warm" to "WANDER", "bright" to "VOYAGE", "story" to "EXPLORE", "cool" to "DEST"),
+        "Portrait" to listOf("none" to "ORIGINAL", "warm" to "SKIN", "bright" to "GLOW", "story" to "SOFT", "grayscale" to "PRO"),
+        "B&W" to listOf("none" to "ORIGINAL", "grayscale" to "MONO", "story" to "NOIR", "bright" to "HIGH", "sepia" to "CLASSIC"),
+        "Spring" to listOf("none" to "ORIGINAL", "bright" to "BLOOM", "warm" to "PASTEL", "story" to "FRESH", "cool" to "PETAL"),
+        "Autumn" to listOf("none" to "ORIGINAL", "sepia" to "AMBER", "warm" to "HARVEST", "story" to "RUST", "grayscale" to "LEAF"),
+        "Retro" to listOf("none" to "ORIGINAL", "sepia" to "VHS", "grayscale" to "GRAIN", "warm" to "FILM", "invert" to "NEG"),
+        "Romance" to listOf("none" to "ORIGINAL", "warm" to "BLUSH", "story" to "DREAMY", "bright" to "VELVET", "cool" to "HEART"),
+        "Chic" to listOf("none" to "ORIGINAL", "grayscale" to "VOGUE", "bright" to "MINIMAL", "story" to "SLEEK", "warm" to "ELITE"),
+        "Fantasy" to listOf("none" to "ORIGINAL", "invert" to "MYSTIC", "bright" to "ETHEREAL", "story" to "AURA", "cool" to "GLOW"),
+        "Aesthetic" to listOf("none" to "ORIGINAL", "grayscale" to "MOODY", "sepia" to "DUST", "story" to "VAPOR", "bright" to "PURE")
+    )
+    
+    val categories = categoryFilters.keys.toList()
+    var selectedCategory by remember { mutableStateOf("Trending") }
+    val currentFilters = categoryFilters[selectedCategory] ?: emptyList()
+
+    Column {
+        // Categories Row with Static None Button
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // STATIC NONE BUTTON (Fixed on left)
             Box(
-                modifier = Modifier.width(100.dp).padding(end = 12.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(if (isSelected) Color(0xFFA259FF) else Color(0xFFF5F5F5))
-                    .border(if (isSelected) 2.dp else 0.dp, if (isSelected) AppColors.Primary else Color.Transparent, RoundedCornerShape(12.dp))
+                modifier = Modifier
+                    .padding(start = 16.dp, end = 8.dp)
+                    .size(36.dp) // <--- MANUALLY CHANGE HEIGHT/WIDTH FOR NONE BUTTON HERE
+                    .clip(CircleShape)
+                    .background(Color(0xFFF5F5F5))
+                    .border(1.dp, Color.LightGray, CircleShape)
                     .clickable { 
-                        if (layer != null) viewModel.updateLayerFilter(layer, f.first) 
-                        else viewModel.applyGlobalFilter(f.first)
+                        if (layer != null) {
+                            viewModel.updateLayerFilter(layer, "none")
+                            viewModel.updateLayerBrightness(layer, 0f)
+                            viewModel.updateLayerContrast(layer, 1f)
+                            viewModel.updateLayerSaturation(layer, 1f)
+                            viewModel.updateLayerWarmth(layer, 0f)
+                            viewModel.updateLayerFade(layer, 0f)
+                            viewModel.updateLayerHighlights(layer, 1f)
+                            viewModel.updateLayerShadows(layer, 1f)
+                        } else {
+                            viewModel.resetGlobalFiltersAndAdjustments()
+                        }
                     },
                 contentAlignment = Alignment.Center
             ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center, modifier = Modifier.fillMaxSize()) {
-                    Icon(Icons.Default.PhotoFilter, null, tint = if (isSelected) Color.White else Color.Black.copy(alpha=0.54f))
-                    Spacer(Modifier.height(8.dp))
-                    Text(f.second, color = if (isSelected) Color.White else Color.Black.copy(alpha=0.87f), fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal)
+                Icon(Icons.Default.Block, null, modifier = Modifier.size(20.dp), tint = Color.Gray)
+            }
+
+            // Scrollable Categories
+            LazyRow(
+                modifier = Modifier.weight(1f),
+                contentPadding = PaddingValues(end = 10.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(categories) { cat ->
+                    val isSelected = selectedCategory == cat
+                    Box(
+                        modifier = Modifier
+                            .height(36.dp) // <--- MANUALLY CHANGE CATEGORY HEIGHT HERE
+                            .clip(RoundedCornerShape(18.dp))
+                            .background(if (isSelected) Color(0xFF3F51B5).copy(alpha = 0.1f) else Color(0xFFF0F0F0))
+                            .border(if (isSelected) 1.dp else 0.dp, Color(0xFF3F51B5), RoundedCornerShape(18.dp))
+                            .clickable { selectedCategory = cat }
+                            .padding(horizontal = 10.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(cat, fontSize = 13.sp, color = if (isSelected) Color(0xFF3F51B5) else Color.Gray, fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal)
+                    }
+                }
+            }
+        }
+
+        // Filter Previews Row with Static More Button
+        Row(
+            modifier = Modifier.fillMaxWidth().height(80.dp).padding(vertical = 5.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // STATIC MORE BUTTON (Fixed on left)
+            Column(
+                modifier = Modifier.padding(start = 16.dp, end = 8.dp).width(50.dp), // <--- MANUALLY CHANGE MORE BUTTON COLUMN WIDTH HERE
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(70.dp) // <--- MANUALLY CHANGE MORE BUTTON BOX SIZE HERE
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(Color(0xFFF0F0F0)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(Icons.Outlined.Store, null, tint = Color.Gray)
+                        Text("More", fontSize = 11.sp, color = Color.Gray)
+                    }
+                }
+            }
+
+            // Scrollable Filter Previews
+            LazyRow(
+                modifier = Modifier.weight(1f),
+                contentPadding = PaddingValues(end = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(currentFilters) { (id, name) ->
+                    val isSelected = layer?.filter == id
+                    Column(
+                        modifier = Modifier.width(70.dp).clickable {
+                            if (layer != null) viewModel.updateLayerFilter(layer, id)
+                            else viewModel.applyGlobalFilter(id)
+                        },
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(70.dp) // <--- MANUALLY CHANGE FILTER PREVIEW SIZE HERE
+                                .clip(RoundedCornerShape(8.dp))
+                                .border(if (isSelected) 2.dp else 0.dp, Color(0xFF3F51B5), RoundedCornerShape(8.dp))
+                        ) {
+                            // High-quality coffee placeholder image
+                            Image(
+                                painter = painterResource(id = R.drawable.filter_preview_coffee),
+                                contentDescription = null,
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                            
+                            // Dark gray bottom bar with filter name
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(22.dp) // <--- MANUALLY CHANGE LABEL BAR HEIGHT HERE
+                                    .align(Alignment.BottomCenter)
+                                    .background(Color(0xFF4B4F55)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    name.uppercase(), 
+                                    fontSize = 9.sp, 
+                                    color = Color.White, 
+                                    fontWeight = FontWeight.Bold,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
     }
+}
+
+@Composable
+private fun AdjustTabContent(viewModel: FrameViewModel, layer: FrameLayer?) {
+    var currentAdjustment by remember { mutableStateOf("Brightness") }
+    
+    // Global state for when no layer is selected
+    var globalBrightness by remember { mutableStateOf(0f) }
+    var globalContrast by remember { mutableStateOf(1f) }
+    var globalSaturation by remember { mutableStateOf(1f) }
+    var globalWarmth by remember { mutableStateOf(0f) }
+    var globalFade by remember { mutableStateOf(0f) }
+    var globalHighlights by remember { mutableStateOf(1f) }
+    var globalShadows by remember { mutableStateOf(1f) }
+
+    val adjustments = listOf(
+        Triple("Brightness", Icons.Default.WbSunny, layer?.brightness ?: globalBrightness),
+        Triple("Contrast", Icons.Default.Contrast, (layer?.contrast ?: globalContrast) - 1f), 
+        Triple("Warmth", Icons.Default.Thermostat, layer?.warmth ?: globalWarmth),
+        Triple("Saturation", Icons.Default.WaterDrop, (layer?.saturation ?: globalSaturation) - 1f), 
+        Triple("Fade", Icons.Default.FormatLineSpacing, ((layer?.fade ?: globalFade) * 2f) - 1f), // Map 0..1 to -1..1
+        Triple("Highlights", Icons.Default.KeyboardDoubleArrowUp, (layer?.highlights ?: globalHighlights) - 1f),
+        Triple("Shadows", Icons.Default.KeyboardDoubleArrowDown, (layer?.shadows ?: globalShadows) - 1f)
+    )
+
+    Column(modifier = Modifier.fillMaxWidth()) {
+        // Slider
+        val currentVal = adjustments.find { it.first == currentAdjustment }?.third ?: 0f
+        
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Slider(
+                value = currentVal,
+                onValueChange = { newVal ->
+                    if (layer != null) {
+                        when (currentAdjustment) {
+                            "Brightness" -> viewModel.updateLayerBrightness(layer, newVal)
+                            "Contrast" -> viewModel.updateLayerContrast(layer, newVal + 1f)
+                            "Saturation" -> viewModel.updateLayerSaturation(layer, newVal + 1f)
+                            "Warmth" -> viewModel.updateLayerWarmth(layer, newVal)
+                            "Fade" -> viewModel.updateLayerFade(layer, (newVal + 1f) / 2f)
+                            "Highlights" -> viewModel.updateLayerHighlights(layer, newVal + 1f)
+                            "Shadows" -> viewModel.updateLayerShadows(layer, newVal + 1f)
+                        }
+                    } else {
+                        when (currentAdjustment) {
+                            "Brightness" -> { globalBrightness = newVal; viewModel.applyGlobalBrightness(newVal) }
+                            "Contrast" -> { globalContrast = newVal + 1f; viewModel.applyGlobalContrast(newVal + 1f) }
+                            "Saturation" -> { globalSaturation = newVal + 1f; viewModel.applyGlobalSaturation(newVal + 1f) }
+                            "Warmth" -> { globalWarmth = newVal; viewModel.applyGlobalWarmth(newVal) }
+                            "Fade" -> { globalFade = (newVal + 1f) / 2f; viewModel.applyGlobalFade((newVal + 1f) / 2f) }
+                            "Highlights" -> { globalHighlights = newVal + 1f; viewModel.applyGlobalHighlights(newVal + 1f) }
+                            "Shadows" -> { globalShadows = newVal + 1f; viewModel.applyGlobalShadows(newVal + 1f) }
+                        }
+                    }
+                },
+                valueRange = -1f..1f,
+                modifier = Modifier.weight(1f),
+                colors = SliderDefaults.colors(
+                    thumbColor = Color.DarkGray,
+                    activeTrackColor = Color.DarkGray,
+                    inactiveTrackColor = Color.LightGray
+                )
+            )
+            Text(
+                "${(currentVal * 100).toInt()}", 
+                fontSize = 12.sp, 
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.width(32.dp),
+                textAlign = TextAlign.End
+            )
+        }
+
+        // Adjustment Icons
+        LazyRow(
+            modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
+            contentPadding = PaddingValues(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(20.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            items(adjustments) { (name, icon, value) ->
+                val isSelected = currentAdjustment == name
+                val isChanged = abs(value) > 0.01f
+                
+                Column(
+                    modifier = Modifier.clickable { currentAdjustment = name },
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .background(if (isSelected) Color(0xFFF0F0F0) else Color.Transparent),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            icon, 
+                            null, 
+                            tint = if (isSelected) Color.Black else Color.Gray,
+                            modifier = Modifier.size(24.dp)
+                        )
+                        if (isChanged && !isSelected) {
+                            Box(
+                                modifier = Modifier
+                                    .size(4.dp)
+                                    .clip(CircleShape)
+                                    .background(Color(0xFF3F51B5))
+                                    .align(Alignment.TopEnd)
+                                    .offset(x = (-4).dp, y = 4.dp)
+                            )
+                        }
+                    }
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        name, 
+                        fontSize = 10.sp, 
+                        color = if (isSelected) Color.Black else Color.Gray,
+                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                    )
+                }
+            }
+        }
+    }
+}
+
+private fun FiltersPanelContent(viewModel: FrameViewModel, layer: FrameLayer?) {
+    // Deprecated by FilterAdjustPanelContent
 }
 
 @Composable

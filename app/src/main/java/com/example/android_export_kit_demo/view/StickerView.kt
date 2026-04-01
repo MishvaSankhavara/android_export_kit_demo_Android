@@ -436,7 +436,7 @@ private fun StickerImageContent(
                     .build(),
                 contentDescription = layer.name,
                 contentScale       = contentScale,
-                colorFilter        = if (layer.filter != "none") filterToColorFilter(layer.filter) else null,
+                colorFilter        = getCombinedColorFilter(layer),
                 modifier           = if (layer.isPhotoSlot && !layer.isSticker) {
                     Modifier
                         .requiredSize((imgW * scale).dp, (imgH * scale).dp)
