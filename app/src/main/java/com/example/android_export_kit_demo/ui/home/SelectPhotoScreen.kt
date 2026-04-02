@@ -55,7 +55,9 @@ fun SelectPhotoScreen(
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val imageCount = 4
+    val imageCount = remember(frame) {
+        frame.apiInputCount ?: frame.layers.count { it.isPhotoSlot }.coerceAtLeast(1)
+    }
 
     var mediaList by remember { mutableStateOf<List<Uri>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }

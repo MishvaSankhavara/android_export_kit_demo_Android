@@ -494,7 +494,8 @@ data class FrameModel(
     val canvasHeight: Float,
     val layers: MutableList<FrameLayer>,
     var zipPath: String? = null,
-    var extractedDir: String? = null
+    var extractedDir: String? = null,
+    var apiInputCount: Int? = null
 ) {
     val displayTitle: String get() = if (info.title.isNotEmpty()) info.title else name
 

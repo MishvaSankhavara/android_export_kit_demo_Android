@@ -27,6 +27,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import coil.compose.AsyncImage
 import com.example.android_export_kit_demo.AppColors
 import com.example.android_export_kit_demo.model.FrameModel
@@ -65,40 +66,88 @@ fun HomeScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        "Frame Editor",
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1C1C1C)
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White),
-                actions = {
-                    IconButton(onClick = { isGridView = !isGridView }) {
-                        Icon(
-                            if (isGridView) Icons.Default.List else Icons.Default.GridView,
-                            contentDescription = "Toggle view"
+            Column(modifier = Modifier.background(Color.White)) {
+                TopAppBar(
+                    title = {
+                        Text(
+                            "Frame Editor",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp,
+                            color = Color(0xFF1C1C1C)
                         )
-                    }
-                    if (uiState.frames.isNotEmpty()) {
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White),
+                    actions = {
+                        IconButton(onClick = { isGridView = !isGridView }) {
+                            Icon(
+                                if (isGridView) Icons.Default.FormatListBulleted else Icons.Default.GridView,
+                                contentDescription = "Toggle view",
+                                tint = Color.Black
+                            )
+                        }
                         IconButton(onClick = { showClearDialog = true }) {
-                            Icon(Icons.Outlined.DeleteSweep, contentDescription = "Clear all")
+                            Icon(
+                                Icons.Default.DeleteOutline, 
+                                contentDescription = "Clear all",
+                                tint = Color.Black
+                            )
+                        }
+                    }
+                )
+                
+                // 2. Category Tab Bar
+                if (uiState.categories.size > 1) {
+                    ScrollableTabRow(
+                        selectedTabIndex = uiState.categories.indexOfFirst { it.id == uiState.selectedCategoryId }.coerceAtLeast(0),
+                        containerColor = Color.White,
+                        contentColor = AppColors.Primary,
+                        edgePadding = 16.dp,
+                        divider = {},
+                        indicator = { tabPositions ->
+                            if (uiState.categories.isNotEmpty()) {
+                                val currentTab = uiState.categories.indexOfFirst { it.id == uiState.selectedCategoryId }.coerceAtLeast(0)
+                                TabRowDefaults.SecondaryIndicator(
+                                    Modifier.tabIndicatorOffset(tabPositions[currentTab]),
+                                    color = AppColors.Primary
+                                )
+                            }
+                        }
+                    ) {
+                        uiState.categories.forEach { category ->
+                            Tab(
+                                selected = uiState.selectedCategoryId == category.id,
+                                onClick = { viewModel.selectCategory(category.id) },
+                                text = { 
+                                    Text(
+                                        category.name,
+                                        fontSize = 14.sp,
+                                        fontWeight = if (uiState.selectedCategoryId == category.id) FontWeight.Bold else FontWeight.Normal
+                                    )
+                                },
+                                selectedContentColor = AppColors.Primary,
+                                unselectedContentColor = Color.Gray
+                            )
                         }
                     }
                 }
-            )
+            }
         },
         floatingActionButton = {
-            ExtendedFloatingActionButton(
+            Button(
                 onClick = { zipPickerLauncher.launch(arrayOf("application/zip", "application/x-zip-compressed")) },
-                icon = { Icon(Icons.Outlined.FolderZip, contentDescription = null) },
-                text = { Text("Load Zip") },
-                containerColor = AppColors.Primary,
-                contentColor = Color.White
-            )
+                shape = RoundedCornerShape(16.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = AppColors.Primary),
+                modifier = Modifier
+                    .height(56.dp)
+                    .padding(bottom = 8.dp, end = 8.dp),
+                contentPadding = PaddingValues(horizontal = 20.dp)
+            ) {
+                Icon(Icons.Outlined.FolderZip, contentDescription = null, modifier = Modifier.size(24.dp))
+                Spacer(modifier = Modifier.width(12.dp))
+                Text("Load Zip", fontSize = 16.sp, fontWeight = FontWeight.Medium)
+            }
         },
-        containerColor = AppColors.Surface
+        containerColor = Color(0xFFF8F9FA) // Subtle grayish background from AppColors.Surface
     ) { padding ->
         Box(
             modifier = Modifier
@@ -107,16 +156,13 @@ fun HomeScreen(
         ) {
             when {
                 uiState.isLoading -> {
-                    Column(
+                    CircularProgressIndicator(
                         modifier = Modifier.align(Alignment.Center),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        CircularProgressIndicator(color = AppColors.Primary)
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text("Extracting frames...")
-                    }
+                        color = AppColors.Primary
+                    )
                 }
-                uiState.frames.isEmpty() -> {
+                uiState.apiFrames.isEmpty() && !uiState.isLoading -> {
+                    // Show categories results if frames are empty
                     EmptyState(onPickZip = {
                         zipPickerLauncher.launch(arrayOf("application/zip", "application/x-zip-compressed"))
                     })
@@ -125,16 +171,17 @@ fun HomeScreen(
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(2),
                         contentPadding = PaddingValues(16.dp),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        items(uiState.frames) { frame ->
-                            FrameCard(
-                                frame = frame,
+                        items(uiState.apiFrames) { apiFrame ->
+                            ApiFrameCard(
+                                apiFrame = apiFrame,
                                 onTap = {
-                                    viewModel.selectFrame(frame)
-                                    onFrameSelected(frame)
+                                    viewModel.loadRemoteFrame(apiFrame) {
+                                        onFrameSelected(viewModel.uiState.value.selectedFrame!!)
+                                    }
                                 }
                             )
                         }
@@ -146,12 +193,13 @@ fun HomeScreen(
                         verticalArrangement = Arrangement.spacedBy(12.dp),
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        items(uiState.frames) { frame ->
-                            FrameListTile(
-                                frame = frame,
+                        items(uiState.apiFrames) { apiFrame ->
+                            ApiFrameListTile(
+                                apiFrame = apiFrame,
                                 onTap = {
-                                    viewModel.selectFrame(frame)
-                                    onFrameSelected(frame)
+                                    viewModel.loadRemoteFrame(apiFrame) {
+                                        onFrameSelected(viewModel.uiState.value.selectedFrame!!)
+                                    }
                                 }
                             )
                         }
@@ -161,9 +209,14 @@ fun HomeScreen(
 
             // Error Snackbar
             uiState.errorMessage?.let { error ->
-                LaunchedEffect(error) {
-                    viewModel.clearError()
-                }
+                Snackbar(
+                    modifier = Modifier.align(Alignment.BottomCenter).padding(16.dp),
+                    action = {
+                        TextButton(onClick = { viewModel.clearError() }) {
+                            Text("Dismiss", color = Color.White)
+                        }
+                    }
+                ) { Text(error) }
             }
         }
     }
@@ -302,6 +355,102 @@ private fun FrameThumbnail(frame: FrameModel) {
                 contentDescription = null,
                 modifier = Modifier.size(40.dp),
                 tint = AppColors.Primary
+            )
+        }
+    }
+}
+// ─────────────────────────────────────────────
+// API Frame Grid Card
+// ─────────────────────────────────────────────
+
+@Composable
+private fun ApiFrameCard(apiFrame: com.example.android_export_kit_demo.model.ApiFrame, onTap: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onTap),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(2.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
+    ) {
+        Column {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(0.9f)
+            ) {
+                AsyncImage(
+                    model = apiFrame.thumbnail,
+                    contentDescription = "Frame ${apiFrame.id}",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+            Column(modifier = Modifier.padding(10.dp)) {
+                Text(
+                    text = "Frame #${apiFrame.id}",
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 13.sp,
+                    maxLines = 1
+                )
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = "${apiFrame.inputCount} slots",
+                    fontSize = 11.sp,
+                    color = Color.Gray
+                )
+            }
+        }
+    }
+}
+
+// ─────────────────────────────────────────────
+// API Frame List Tile
+// ─────────────────────────────────────────────
+
+@Composable
+private fun ApiFrameListTile(apiFrame: com.example.android_export_kit_demo.model.ApiFrame, onTap: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onTap),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(2.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
+    ) {
+        Row(
+            modifier = Modifier.padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(56.dp)
+                    .clip(RoundedCornerShape(8.dp))
+            ) {
+                AsyncImage(
+                    model = apiFrame.thumbnail,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+            Spacer(modifier = Modifier.width(12.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "Frame #${apiFrame.id}",
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(
+                    text = "${apiFrame.inputCount} slots · Remote ZIP",
+                    fontSize = 12.sp,
+                    color = Color.Gray
+                )
+            }
+            Icon(
+                Icons.Default.ArrowForwardIos,
+                contentDescription = null,
+                modifier = Modifier.size(14.dp),
+                tint = Color.Gray
             )
         }
     }

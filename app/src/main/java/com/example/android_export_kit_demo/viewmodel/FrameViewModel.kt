@@ -16,6 +16,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import com.example.android_export_kit_demo.api.FrameApiService
+import com.example.android_export_kit_demo.model.ApiFrame
+import com.example.android_export_kit_demo.model.FrameCategory
+import com.example.android_export_kit_demo.model.CategoryResponse
+import com.example.android_export_kit_demo.model.FrameByCategoryResponse
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 
 // ─────────────────────────────────────────────
@@ -38,7 +48,10 @@ data class FrameUiState(
     val drawingWidth: Float = 5f,
     val isEraser: Boolean = false,
     val drawingMode: String = "normal",
-    val recentEmojis: List<String> = emptyList()
+    val recentEmojis: List<String> = emptyList(),
+    val categories: List<FrameCategory> = emptyList(),
+    val selectedCategoryId: Int? = null,
+    val apiFrames: List<ApiFrame> = emptyList()
 )
 
 // ─────────────────────────────────────────────
@@ -49,6 +62,105 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
 
     private val _uiState = MutableStateFlow(FrameUiState())
     val uiState: StateFlow<FrameUiState> = _uiState.asStateFlow()
+
+    private val apiService by lazy {
+        val logging = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+        val client = OkHttpClient.Builder()
+            .addInterceptor(logging)
+            .build()
+
+        Retrofit.Builder()
+            .baseUrl("https://aicollagemaker.aivibecode.in/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
+            .build()
+            .create(FrameApiService::class.java)
+    }
+
+    init {
+        fetchCategories()
+    }
+
+    fun fetchCategories() {
+        viewModelScope.launch {
+            try {
+                val response = apiService.getCategories("Bearer sprJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9a9fK3sL8dE4Pq7X2RkN5mZC1uH6B0YwTVoJpE")
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    if (body != null && body.status) {
+                        _uiState.update { it.copy(categories = body.data) }
+                        if (body.data.isNotEmpty()) {
+                            selectCategory(body.data[0].id)
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(errorMessage = "Failed to fetch categories: ${e.message}") }
+            }
+        }
+    }
+
+    fun selectCategory(id: Int) {
+        _uiState.update { it.copy(selectedCategoryId = id) }
+        fetchFramesByCategory(id)
+    }
+
+    fun fetchFramesByCategory(categoryId: Int) {
+        viewModelScope.launch {
+            try {
+                val response = apiService.getFramesByCategory(
+                    "Bearer sprJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9a9fK3sL8dE4Pq7X2RkN5mZC1uH6B0YwTVoJpE",
+                    mapOf("category_id" to categoryId.toString())
+                )
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    if (body != null && body.status) {
+                        _uiState.update { it.copy(apiFrames = body.data.frames) }
+                    }
+                }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(errorMessage = "Failed to fetch frames: ${e.message}") }
+            }
+        }
+    }
+
+    fun loadRemoteFrame(apiFrame: ApiFrame, onLoaded: () -> Unit) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            try {
+                val client = OkHttpClient.Builder()
+                    .followRedirects(true)
+                    .followSslRedirects(true)
+                    .build()
+
+                val request = Request.Builder().url(apiFrame.zipFile).build()
+                val response = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+                    client.newCall(request).execute()
+                }
+
+                if (!response.isSuccessful) throw Exception("Failed to download ZIP: ${response.code}")
+
+                val bytes = response.body?.bytes() ?: throw Exception("Empty ZIP response")
+                val name = apiFrame.zipFile.substringAfterLast("/")
+                
+                val loaded = service.loadZipBytes(bytes, name)
+                if (loaded.isNotEmpty()) {
+                    val frame = loaded[0]
+                    frame.apiInputCount = apiFrame.inputCount
+                    selectFrame(frame)
+                    onLoaded()
+                } else {
+                    throw Exception("No valid frames found in ZIP")
+                }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(errorMessage = "Failed to load remote frame: ${e.message}") }
+            } finally {
+                _uiState.update { it.copy(isLoading = false) }
+            }
+        }
+    }
 
     // ─────────────────────────────────────────────
     // Drawing Settings
