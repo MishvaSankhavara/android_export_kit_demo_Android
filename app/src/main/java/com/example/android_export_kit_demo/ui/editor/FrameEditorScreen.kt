@@ -153,12 +153,12 @@ fun FrameEditorScreen(
                     val isText = sel != null && sel.type == LayerType.TEXT
                     val isImage = sel != null && sel.type == LayerType.IMAGE
 
-                    if (activeSubEditor != null && !isText) {
+                    if (activeSubEditor != null && (activeSubEditor == "Stickers" || !isText)) {
                         IntegratedPanel(
                             title = activeSubEditor ?: "",
                             onClose = { activeSubEditor = null },
                             content = {
-                                SubEditorContent(activeSubEditor!!, sel, viewModel, frame, onClose = { activeSubEditor = null })
+                                SubEditorContent(activeSubEditor!!, sel, viewModel, frame, uiState, onClose = { activeSubEditor = null })
                             }
                         )
                     } else {
@@ -530,7 +530,7 @@ private fun GenActions(viewModel: FrameViewModel, onOpenSubEditor: (String) -> U
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         GenActionItem(Icons.Outlined.FilterVintage, "Filters") { onOpenSubEditor("Filters") }
-        GenActionItem(Icons.Outlined.EmojiEmotions, "Stickers") { onOpenSubEditor("Stickers") }
+        GenActionItem(Icons.Outlined.AddReaction, "Stickers") { onOpenSubEditor("Stickers") }
         GenActionItem(Icons.Default.TextFields, "Text") {
             viewModel.addTextLayer("Tap to edit")
             onOpenSubEditor("Edit Text")
@@ -591,6 +591,7 @@ private fun TextEditorBar(
             TextEditorTabIcon(Icons.Default.TextFields, "Font", currentTab == TextEditorTab.Font, Modifier.weight(1f)) { currentTab = TextEditorTab.Font }
             TextEditorTabIcon(Icons.Default.Palette, "Style", currentTab == TextEditorTab.Style, Modifier.weight(1f)) { currentTab = TextEditorTab.Style }
             TextEditorTabIcon(Icons.Default.Star, "Preset", currentTab == TextEditorTab.Preset, Modifier.weight(1f)) { currentTab = TextEditorTab.Preset }
+            TextEditorTabIcon(Icons.Default.AddReaction, "Sticker", false, Modifier.weight(1f)) { onOpenSubEditor("Stickers") }
             TextEditorTabIcon(Icons.Default.Abc, "Curve", currentTab == TextEditorTab.Curve, Modifier.weight(1f)) { currentTab = TextEditorTab.Curve }
             
             // Done Checkmark styled same as tabs for uniformity
@@ -704,6 +705,7 @@ private fun ImageEditorBar(
             ActionIcon(Icons.Outlined.Image, "Replace", enabled = !layer.isLocked) { onShowImageSheet() }
         }
         ActionIcon(Icons.Outlined.FilterVintage, "Filter", enabled = !layer.isLocked) { onOpenSubEditor("Filters") }
+        ActionIcon(Icons.Outlined.AddReaction, "Sticker", enabled = !layer.isLocked) { onOpenSubEditor("Stickers") }
         ActionIcon(Icons.Default.Tune, "Opacity", enabled = !layer.isLocked) { onOpenSubEditor("Opacity") }
         ActionIcon(Icons.Default.Flip, "Mirror H", enabled = !layer.isLocked) { viewModel.toggleLayerFlip(layer) }
         ActionIcon(Icons.Default.Flip, "Mirror V", enabled = !layer.isLocked) { viewModel.toggleLayerFlipV(layer) }
@@ -733,6 +735,7 @@ private fun LayerActionsBar(layer: FrameLayer, onOpenSubEditor: (String) -> Unit
         verticalAlignment = Alignment.CenterVertically
     ) {
         ActionIcon(Icons.Default.Tune, "Opacity", enabled = !layer.isLocked) { onOpenSubEditor("Opacity") }
+        ActionIcon(Icons.Outlined.AddReaction, "Sticker", enabled = !layer.isLocked) { onOpenSubEditor("Stickers") }
         ActionIcon(Icons.Default.FlipToFront, "Front", enabled = !layer.isLocked) { viewModel.bringLayerToFront(layer) }
         ActionIcon(Icons.Default.ControlCamera, "Move", enabled = !layer.isLocked) { onOpenSubEditor("Move") }
         ActionIcon(Icons.Default.AspectRatio, "Resize", enabled = !layer.isLocked) { onOpenSubEditor("Resize") }
@@ -795,11 +798,12 @@ private fun SubEditorContent(
     layer: FrameLayer?,
     viewModel: FrameViewModel,
     frame: FrameModel,
+    uiState: FrameUiState,
     onClose: () -> Unit
 ) {
     when (activeSubEditor) {
         "Filters" -> FilterAdjustPanelContent(viewModel, layer, onClose)
-        "Stickers" -> StickersPanelContent(viewModel)
+        "Stickers" -> StickersPanelContent(viewModel, uiState, onClose)
         "Opacity" -> if (layer != null) OpacityPanelContent(viewModel, layer)
         "Fonts" -> if (layer != null) AdvancedFontPanelContent(viewModel, layer)
         "Font Size" -> if (layer != null) FontSizePanelContent(viewModel, layer)
@@ -1240,53 +1244,145 @@ private fun AdjustTabContent(viewModel: FrameViewModel, layer: FrameLayer?) {
     }
 }
 
-private fun FiltersPanelContent(viewModel: FrameViewModel, layer: FrameLayer?) {
-    // Deprecated by FilterAdjustPanelContent
-}
-
 @Composable
-private fun StickersPanelContent(viewModel: FrameViewModel) {
-    val context = LocalContext.current
+private fun StickersPanelContent(viewModel: FrameViewModel, uiState: FrameUiState, onClose: () -> Unit) {
+    var selectedTab by remember { mutableIntStateOf(1) } // 0:Premium, 1:Emoji, 2:Flower, 3:Sakura, 4:Bunny, 5:Scissors
+    
+    val floraStickers = listOf("daisy.png", "sakura.png")
+    val bunnyStickers = listOf("bunny.png")
+    val premiumStickers = listOf("nezuko.png")
 
-
-    // Emoji characters rendered as large text stickers
-    val emojiStickers = listOf(
-        "😀", "😍", "🎉", "🌟", "🔥", "❤️", "👍", "🎶",
-        "🦄", "🐶", "🌈", "🍕", "✨", "💎", "🏆", "😂"
-    )
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 12.dp)
-    ) {
-        // ── Emoji stickers row ──────────────────────────────────────────────
-        Text(
-            text     = "Emoji",
-            fontSize = 12.sp,
-            fontWeight = FontWeight.SemiBold,
-            color    = Color.Black.copy(alpha = 0.54f),
-            modifier = Modifier.padding(start = 16.dp, bottom = 6.dp)
-        )
-        LazyRow(
-            contentPadding = PaddingValues(horizontal = 12.dp),
-            modifier       = Modifier.fillMaxWidth()
+    Column(modifier = Modifier.fillMaxWidth().height(200.dp).background(Color.White)) {
+        // 1. Tab Bar
+        Row(
+            modifier = Modifier.fillMaxWidth().height(50.dp).padding(horizontal = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            items(emojiStickers) { emoji ->
-                Box(
-                    modifier = Modifier
-                        .padding(horizontal = 4.dp)
-                        .size(52.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(Color(0xFFF5F5F5))
-                        .clickable { viewModel.addTextStickerLayer(emoji) },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = emoji, fontSize = 28.sp)
-                }
+            VerticalDivider(modifier = Modifier.padding(vertical = 4.dp, horizontal = 4.dp), color = Color.LightGray.copy(alpha=0.5f))
+            
+            // Category Tabs
+            Row(modifier = Modifier.weight(1f), horizontalArrangement = Arrangement.Start) {
+                TabIconSmall(Icons.Default.SentimentSatisfiedAlt, selectedTab == 1) { selectedTab = 1 }
+                TabIconSmall(Icons.Default.LocalFlorist, selectedTab == 2) { selectedTab = 2 }
+                TabIconSmall(Icons.Default.FilterVintage, selectedTab == 3) { selectedTab = 3 }
+                TabIconSmall(Icons.Default.Pets, selectedTab == 4) { selectedTab = 4 }
+            }
+            
+            IconButton(onClick = onClose) {
+                Icon(Icons.Default.Check, null, tint = Color(0xFF3F51B5), modifier = Modifier.size(20.dp))
             }
         }
 
+        HorizontalDivider(thickness = 0.5.dp, color = Color.LightGray.copy(alpha = 0.3f))
+
+        // 2. Content Grid
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(7),
+            contentPadding = PaddingValues(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.weight(1f)
+        ) {
+            when (selectedTab) {
+                0 -> { // Premium (Nezuko)
+                    items(premiumStickers) { path ->
+                        StickerGridItem("stickers/$path") { viewModel.addStickerLayer("stickers/$path") }
+                    }
+                }
+                1 -> { // Emojis
+                    val categories = mutableListOf<Pair<String, List<String>>>()
+                    if (uiState.recentEmojis.isNotEmpty()) {
+                        categories.add("Recent" to uiState.recentEmojis)
+                    }
+                    categories.addAll(listOf(
+                        "People" to listOf("😀", "😃", "😄", "😁", "😆", "😅", "😂", "🤣", "😊", "😇", "🙂", "🙃", "😉", "😌", "😍", "🥰", "😘", "😗", "😙", "😚", "😋", "😛", "😝", "😜", "🤪", "🤨", "🧐", "🤓", "😎", "🤩", "🥳", "😏", "😒", "😞", "😔", "😟", "😕", "🙁", "☹️", "😣", "😖", "😫", "😩", "🥺", "😢", "😭", "😤", "😠", "😡", "🤬", "🤯", "😳", "🥵", "🥶", "😱", "😨", "😰", "😥", "😓", "🤗", "🤔", "🤭", "🤫", "🤥", "😶", "😐", "😑", "😬", "🙄", "😯", "😦", "😧", "😮", "😲", "😴", "🤤", "😪", "😵", "🤐", "🥴", "🤢", "🤮", "🤧", "😷", "🤒", "🤕", "🤑", "🤠", "😈", "👿", "👹", "👺", "🤡", "💩", "👻", "💀", "☠️", "臉", "怪", "機", "瓜", "貓", "笑", "愛", "喵", "吻", "驚", "哭", "怒", "🤲", "👐", "🙌", "👏", "🤝", "👍", "👎", "👊", "✊", "🤛", "🤜", "🤞", "✌️", "🤟", "🤘", "👌", "👈", "👉", "👆", "👇", "☝️", "✋", "🤚", "🖐", "🖖", "👋", "🤙", "💪", "🖕", "✍️", "🙏"),
+                        "Animals&Nature" to listOf("🐶", "🐱", "🐭", "🐹", "🐰", "🦊", "🐻", "🐼", "🐨", "🐯", "🦁", "🐮", "🐷", "🐽", "🐸", "🐵", "🙈", "🙉", "🙊", "🐒", "🐔", "🐧", "🐦", "🐥", "🐤", "🐣", "🦆", "🦢", "🦉", "🦚", "🦜", "🐊", "🐢", "🦎", "🐍", "🐲", "🐉", "🦕", "🦖", "🐳", "🐋", "🐬", "🐟", "🐠", "🐡", "鯊", "🐙", "🐚", "蟹", "龍蝦", "蝦", "烏賊", "🐌", "🦋", "蟲", "蟻", "蜂", "瓢蟲", "蟋蟀", "蜘蛛", "蛛網", "蠍", "蚊", "🦠", "💐", "🌸", "💮", "🏵", "🌹", "🥀", "🌺", "🌻", "🌼", "🌷", "🌱", "🌲", "🌳", "🌴", "🌵", "稻穗", "藥草", "幸運草", "幸運草", "楓葉", "落葉", "綠葉"),
+                        "Celebration" to listOf("🎆", "🎇", "🧨", "✨", "🎈", "🎉", "🎊", "🎋", "🎍", "🎎", "🎏", "🎐", "🎑", "🧧", "🎀", "🎁", "🎗", "🎟", "🎫", "🎖", "🏆", "🏅", "🥇", "🥈", "🥉"),
+                        "Food" to listOf("🍏", "🍎", "🍐", "🍊", "🍋", "🍌", "🍉", "🍇", "🍓", "🍈", "🍒", "🍑", "🍍", "🥥", "製作人", "製作期", "🍅", "🍆", "酪梨", "🥦", "萵苣", "小黃瓜", "辣椒", "玉米", "紅蘿蔔", "馬鈴薯", "蕃薯", "🥐", "麵包", "法式麵包", "蝴蝶餅", "貝果", "起司", "肉", "雞腿", "切塊肉", "培根", "漢堡", "薯條", "披薩", "熱狗", "三明治", "墨西哥捲餅", " taco", "墨西哥捲", "🥘", "🍳", "🍲", "🥗", "爆米花", "便當", "煎餅", "飯糰", "白飯", "咖哩", "拉麵", "義大利麵", "🍠", "🍢", "壽司", "炸蝦", "魚板", "🍡", "餃子", "🥠", "🥡", "🍦", "🍧", "🍨", "🍩", "餅乾", "蛋糕", "切塊蛋糕", "杯子蛋糕", "派", "巧克力", "糖果", "棒棒糖", "🍮", "蜂蜜", "奶瓶", "牛奶", "咖啡", "茶", "清酒", "葡萄酒", "雞尾酒", "熱帶飲", "啤酒", "生啤", "乾杯", "威士忌", "蘇打"),
+                        "Activity" to listOf("⚽️", "🏀", "🏈", "baseball", "🥎", "🎾", "🏐", "🏉", "🎱", "🏓", "🏸", "🥅", "🏒", "🏑", "🏏", "⛳️", "🏹", "釣魚", "拳擊", "空手道", "運動衫", "滑冰", "冰壺", "雪橇", "滑板", "滑雪者", "滑雪者", "單板滑雪", "🏋️", "摔跤", "體操", "籃球員", "劍擊", "手球", "高爾夫球員", "衝浪者", "游泳者", "水球", "划船", "賽馬", "單車", "登山車", "攀岩", "瑜伽", "演戲", "繪畫", "電影", "麥克風", "耳機", "音符", "鋼琴", "鼓", "薩克斯風", "喇叭", "吉他", "小提琴", "骰子", "靶", "保齡球", "遊戲機", "老虎機")
+                    ))
+                    categories.forEach { (title, emojis) ->
+                        item(span = { GridItemSpan(7) }) {
+                            Text(
+                                text = title,
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Gray,
+                                modifier = Modifier.padding(top = 16.dp, bottom = 4.dp)
+                            )
+                        }
+                        items(emojis) { emoji ->
+                            EmojiItem(emoji) { viewModel.addEmojiLayer(emoji) }
+                        }
+                    }
+                }
+                2 -> { // Flower
+                    items(floraStickers) { path ->
+                        StickerGridItem("stickers/$path") { viewModel.addStickerLayer("stickers/$path") }
+                    }
+                }
+                3 -> { // Sakura
+                    items(floraStickers.filter { it.contains("sakura") }) { path ->
+                        StickerGridItem("stickers/$path") { viewModel.addStickerLayer("stickers/$path") }
+                    }
+                }
+                4 -> { // Bunny
+                    items(bunnyStickers) { path ->
+                        StickerGridItem("stickers/$path") { viewModel.addStickerLayer("stickers/$path") }
+                    }
+                }
+                5 -> { // Scissors (Placeholder for Cutouts)
+                    item(span = { GridItemSpan(7) }) {
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            Text("Custom Cutouts", color = Color.Gray, fontSize = 12.sp)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun TabIconSmall(icon: ImageVector, isSelected: Boolean, onClick: () -> Unit) {
+    Box(
+        modifier = Modifier.size(40.dp).clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            icon, 
+            null, 
+            tint = if (isSelected) Color(0xFF3F51B5) else Color.Gray,
+            modifier = Modifier.size(22.dp)
+        )
+        if (isSelected) {
+            Box(Modifier.align(Alignment.BottomCenter).width(16.dp).height(2.dp).background(Color(0xFF3F51B5)))
+        }
+    }
+}
+
+@Composable
+private fun EmojiItem(emoji: String, onClick: () -> Unit) {
+    Box(
+        modifier = Modifier.aspectRatio(1f).clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(emoji, fontSize = 24.sp)
+    }
+}
+
+@Composable
+private fun StickerGridItem(assetPath: String, onClick: () -> Unit) {
+    Box(
+        modifier = Modifier.aspectRatio(1f).clip(RoundedCornerShape(12.dp)).background(Color(0xFFF5F5F5)).clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        AsyncImage(
+            model = "file:///android_asset/$assetPath",
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(0.8f),
+            contentScale = ContentScale.Fit
+        )
     }
 }
 

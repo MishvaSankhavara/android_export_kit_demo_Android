@@ -37,7 +37,8 @@ data class FrameUiState(
     val drawingColor: Int = Color.RED,
     val drawingWidth: Float = 5f,
     val isEraser: Boolean = false,
-    val drawingMode: String = "normal"
+    val drawingMode: String = "normal",
+    val recentEmojis: List<String> = emptyList()
 )
 
 // ─────────────────────────────────────────────
@@ -1033,6 +1034,34 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
         frame.layers.add(newLayer)
         selectLayer(newLayer)
         notifyLayersChanged()
+    }
+
+    fun addEmojiLayer(emoji: String) {
+        val frame = _uiState.value.selectedFrame ?: return
+        pushUndo()
+        val newLayer = FrameLayer(
+            id = "emoji_${System.currentTimeMillis()}",
+            name = "Emoji",
+            type = LayerType.TEXT,
+            x = (frame.canvasWidth - 100) / 2,
+            y = (frame.canvasHeight - 100) / 2,
+            width = 100f, height = 100f,
+            text = emoji, fontSize = 64f, color = Color.BLACK,
+            isSticker = true
+        )
+        frame.layers.add(newLayer)
+        selectLayer(newLayer)
+        notifyLayersChanged()
+        updateRecentEmojis(emoji)
+    }
+
+    private fun updateRecentEmojis(emoji: String) {
+        _uiState.update { state ->
+            val current = state.recentEmojis.toMutableList()
+            current.remove(emoji)
+            current.add(0, emoji)
+            state.copy(recentEmojis = current.take(8))
+        }
     }
 
     fun addTextStickerLayer(text: String) {
