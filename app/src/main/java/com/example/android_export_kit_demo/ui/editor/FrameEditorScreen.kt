@@ -585,7 +585,9 @@ private fun TextEditorBar(
 ) {
     if (layer.isLocked) return
 
-    var currentTab by remember(layer.id) { mutableStateOf(TextEditorTab.Font) }
+    var currentTab by remember(layer.id) { 
+        mutableStateOf(if (layer.presetId != null) TextEditorTab.Preset else TextEditorTab.Font) 
+    }
 
     Column(
         modifier = Modifier
@@ -1896,31 +1898,34 @@ private fun PresetPanelContent(viewModel: FrameViewModel, layer: FrameLayer) {
             items(filteredPresets) { preset ->
                 PresetPreviewItem(
                     presetId = preset,
-                    isSelected = false,
+                    isSelected = layer.presetId == preset,
                     onClick = { 
-                        viewModel.addTextLayer("Tap to edit")?.let { newLayer ->
-                            viewModel.applyTextPreset(newLayer, preset)
-                        }
+                        viewModel.applyTextPreset(layer, preset)
                     }
                 )
             }
         }
     }
 }
-
 @Composable
 private fun CurvePanelContent(viewModel: FrameViewModel, layer: FrameLayer) {
     Column(
-        modifier = Modifier.fillMaxSize().padding(horizontal = 32.dp, vertical = 24.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 32.dp, vertical = 25.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
+        verticalArrangement = Arrangement.spacedBy(12.dp) // ✅ FIXED SPACING
     ) {
+
         // 1. Slider with Icons
         Row(
-            modifier = Modifier.fillMaxWidth().height(80.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(30.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+
             // Down Curve Icon
             Canvas(modifier = Modifier.size(24.dp)) {
                 drawArc(
@@ -1928,7 +1933,10 @@ private fun CurvePanelContent(viewModel: FrameViewModel, layer: FrameLayer) {
                     startAngle = 30f,
                     sweepAngle = 120f,
                     useCenter = false,
-                    style = androidx.compose.ui.graphics.drawscope.Stroke(width = 2.dp.toPx(), cap = androidx.compose.ui.graphics.StrokeCap.Round)
+                    style = Stroke(
+                        width = 2.dp.toPx(),
+                        cap = StrokeCap.Round
+                    )
                 )
             }
 
@@ -1953,28 +1961,37 @@ private fun CurvePanelContent(viewModel: FrameViewModel, layer: FrameLayer) {
                     startAngle = 210f,
                     sweepAngle = 120f,
                     useCenter = false,
-                    style = androidx.compose.ui.graphics.drawscope.Stroke(width = 2.dp.toPx(), cap = androidx.compose.ui.graphics.StrokeCap.Round)
+                    style = Stroke(
+                        width = 2.dp.toPx(),
+                        cap = StrokeCap.Round
+                    )
                 )
             }
         }
 
         // 2. Action Buttons
         Row(
-            modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 30.dp),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
+
             // None Button
             CurveOptionButton(
                 selected = layer.curve == 0f,
                 onClick = { viewModel.updateLayerCurve(layer, 0f) }
             ) {
                 Canvas(modifier = Modifier.size(24.dp)) {
-                    drawCircle(color = Color.Gray, style = androidx.compose.ui.graphics.drawscope.Stroke(width = 2.dp.toPx()))
+                    drawCircle(
+                        color = Color.Gray,
+                        style = Stroke(width = 2.dp.toPx())
+                    )
                     drawLine(
                         color = Color.Gray,
-                        start = androidx.compose.ui.geometry.Offset(6.dp.toPx(), 18.dp.toPx()),
-                        end = androidx.compose.ui.geometry.Offset(18.dp.toPx(), 6.dp.toPx()),
+                        start = Offset(6.dp.toPx(), 18.dp.toPx()),
+                        end = Offset(18.dp.toPx(), 6.dp.toPx()),
                         strokeWidth = 2.dp.toPx()
                     )
                 }
@@ -1983,20 +2000,30 @@ private fun CurvePanelContent(viewModel: FrameViewModel, layer: FrameLayer) {
             // Arc Button
             CurveOptionButton(
                 selected = layer.curveType == "arc" && layer.curve != 0f,
-                onClick = { 
+                onClick = {
                     viewModel.updateLayerCurveType(layer, "arc")
-                    if (layer.curve == 0f) viewModel.updateLayerCurve(layer, 0.5f)
+                    if (layer.curve == 0f) {
+                        viewModel.updateLayerCurve(layer, 0.5f)
+                    }
                 }
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("ABC", fontSize = 10.sp, fontWeight = FontWeight.Black, color = Color.Gray)
+                    Text(
+                        "ABC",
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Black,
+                        color = Color.Gray
+                    )
                     Canvas(modifier = Modifier.size(width = 24.dp, height = 8.dp)) {
                         drawArc(
                             color = Color.Gray,
                             startAngle = 210f,
                             sweepAngle = 120f,
                             useCenter = false,
-                            style = androidx.compose.ui.graphics.drawscope.Stroke(width = 2.dp.toPx(), cap = androidx.compose.ui.graphics.StrokeCap.Round)
+                            style = Stroke(
+                                width = 2.dp.toPx(),
+                                cap = StrokeCap.Round
+                            )
                         )
                     }
                 }
@@ -2005,25 +2032,48 @@ private fun CurvePanelContent(viewModel: FrameViewModel, layer: FrameLayer) {
             // Wave Button
             CurveOptionButton(
                 selected = layer.curveType == "wave",
-                onClick = { 
+                onClick = {
                     viewModel.updateLayerCurveType(layer, "wave")
-                    if (layer.curve == 0f) viewModel.updateLayerCurve(layer, 0.5f)
+                    if (layer.curve == 0f) {
+                        viewModel.updateLayerCurve(layer, 0.5f)
+                    }
                 }
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    val textColor = if (layer.curveType == "wave") Color.Black else Color.LightGray
-                    val iconColor = if (layer.curveType == "wave") Color.Black else Color.LightGray
-                    Text("ABC", fontSize = 10.sp, fontWeight = FontWeight.Black, color = textColor)
+
+                    val textColor =
+                        if (layer.curveType == "wave") Color.Black else Color.LightGray
+                    val iconColor =
+                        if (layer.curveType == "wave") Color.Black else Color.LightGray
+
+                    Text(
+                        "ABC",
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Black,
+                        color = textColor
+                    )
+
                     Canvas(modifier = Modifier.size(width = 24.dp, height = 8.dp)) {
-                        val path = androidx.compose.ui.graphics.Path().apply {
+                        val path = Path().apply {
                             moveTo(0f, size.height / 2f)
-                            cubicTo(size.width * 0.25f, 0f, size.width * 0.25f, 0f, size.width * 0.5f, size.height / 2f)
-                            cubicTo(size.width * 0.75f, size.height, size.width * 0.75f, size.height, size.width, size.height / 2f)
+                            cubicTo(
+                                size.width * 0.25f, 0f,
+                                size.width * 0.25f, 0f,
+                                size.width * 0.5f, size.height / 2f
+                            )
+                            cubicTo(
+                                size.width * 0.75f, size.height,
+                                size.width * 0.75f, size.height,
+                                size.width, size.height / 2f
+                            )
                         }
                         drawPath(
                             path = path,
                             color = iconColor,
-                            style = androidx.compose.ui.graphics.drawscope.Stroke(width = 2.dp.toPx(), cap = androidx.compose.ui.graphics.StrokeCap.Round)
+                            style = Stroke(
+                                width = 2.dp.toPx(),
+                                cap = StrokeCap.Round
+                            )
                         )
                     }
                 }

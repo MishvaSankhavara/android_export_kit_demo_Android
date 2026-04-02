@@ -134,7 +134,8 @@ data class FrameLayer(
     var paddingHorizontal: Int = 0,
     var paddingVertical: Int = 0,
     var curveType: String = "arc",
-    var backgroundImage: String? = null
+    var backgroundImage: String? = null,
+    var presetId: String? = null
 ) {
     // Original values for reset
     val origX: Float = x

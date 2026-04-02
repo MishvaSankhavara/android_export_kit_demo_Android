@@ -85,6 +85,7 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
 
     fun fetchCategories() {
         viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
             try {
                 val response = apiService.getCategories("Bearer sprJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9a9fK3sL8dE4Pq7X2RkN5mZC1uH6B0YwTVoJpE")
                 if (response.isSuccessful) {
@@ -92,24 +93,28 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
                     if (body != null && body.status) {
                         _uiState.update { it.copy(categories = body.data) }
                         if (body.data.isNotEmpty()) {
+                            // selectCategory will trigger its own isLoading = true and eventual dismissal
                             selectCategory(body.data[0].id)
+                            return@launch 
                         }
                     }
                 }
-            } catch (e: Exception) {
-            } finally {
+                // If we reach here, we didn't start a second fetch, so clear loading
                 _uiState.update { it.copy(isLoading = false) }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(errorMessage = "Categories error: ${e.message}", isLoading = false) }
             }
         }
     }
 
     fun selectCategory(id: Int) {
-        _uiState.update { it.copy(selectedCategoryId = id) }
+        _uiState.update { it.copy(selectedCategoryId = id, isLoading = true) }
         fetchFramesByCategory(id)
     }
 
     fun fetchFramesByCategory(categoryId: Int) {
         viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
             try {
                 val response = apiService.getFramesByCategory(
                     "Bearer sprJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9a9fK3sL8dE4Pq7X2RkN5mZC1uH6B0YwTVoJpE",
@@ -468,6 +473,7 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
     }
 
     fun applyTextPreset(layer: FrameLayer, presetId: String) {
+        layer.presetId = presetId
         pushUndo()
         
         // Reset all background-related properties first to avoid carry-over
@@ -588,12 +594,12 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
                 layer.color = Color.WHITE
                 layer.fontSize = 24f
                 layer.backgroundColor = Color.parseColor("#F06292")
-                layer.paddingHorizontal = 30
-                layer.paddingVertical = 15
+                layer.paddingHorizontal = 50
+                layer.paddingVertical = 25
                 layer.backgroundRadius = 60f
                 layer.backgroundShape = "bubble_right"
-                layer.width = 300f
-                layer.height = 120f
+                layer.width = 350f
+                layer.height = 160f
             }
             "SmallJoy" -> {
                 layer.text = "small joy moment ✉️"
@@ -601,10 +607,10 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
                 layer.color = Color.BLACK
                 layer.backgroundShape = "bubble_left"
                 layer.backgroundRadius = 15f
-                layer.paddingHorizontal = 25
-                layer.paddingVertical = 12
-                layer.width = 320f
-                layer.height = 110f
+                layer.paddingHorizontal = 40
+                layer.paddingVertical = 20
+                layer.width = 350f
+                layer.height = 140f
                 layer.fontSize = 24f
             }
             "AtHome" -> {
@@ -612,10 +618,10 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
                 layer.backgroundColor = Color.parseColor("#FCE4EC")
                 layer.color = Color.BLACK
                 layer.backgroundRadius = 60f
-                layer.paddingHorizontal = 30
-                layer.paddingVertical = 12
-                layer.width = 240f
-                layer.height = 90f
+                layer.paddingHorizontal = 45
+                layer.paddingVertical = 20
+                layer.width = 280f
+                layer.height = 110f
                 layer.fontSize = 28f
             }
             "LatteLove" -> {
@@ -634,8 +640,10 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
                 layer.color = Color.parseColor("#795548")
                 layer.backgroundShape = "bubble_left"
                 layer.isBold = true
-                layer.width = 300f
-                layer.height = 120f
+                layer.paddingHorizontal = 40
+                layer.paddingVertical = 25
+                layer.width = 320f
+                layer.height = 150f
             }
             "obsessed" -> {
                 layer.backgroundColor = Color.WHITE
@@ -675,10 +683,10 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
             "BubblePink" -> {
                 layer.backgroundImage = "presets/bubble_pink.png"
                 layer.color = Color.BLACK
-                layer.width = 300f
-                layer.height = 100f
-                layer.paddingHorizontal = 40
-                layer.paddingVertical = 20
+                layer.width = 350f
+                layer.height = 140f
+                layer.paddingHorizontal = 60
+                layer.paddingVertical = 30
                 layer.fontSize = 24f
             }
             "ThinkPink" -> {

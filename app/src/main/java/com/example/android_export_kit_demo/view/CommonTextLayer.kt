@@ -146,46 +146,53 @@ fun CommonTextLayer(
             )
         }
         if (isEditingInline && isSelected && onTextChange != null) {
-            BasicTextField(
-                value = layer.text ?: "",
-                onValueChange = onTextChange,
-                textStyle = style,
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(
                         horizontal = (layer.paddingHorizontal * scale).dp,
                         vertical = (layer.paddingVertical * scale).dp
                     ),
-                onTextLayout = { result ->
-                    val padWPx = layer.paddingHorizontal * scale * density * 2f
-                    val padHPx = layer.paddingVertical * scale * density * 2f
-                    val curW = wState.floatValue * density
-                    val curH = hState.floatValue * density
-                    val reqW = result.size.width.toFloat() + padWPx
-                    val reqH = result.size.height.toFloat() + padHPx
+                contentAlignment = Alignment.Center
+            ) {
+                BasicTextField(
+                    value = layer.text ?: "",
+                    onValueChange = onTextChange,
+                    textStyle = style.copy(textAlign = textAlign),
+                    modifier = Modifier.fillMaxWidth(),
+                    onTextLayout = { result ->
+                        val padWPx = layer.paddingHorizontal * scale * density * 2f
+                        val padHPx = layer.paddingVertical * scale * density * 2f
+                        val curW = wState.floatValue * density
+                        val curH = hState.floatValue * density
+                        val reqW = result.size.width.toFloat() + padWPx
+                        val reqH = result.size.height.toFloat() + padHPx
 
-                    // 1. Expand layer if text + padding overflows while typing
-                    if (reqW > curW + 8f || reqH > curH + 8f) {
-                        val newW = max(curW, reqW) / density
-                        val newH = max(curH, reqH) / density
-                        wState.floatValue = newW
-                        hState.floatValue = newH
-                        onTransform(layer, null, null, newW / scale, newH / scale, null, null)
-                    } 
-                    // 2. Shrink font if it still overflows (respecting padding)
-                    else if ((result.hasVisualOverflow || reqH > curH - 2f) && fontScale > 0.1f) {
-                        val availableH = curH - padHPx
-                        val ratio = if (availableH > 0) availableH / result.size.height else 0.5f
-                        if (ratio < 0.99f) {
-                            fontScale = (fontScale * ratio * 0.95f).coerceAtLeast(0.1f)
+                        // 1. Expand layer if text + padding overflows
+                        // During inline editing, we ALWAYS prefer expansion over shrinking
+                        // to keep the text readable for the user.
+                        if (reqW > curW + 2f || reqH > curH + 2f) {
+                            val newW = max(curW, reqW) / density
+                            val newH = max(curH, reqH) / density
+                            wState.floatValue = newW
+                            hState.floatValue = newH
+                            onTransform(layer, null, null, newW / scale, newH / scale, null, null)
+                        } 
+                        // 2. ONLY shrink font if NOT in inline editing mode or if dimensions are locked
+                        else if (!isEditingInline && curW > 10f && curH > 10f && 
+                                (result.hasVisualOverflow || reqW > curW || reqH > curH) && fontScale > 0.1f) {
+                            val ratioW = (curW - padWPx) / result.size.width
+                            val ratioH = (curH - padHPx) / result.size.height
+                            val minRatio = min(ratioW, ratioH).coerceIn(0.1f, 0.99f)
+                            fontScale = (fontScale * minRatio * 0.95f).coerceAtLeast(0.1f)
+                        }
+                        // 3. Grow font back if there is space and we are not editing
+                        else if (!isEditingInline && curW > 10f && result.size.height < (curH - padHPx) * 0.6f && fontScale < 1.0f) {
+                            fontScale = (fontScale * 1.05f).coerceAtMost(1.0f)
                         }
                     }
-                    // 3. Grow font back if there is space
-                    else if (result.size.height < (curH - padHPx) * 0.7f && fontScale < 1.0f) {
-                        fontScale = (fontScale * 1.05f).coerceAtMost(1.0f)
-                    }
-                }
-            )
+                )
+            }
         } else {
             val display = when (layer.textCase) {
                 "lowercase" -> (layer.text ?: "").lowercase()

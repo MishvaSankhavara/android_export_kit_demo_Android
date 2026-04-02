@@ -161,12 +161,6 @@ fun HomeScreen(
                         color = AppColors.Primary
                     )
                 }
-                uiState.apiFrames.isEmpty() && !uiState.isLoading -> {
-                    // Show categories results if frames are empty
-                    EmptyState(onPickZip = {
-                        zipPickerLauncher.launch(arrayOf("application/zip", "application/x-zip-compressed"))
-                    })
-                }
                 isGridView -> {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(2),
@@ -456,62 +450,3 @@ private fun ApiFrameListTile(apiFrame: com.example.android_export_kit_demo.model
     }
 }
 
-// ─────────────────────────────────────────────
-// Empty State
-// ─────────────────────────────────────────────
-
-@Composable
-private fun EmptyState(onPickZip: () -> Unit) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Box(
-            modifier = Modifier
-                .size(100.dp)
-                .background(AppColors.Primary.copy(alpha = 0.08f), shape = CircleShape),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                Icons.Outlined.FolderZip,
-                contentDescription = null,
-                modifier = Modifier.size(50.dp),
-                tint = AppColors.Primary
-            )
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Text(
-            "No Frames Loaded",
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Bold
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = "Import a zip file containing:\n" +
-                   "  • json/ — frame definitions\n" +
-                   "  • skins/ — images & icons\n" +
-                   "  • fonts/ — custom fonts",
-            fontSize = 14.sp,
-            color = Color.Gray,
-            lineHeight = 22.sp
-        )
-
-        Spacer(modifier = Modifier.height(28.dp))
-
-        Button(
-            onClick = onPickZip,
-            colors = ButtonDefaults.buttonColors(containerColor = AppColors.Primary)
-        ) {
-            Icon(Icons.Default.UploadFile, contentDescription = null)
-            Spacer(modifier = Modifier.width(8.dp))
-            Text("Import Zip File")
-        }
-    }
-}
