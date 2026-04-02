@@ -36,7 +36,7 @@ data class FrameUiState(
     val frames: List<FrameModel> = emptyList(),
     val selectedFrame: FrameModel? = null,
     val selectedLayer: FrameLayer? = null,
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
     val errorMessage: String? = null,
     val isDrawingMode: Boolean = false,
     val currentDrawingStrokes: List<DrawingStroke> = emptyList(),
@@ -97,7 +97,8 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
                     }
                 }
             } catch (e: Exception) {
-                _uiState.update { it.copy(errorMessage = "Failed to fetch categories: ${e.message}") }
+            } finally {
+                _uiState.update { it.copy(isLoading = false) }
             }
         }
     }
@@ -122,6 +123,8 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
                 }
             } catch (e: Exception) {
                 _uiState.update { it.copy(errorMessage = "Failed to fetch frames: ${e.message}") }
+            } finally {
+                _uiState.update { it.copy(isLoading = false) }
             }
         }
     }

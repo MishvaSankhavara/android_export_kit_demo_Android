@@ -68,6 +68,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
+import com.example.android_export_kit_demo.ui.editor.EmojiData
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -271,8 +272,12 @@ fun FrameEditorScreen(
                         viewModel.deselectAll()
                         activeSubEditor = null
                     } else {
+                        val isEmoji = layer.type == LayerType.TEXT && isOnlyEmoji(layer.text)
+                        
                         if (uiState.selectedLayer === layer) {
-                            if (layer.type == LayerType.TEXT) {
+                            if (isEmoji) {
+                                activeSubEditor = "Stickers"
+                            } else if (layer.type == LayerType.TEXT) {
                                 activeSubEditor = "Edit Text"
                             } else if (layer.type == LayerType.IMAGE && layer.isPhotoSlot) {
                                 showImageSheet = true
@@ -281,6 +286,15 @@ fun FrameEditorScreen(
                             viewModel.selectLayer(layer)
                             if (layer.type == LayerType.TEXT) {
                                 textInput = layer.text ?: ""
+                                // Set to Stickers if emoji, else clear to avoid persistent panel
+                                if (isEmoji) {
+                                    activeSubEditor = "Stickers"
+                                } else {
+                                    activeSubEditor = null
+                                }
+                            } else {
+                                // Clear for non-text layers (images, slots)
+                                activeSubEditor = null
                             }
                         }
                     }
@@ -591,7 +605,6 @@ private fun TextEditorBar(
             TextEditorTabIcon(Icons.Default.TextFields, "Font", currentTab == TextEditorTab.Font, Modifier.weight(1f)) { currentTab = TextEditorTab.Font }
             TextEditorTabIcon(Icons.Default.Palette, "Style", currentTab == TextEditorTab.Style, Modifier.weight(1f)) { currentTab = TextEditorTab.Style }
             TextEditorTabIcon(Icons.Default.Star, "Preset", currentTab == TextEditorTab.Preset, Modifier.weight(1f)) { currentTab = TextEditorTab.Preset }
-            TextEditorTabIcon(Icons.Default.AddReaction, "Sticker", false, Modifier.weight(1f)) { onOpenSubEditor("Stickers") }
             TextEditorTabIcon(Icons.Default.Abc, "Curve", currentTab == TextEditorTab.Curve, Modifier.weight(1f)) { currentTab = TextEditorTab.Curve }
             
             // Done Checkmark styled same as tabs for uniformity
@@ -1234,26 +1247,44 @@ private fun AdjustTabContent(viewModel: FrameViewModel, layer: FrameLayer?) {
 
 @Composable
 private fun StickersPanelContent(viewModel: FrameViewModel, uiState: FrameUiState, onClose: () -> Unit) {
-    var selectedTab by remember { mutableIntStateOf(1) } // 0:Premium, 1:Emoji, 2:Flower, 3:Sakura, 4:Bunny, 5:Scissors
+    var selectedTab by remember { mutableIntStateOf(1) } // 0:Recent, 1:All, 2:Smileys, 3:People, 4:Animals, 5:Food, 6:Activities, 7:Travel, 8:Objects, 9:Symbols, 10:Flags, 11:Flower, 12:Sakura, 13:Bunny, 14:Premium
     
     val floraStickers = listOf("daisy.png", "sakura.png")
     val bunnyStickers = listOf("bunny.png")
     val premiumStickers = listOf("nezuko.png")
 
     Column(modifier = Modifier.fillMaxWidth().height(200.dp).background(Color.White)) {
-        // 1. Tab Bar
+        // 1. Header with Scrollable Tabs
         Row(
-            modifier = Modifier.fillMaxWidth().height(50.dp).padding(horizontal = 4.dp),
+            modifier = Modifier.fillMaxWidth().height(48.dp).padding(horizontal = 4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            VerticalDivider(modifier = Modifier.padding(vertical = 4.dp, horizontal = 4.dp), color = Color.LightGray.copy(alpha=0.5f))
-            
-            // Category Tabs
-            Row(modifier = Modifier.weight(1f), horizontalArrangement = Arrangement.Start) {
-                TabIconSmall(Icons.Default.SentimentSatisfiedAlt, selectedTab == 1) { selectedTab = 1 }
-                TabIconSmall(Icons.Default.LocalFlorist, selectedTab == 2) { selectedTab = 2 }
-                TabIconSmall(Icons.Default.FilterVintage, selectedTab == 3) { selectedTab = 3 }
-                TabIconSmall(Icons.Default.Pets, selectedTab == 4) { selectedTab = 4 }
+            // Scrollable Icon Bar
+            Row(
+                modifier = Modifier.weight(1f).horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // 0. Recent (History)
+                TabIconSmall(Icons.Default.History, selectedTab == 0) { selectedTab = 0 }
+                
+                // Emoji Categories (1-9)
+                TabIconSmall(Icons.AutoMirrored.Filled.List, selectedTab == 1) { selectedTab = 1 } // All (Fallback) - or just start from Smileys
+                TabIconSmall(Icons.Default.SentimentSatisfiedAlt, selectedTab == 2) { selectedTab = 2 } // Smileys
+                TabIconSmall(Icons.Default.EmojiPeople, selectedTab == 3) { selectedTab = 3 } // People
+                TabIconSmall(Icons.Default.Pets, selectedTab == 4) { selectedTab = 4 } // Animals
+                TabIconSmall(Icons.Default.Restaurant, selectedTab == 5) { selectedTab = 5 } // Food
+                TabIconSmall(Icons.Default.SportsBasketball, selectedTab == 6) { selectedTab = 6 } // Activities
+                TabIconSmall(Icons.Default.Train, selectedTab == 7) { selectedTab = 7 } // Travel
+                TabIconSmall(Icons.Default.Lightbulb, selectedTab == 8) { selectedTab = 8 } // Objects
+                TabIconSmall(Icons.Default.Translate, selectedTab == 9) { selectedTab = 9 } // Symbols
+                TabIconSmall(Icons.Default.Flag, selectedTab == 10) { selectedTab = 10 } // Flags
+                
+                // Local Stickers (11-13)
+                TabIconSmall(Icons.Default.LocalFlorist, selectedTab == 11) { selectedTab = 11 } // Flower
+                TabIconSmall(Icons.Default.FilterVintage, selectedTab == 12) { selectedTab = 12 } // Sakura
+                TabIconSmall(Icons.Default.ChildCare, selectedTab == 13) { selectedTab = 13 } // Bunny
+                TabIconSmall(Icons.Default.AutoAwesome, selectedTab == 14) { selectedTab = 14 } // Premium
             }
             
             IconButton(onClick = onClose) {
@@ -1272,58 +1303,44 @@ private fun StickersPanelContent(viewModel: FrameViewModel, uiState: FrameUiStat
             modifier = Modifier.weight(1f)
         ) {
             when (selectedTab) {
-                0 -> { // Premium (Nezuko)
-                    items(premiumStickers) { path ->
-                        StickerGridItem("stickers/$path") { viewModel.addStickerLayer("stickers/$path") }
+                0 -> { // Recent
+                    items(uiState.recentEmojis) { emoji ->
+                        EmojiItem(emoji) { viewModel.addEmojiLayer(emoji) }
                     }
                 }
-                1 -> { // Emojis
-                    val categories = mutableListOf<Pair<String, List<String>>>()
-                    if (uiState.recentEmojis.isNotEmpty()) {
-                        categories.add("Recent" to uiState.recentEmojis)
-                    }
-                    categories.addAll(listOf(
-                        "People" to listOf("😀", "😃", "😄", "😁", "😆", "😅", "😂", "🤣", "😊", "😇", "🙂", "🙃", "😉", "😌", "😍", "🥰", "😘", "😗", "😙", "😚", "😋", "😛", "😝", "😜", "🤪", "🤨", "🧐", "🤓", "😎", "🤩", "🥳", "😏", "😒", "😞", "😔", "😟", "😕", "🙁", "☹️", "😣", "😖", "😫", "😩", "🥺", "😢", "😭", "😤", "😠", "😡", "🤬", "🤯", "😳", "🥵", "🥶", "😱", "😨", "😰", "😥", "😓", "🤗", "🤔", "🤭", "🤫", "🤥", "😶", "😐", "😑", "😬", "🙄", "😯", "😦", "😧", "😮", "😲", "😴", "🤤", "😪", "😵", "🤐", "🥴", "🤢", "🤮", "🤧", "😷", "🤒", "🤕", "🤑", "🤠", "😈", "👿", "👹", "👺", "🤡", "💩", "👻", "💀", "☠️", "🤲", "👐", "🙌", "👏", "🤝", "👍", "👎", "👊", "✊", "🤛", "🤜", "🤞", "✌️", "🤟", "🤘", "👌", "👈", "👉", "👆", "👇", "☝️", "✋", "🤚", "🖐", "🖖", "👋", "🤙", "💪", "🖕", "✍️", "🙏"),
-                        "Animals&Nature" to listOf("🐶", "🐱", "🐭", "🐹", "🐰", "🦊", "🐻", "🐼", "🐨", "🐯", "🦁", "🐮", "🐷", "🐽", "🐸", "🐵", "🙈", "🙉", "🙊", "🐒", "🐔", "🐧", "🐦", "🐥", "🐤", "🐣", "🦆", "🦢", "🦉", "🦚", "🦜", "🐊", "🐢", "🦎", "🐍", "🐲", "🐉", "🦕", "🦖", "🐳", "🐋", "🐬", "🐟", "🐠", "🐡", "🐙", "🐚", "🐌", "🦋", "🦠", "💐", "🌸", "💮", "🏵", "🌹", "🥀", "🌺", "🌻", "🌼", "🌷", "🌱", "🌲", "🌳", "🌴", "🌵"),
-                        "Celebration" to listOf("🎆", "🎇", "🧨", "✨", "🎈", "🎉", "🎊", "🎋", "🎍", "🎎", "🎏", "🎐", "🎑", "🧧", "🎀", "🎁", "🎗", "🎟", "🎫", "🎖", "🏆", "🏅", "🥇", "🥈", "🥉"),
-                        "Food" to listOf("🍏", "🍎", "🍐", "🍊", "🍋", "🍌", "🍉", "🍇", "🍓", "🍈", "🍒", "🍑", "🍍", "🥥", "🍅", "🍆", "🥦", "🥐", "🥘", "🍳", "🍲", "🥗", "🍠", "🍢", "🍡", "🥠", "🥡", "🍦", "🍧", "🍨", "🍩", "🍮"),
-                        "Activity" to listOf("⚽️", "🏀", "🏈", "🥎", "🎾", "🏐", "🏉", "🎱", "🏓", "🏸", "🥅", "🏒", "🏑", "🏏", "⛳️", "🏹", "🏋️", )
-                    ))
-                    categories.forEach { (title, emojis) ->
-                        item(span = { GridItemSpan(7) }) {
-                            Text(
-                                text = title,
-                                fontSize = 11.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.Gray,
-                                modifier = Modifier.padding(top = 16.dp, bottom = 4.dp)
-                            )
-                        }
-                        items(emojis) { emoji ->
-                            EmojiItem(emoji) { viewModel.addEmojiLayer(emoji) }
-                        }
+                1 -> { // All (Smileys)
+                    items(EmojiData.smileys) { emoji ->
+                        EmojiItem(emoji) { viewModel.addEmojiLayer(emoji) }
                     }
                 }
-                2 -> { // Flower
+                2 -> items(EmojiData.smileys) { emoji -> EmojiItem(emoji) { viewModel.addEmojiLayer(emoji) } }
+                3 -> items(EmojiData.people) { emoji -> EmojiItem(emoji) { viewModel.addEmojiLayer(emoji) } }
+                4 -> items(EmojiData.animals) { emoji -> EmojiItem(emoji) { viewModel.addEmojiLayer(emoji) } }
+                5 -> items(EmojiData.food) { emoji -> EmojiItem(emoji) { viewModel.addEmojiLayer(emoji) } }
+                6 -> items(EmojiData.activities) { emoji -> EmojiItem(emoji) { viewModel.addEmojiLayer(emoji) } }
+                7 -> items(EmojiData.travel) { emoji -> EmojiItem(emoji) { viewModel.addEmojiLayer(emoji) } }
+                8 -> items(EmojiData.objects) { emoji -> EmojiItem(emoji) { viewModel.addEmojiLayer(emoji) } }
+                9 -> items(EmojiData.symbols) { emoji -> EmojiItem(emoji) { viewModel.addEmojiLayer(emoji) } }
+                10 -> items(EmojiData.flags) { emoji -> EmojiItem(emoji) { viewModel.addEmojiLayer(emoji) } }
+                
+                11 -> { // Flower
                     items(floraStickers) { path ->
                         StickerGridItem("stickers/$path") { viewModel.addStickerLayer("stickers/$path") }
                     }
                 }
-                3 -> { // Sakura
+                12 -> { // Sakura
                     items(floraStickers.filter { it.contains("sakura") }) { path ->
                         StickerGridItem("stickers/$path") { viewModel.addStickerLayer("stickers/$path") }
                     }
                 }
-                4 -> { // Bunny
+                13 -> { // Bunny
                     items(bunnyStickers) { path ->
                         StickerGridItem("stickers/$path") { viewModel.addStickerLayer("stickers/$path") }
                     }
                 }
-                5 -> { // Scissors (Placeholder for Cutouts)
-                    item(span = { GridItemSpan(7) }) {
-                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Text("Custom Cutouts", color = Color.Gray, fontSize = 12.sp)
-                        }
+                14 -> { // Premium (Nezuko)
+                    items(premiumStickers) { path ->
+                        StickerGridItem("stickers/$path") { viewModel.addStickerLayer("stickers/$path") }
                     }
                 }
             }
@@ -2435,3 +2452,12 @@ private fun getPreviewShape(name: String): androidx.compose.ui.graphics.Shape {
 }
 
 private data class Quad<A, B, C, D>(val first: A, val second: B, val third: C, val fourth: D)
+
+private fun isOnlyEmoji(text: String?): Boolean {
+    if (text == null || text.isBlank()) return false
+    // A simple check: if it has at least one emoji and no letters/digits.
+    val emojiPattern = "[\\uD83C-\\uDBFF\\uDC00-\\uDFFF]+".toRegex()
+    val hasEmoji = emojiPattern.find(text) != null
+    val hasText = "[a-zA-Z0-9]".toRegex().find(text) != null
+    return hasEmoji && !hasText
+}
