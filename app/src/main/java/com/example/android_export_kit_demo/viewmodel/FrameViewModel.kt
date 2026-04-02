@@ -379,6 +379,45 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
                 layer.strokeWidth = 1.5f
                 layer.shadowBlur = 0f
             }
+            "3D" -> {
+                layer.color = Color.WHITE
+                layer.shadowColor = Color.DKGRAY
+                layer.shadowBlur = 0f
+                layer.shadowOffsetX = 4f
+                layer.shadowOffsetY = 4f
+            }
+            "Summer" -> {
+                layer.font = "Cursive"
+                layer.color = Color.parseColor("#FFD600")
+                layer.shadowColor = Color.parseColor("#FF6D00")
+                layer.shadowBlur = 8f
+            }
+            "Christmas" -> {
+                layer.color = Color.parseColor("#D32F2F")
+                layer.strokeColor = Color.WHITE
+                layer.strokeWidth = 1f
+                layer.shadowColor = Color.parseColor("#388E3C")
+                layer.shadowBlur = 4f
+            }
+            "LoveStory" -> {
+                layer.font = "Serif"
+                layer.color = Color.parseColor("#C2185B")
+                layer.isItalic = true
+                layer.shadowBlur = 6f
+                layer.shadowColor = Color.parseColor("#F48FB1")
+            }
+            "KindaLoveThis" -> {
+                layer.font = "SansSerif"
+                layer.backgroundColor = Color.parseColor("#FCE4EC")
+                layer.backgroundRadius = 15f
+                layer.color = Color.parseColor("#C2185B")
+            }
+            "Stamp1999" -> {
+                layer.font = "Monospace"
+                layer.color = Color.GRAY
+                layer.strokeColor = Color.DKGRAY
+                layer.strokeWidth = 0.5f
+            }
         }
         notifyLayersChanged()
     }

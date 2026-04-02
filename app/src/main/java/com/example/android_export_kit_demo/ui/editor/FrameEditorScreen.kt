@@ -1465,23 +1465,24 @@ private fun StylePanelContent(viewModel: FrameViewModel, layer: FrameLayer) {
     Column(modifier = Modifier.fillMaxSize()) {
         // 1. Sub-tab Selection (Pills)
         LazyRow(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 10.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 14.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             items(StyleSubTab.values()) { tab ->
                 val isSel = selectedSubTab == tab
                 Box(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(20.dp))
-                        .background(if (isSel) Color(0xFF3F51B5) else Color(0xFFF0F0F0))
+                        .height(32.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(if (isSel) Color(0xFF3F51B5) else Color(0xFFEEEEEE))
                         .clickable { selectedSubTab = tab }
-                        .padding(horizontal = 16.dp, vertical = 6.dp),
+                        .padding(horizontal = 14.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = tab.label,
-                        fontSize = 12.sp,
+                        fontSize = 14.sp,
                         color = if (isSel) Color.White else Color.Gray,
                         fontWeight = if (isSel) FontWeight.Bold else FontWeight.Normal
                     )
@@ -1722,26 +1723,89 @@ private fun StyleColorRow(selectedColor: Int, showNone: Boolean = false, onColor
 
 @Composable
 private fun PresetPanelContent(viewModel: FrameViewModel, layer: FrameLayer) {
-    val presets = listOf("Modern", "Elegant", "Neon", "Outline", "3D", "Retro", "Glow", "Vibrant")
+    var selectedCategory by remember { mutableStateOf("Simple") }
+    val categories = listOf("None", "Mood", "Hot", "Chic", "Bubble", "Style", "Stamp", "Autumn", "Holiday", "Simple")
     
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(3),
-        contentPadding = PaddingValues(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-        modifier = Modifier.fillMaxSize()
-    ) {
-        items(presets) { preset: String ->
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(Color(0xFFF5F5F5))
-                    .clickable { viewModel.applyTextPreset(layer, preset) },
-                contentAlignment = Alignment.Center
-            ) {
-                androidx.compose.material3.Text(preset, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+    val allPresets = listOf(
+        Pair("Modern", "Simple"), Pair("Elegant", "Simple"), Pair("Neon", "Hot"),
+        Pair("Outline", "Simple"), Pair("3D", "Simple"), Pair("Retro", "Simple"),
+        Pair("Glow", "Hot"), Pair("Vibrant", "Hot"),
+        Pair("Summer", "Hot"), Pair("Christmas", "Holiday"), Pair("Easter", "Holiday"),
+        Pair("LoveStory", "Mood"), Pair("DoingMyBest", "Chic"), Pair("KindaLoveThis", "Bubble"),
+        Pair("KeepGoing", "Bubble"), Pair("Stamp1999", "Stamp")
+    )
+    
+    val filteredPresets = if (selectedCategory == "None") emptyList() 
+                         else allPresets.filter { it.second == selectedCategory }.map { it.first }
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        // 1. Category Tabs (Pills)
+        LazyRow(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 14.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            items(categories) { cat ->
+                val isSel = selectedCategory == cat
+                Box(
+                    modifier = Modifier
+                        .height(32.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(if (isSel) Color(0xFF3F51B5) else Color(0xFFEEEEEE))
+                        .clickable { selectedCategory = cat }
+                        .padding(horizontal = 14.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (cat == "None") {
+                        Icon(Icons.Default.Block, null, tint = if (isSel) Color.White else Color.Gray, modifier = Modifier.size(18.dp))
+                    } else {
+                        androidx.compose.material3.Text(
+                            text = cat,
+                            fontSize = 14.sp,
+                            color = if (isSel) Color.White else Color.Gray,
+                            fontWeight = if (isSel) FontWeight.Bold else FontWeight.Normal
+                        )
+                    }
+                }
+            }
+        }
+
+        HorizontalDivider(thickness = 0.5.dp, color = Color.LightGray.copy(alpha = 0.3f))
+
+        // 2. Preset Grid
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            contentPadding = PaddingValues(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.weight(1f)
+        ) {
+            items(filteredPresets) { preset ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(110.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color(0xFFEEEEEE))
+                        .clickable { viewModel.applyTextPreset(layer, preset) },
+                    contentAlignment = Alignment.Center
+                ) {
+                    androidx.compose.material3.Text(
+                        text = preset,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = when(preset) {
+                            "Neon", "Glow" -> Color.Cyan
+                            "Christmas" -> Color.Red
+                            else -> Color.Gray
+                        },
+                        fontFamily = when(preset) {
+                            "Modern" -> FontFamily.SansSerif
+                            "Elegant" -> FontFamily.Serif
+                            else -> FontFamily.Default
+                        }
+                    )
+                }
             }
         }
     }
