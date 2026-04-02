@@ -116,7 +116,9 @@ data class FrameLayer(
     var textScript: String = "normal", // 'normal', 'subscript', 'superscript'
     var backgroundRadius: Float = 0f,
     var backgroundOpacity: Float = 1f,
+    var backgroundShape: String? = null,
     var strokes: MutableList<DrawingStroke>? = null,
+
 
     // Image Adjustments
     var brightness: Float = 0f,   // -1.0 to 1.0
@@ -128,7 +130,11 @@ data class FrameLayer(
     var shadows: Float = 1f,      // 0.0 to 2.0
     var curve: Float = 0f,         // -1.0 to 1.0 (Angle or strength of arc)
     var letterSpacing: Float = 0f,
-    var lineHeight: Float = 0f
+    var lineHeight: Float = 0f,
+    var paddingHorizontal: Int = 0,
+    var paddingVertical: Int = 0,
+    var curveType: String = "arc",
+    var backgroundImage: String? = null
 ) {
     // Original values for reset
     val origX: Float = x
@@ -172,6 +178,7 @@ data class FrameLayer(
         filter = "none"
         backgroundRadius = 0f
         backgroundOpacity = 1f
+        backgroundShape = null
         brightness = 0f
         contrast = 1f
         saturation = 1f
@@ -220,6 +227,7 @@ data class FrameLayer(
         "filter" to filter,
         "backgroundRadius" to backgroundRadius,
         "backgroundOpacity" to backgroundOpacity,
+        "backgroundShape" to backgroundShape,
         "brightness" to brightness,
         "contrast" to contrast,
         "saturation" to saturation,
@@ -228,8 +236,12 @@ data class FrameLayer(
         "highlights" to highlights,
         "shadows" to shadows,
         "curve" to curve,
+        "curveType" to curveType,
         "letterSpacing" to letterSpacing,
         "lineHeight" to lineHeight,
+        "paddingHorizontal" to paddingHorizontal,
+        "paddingVertical" to paddingVertical,
+        "backgroundImage" to backgroundImage,
         "strokes" to strokes?.map { it.toJson() }
     )
 
@@ -275,6 +287,7 @@ data class FrameLayer(
         filter: String? = null,
         backgroundRadius: Float? = null,
         backgroundOpacity: Float? = null,
+        backgroundShape: String? = null,
         brightness: Float? = null,
         contrast: Float? = null,
         saturation: Float? = null,
@@ -283,8 +296,12 @@ data class FrameLayer(
         highlights: Float? = null,
         shadows: Float? = null,
         curve: Float? = null,
+        curveType: String? = null,
         letterSpacing: Float? = null,
         lineHeight: Float? = null,
+        paddingHorizontal: Int? = null,
+        paddingVertical: Int? = null,
+        backgroundImage: String? = null,
         strokes: MutableList<DrawingStroke>? = null
     ): FrameLayer = FrameLayer(
         id = this.id,
@@ -329,6 +346,8 @@ data class FrameLayer(
         flipV = flipV ?: this.flipV,
         filter = filter ?: this.filter,
         backgroundRadius = backgroundRadius ?: this.backgroundRadius,
+        backgroundOpacity = backgroundOpacity ?: this.backgroundOpacity,
+        backgroundShape = backgroundShape ?: this.backgroundShape,
         brightness = brightness ?: this.brightness,
         contrast = contrast ?: this.contrast,
         saturation = saturation ?: this.saturation,
@@ -337,8 +356,12 @@ data class FrameLayer(
         highlights = highlights ?: this.highlights,
         shadows = shadows ?: this.shadows,
         curve = curve ?: this.curve,
+        curveType = curveType ?: this.curveType,
         letterSpacing = letterSpacing ?: this.letterSpacing,
         lineHeight = lineHeight ?: this.lineHeight,
+        paddingHorizontal = paddingHorizontal ?: this.paddingHorizontal,
+        paddingVertical = paddingVertical ?: this.paddingVertical,
+        backgroundImage = backgroundImage ?: this.backgroundImage,
         strokes = strokes ?: this.strokes
     )
 
@@ -415,6 +438,7 @@ data class FrameLayer(
                 filter = json["filter"] as? String ?: "none",
                 backgroundRadius = (json["backgroundRadius"] as? Number)?.toFloat() ?: 0f,
                 backgroundOpacity = (json["backgroundOpacity"] as? Number)?.toFloat() ?: 1f,
+                backgroundShape = json["backgroundShape"] as? String,
                 brightness = (json["brightness"] as? Number)?.toFloat() ?: 0f,
                 contrast = (json["contrast"] as? Number)?.toFloat() ?: 1f,
                 saturation = (json["saturation"] as? Number)?.toFloat() ?: 1f,
@@ -423,8 +447,12 @@ data class FrameLayer(
                 highlights = (json["highlights"] as? Number)?.toFloat() ?: 1f,
                 shadows = (json["shadows"] as? Number)?.toFloat() ?: 1f,
                 curve = (json["curve"] as? Number)?.toFloat() ?: 0f,
+                curveType = json["curveType"] as? String ?: "arc",
                 letterSpacing = (json["letterSpacing"] as? Number)?.toFloat() ?: 0f,
                 lineHeight = (json["lineHeight"] as? Number)?.toFloat() ?: 0f,
+                paddingHorizontal = (json["paddingHorizontal"] as? Number)?.toInt() ?: 0,
+                paddingVertical = (json["paddingVertical"] as? Number)?.toInt() ?: 0,
+                backgroundImage = json["backgroundImage"] as? String,
                 strokes = strokesJson?.map { DrawingStroke.fromJson(it) }?.toMutableList()
             )
         }

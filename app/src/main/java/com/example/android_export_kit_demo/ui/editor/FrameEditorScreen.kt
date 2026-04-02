@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -39,6 +40,10 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.foundation.lazy.grid.*
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Path
 import com.example.android_export_kit_demo.model.DrawingStroke
 import com.example.android_export_kit_demo.model.FrameLayer
 import kotlin.math.abs
@@ -50,7 +55,12 @@ import androidx.compose.ui.res.painterResource
 import com.example.android_export_kit_demo.model.FrameModel
 import com.example.android_export_kit_demo.model.LayerType
 import com.example.android_export_kit_demo.AppColors
+import coil.compose.AsyncImage
 import com.example.android_export_kit_demo.view.FrameCanvasView
+import com.example.android_export_kit_demo.view.HeartShape
+import com.example.android_export_kit_demo.view.CloudShape
+import com.example.android_export_kit_demo.view.BurstShape
+import com.example.android_export_kit_demo.view.SpeechBubbleShape
 import com.example.android_export_kit_demo.viewmodel.FrameUiState
 import com.example.android_export_kit_demo.viewmodel.FrameViewModel
 import kotlinx.coroutines.Dispatchers
@@ -473,8 +483,6 @@ private fun DrawPanel(viewModel: FrameViewModel, uiState: FrameUiState, onClose:
         }
     }
 }
-
-
 
 @Composable
 private fun ColorRowLarge(selColorInt: Int, onCh: (Color) -> Unit) {
@@ -1421,7 +1429,7 @@ private fun AdvancedFontPanelContent(viewModel: FrameViewModel, layer: FrameLaye
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(65.dp)
+                        .height(60.dp)
                         .clip(RoundedCornerShape(8.dp))
                         .background(if (isSel) Color(0xFFEEEEEE) else Color(0xFFF9F9F9))
                         .border(1.dp, if (isSel) Color(0xFF3F51B5) else Color.Transparent, RoundedCornerShape(8.dp))
@@ -1723,16 +1731,20 @@ private fun StyleColorRow(selectedColor: Int, showNone: Boolean = false, onColor
 
 @Composable
 private fun PresetPanelContent(viewModel: FrameViewModel, layer: FrameLayer) {
-    var selectedCategory by remember { mutableStateOf("Simple") }
-    val categories = listOf("None", "Mood", "Hot", "Chic", "Bubble", "Style", "Stamp", "Autumn", "Holiday", "Simple")
+    var selectedCategory by remember { mutableStateOf("Hot") }
+    val categories = listOf("None", "Mood", "Hot", "Bubble", "Simple")
     
     val allPresets = listOf(
-        Pair("Modern", "Simple"), Pair("Elegant", "Simple"), Pair("Neon", "Hot"),
-        Pair("Outline", "Simple"), Pair("3D", "Simple"), Pair("Retro", "Simple"),
-        Pair("Glow", "Hot"), Pair("Vibrant", "Hot"),
-        Pair("Summer", "Hot"), Pair("Christmas", "Holiday"), Pair("Easter", "Holiday"),
-        Pair("LoveStory", "Mood"), Pair("DoingMyBest", "Chic"), Pair("KindaLoveThis", "Bubble"),
-        Pair("KeepGoing", "Bubble"), Pair("Stamp1999", "Stamp")
+        Pair("Modern", "Simple"), Pair("Minimal", "Simple"), Pair("Elegant", "Simple"), 
+        Pair("Dark", "Simple"), Pair("SoftCloud", "Simple"), Pair("Classic", "Simple"),
+        Pair("Broken", "Hot"), Pair("OMG", "Hot"), Pair("so fetch", "Hot"),
+        Pair("ABSOLUTELY CHILL", "Hot"), Pair("KindaLoveThis", "Hot"), Pair("Neon", "Hot"),
+        Pair("LoveStory", "Mood"), Pair("SmallJoy", "Mood"), Pair("AtHome", "Mood"), Pair("LatteLove", "Mood"),
+        Pair("DoingMyBest", "Mood"), Pair("KindaLoveThis", "Bubble"),
+        Pair("BubblePink", "Bubble"), Pair("ThinkPink", "Bubble"), Pair("ThinkWhite", "Bubble"),
+        Pair("HeartPremium", "Bubble"), Pair("BubblePremium", "Bubble"),
+        Pair("SASSY BUT CLASSY", "Bubble"), Pair("WEEKEND MODE", "Bubble"),
+        Pair("obsessed", "Bubble"), Pair("love ya", "Bubble")
     )
     
     val filteredPresets = if (selectedCategory == "None") emptyList() 
@@ -1761,7 +1773,7 @@ private fun PresetPanelContent(viewModel: FrameViewModel, layer: FrameLayer) {
                     } else {
                         androidx.compose.material3.Text(
                             text = cat,
-                            fontSize = 14.sp,
+                            fontSize = 12.sp,
                             color = if (isSel) Color.White else Color.Gray,
                             fontWeight = if (isSel) FontWeight.Bold else FontWeight.Normal
                         )
@@ -1774,38 +1786,22 @@ private fun PresetPanelContent(viewModel: FrameViewModel, layer: FrameLayer) {
 
         // 2. Preset Grid
         LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
+            columns = GridCells.Fixed(4),
             contentPadding = PaddingValues(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
             modifier = Modifier.weight(1f)
         ) {
             items(filteredPresets) { preset ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(110.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(Color(0xFFEEEEEE))
-                        .clickable { viewModel.applyTextPreset(layer, preset) },
-                    contentAlignment = Alignment.Center
-                ) {
-                    androidx.compose.material3.Text(
-                        text = preset,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = when(preset) {
-                            "Neon", "Glow" -> Color.Cyan
-                            "Christmas" -> Color.Red
-                            else -> Color.Gray
-                        },
-                        fontFamily = when(preset) {
-                            "Modern" -> FontFamily.SansSerif
-                            "Elegant" -> FontFamily.Serif
-                            else -> FontFamily.Default
+                PresetPreviewItem(
+                    presetId = preset,
+                    isSelected = false,
+                    onClick = { 
+                        viewModel.addTextLayer("Tap to edit")?.let { newLayer ->
+                            viewModel.applyTextPreset(newLayer, preset)
                         }
-                    )
-                }
+                    }
+                )
             }
         }
     }
@@ -1814,23 +1810,143 @@ private fun PresetPanelContent(viewModel: FrameViewModel, layer: FrameLayer) {
 @Composable
 private fun CurvePanelContent(viewModel: FrameViewModel, layer: FrameLayer) {
     Column(
-        modifier = Modifier.fillMaxSize().padding(24.dp),
+        modifier = Modifier.fillMaxSize().padding(horizontal = 32.dp, vertical = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Text("Curve Strength", fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = Color.Gray)
-        Spacer(Modifier.height(16.dp))
-        Slider(
-            value = layer.curve,
-            onValueChange = { viewModel.updateLayerCurve(layer, it) },
-            valueRange = -1f..1f,
-            modifier = Modifier.fillMaxWidth(),
-            colors = SliderDefaults.colors(thumbColor = Color(0xFF3F51B5), activeTrackColor = Color(0xFF3F51B5))
-        )
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text("Down", fontSize = 11.sp, color = Color.Gray)
-            Text("None", fontSize = 11.sp, color = Color.Gray)
-            Text("Up", fontSize = 11.sp, color = Color.Gray)
+        // 1. Slider with Icons
+        Row(
+            modifier = Modifier.fillMaxWidth().height(80.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            // Down Curve Icon
+            Canvas(modifier = Modifier.size(24.dp)) {
+                drawArc(
+                    color = Color.Black,
+                    startAngle = 30f,
+                    sweepAngle = 120f,
+                    useCenter = false,
+                    style = androidx.compose.ui.graphics.drawscope.Stroke(width = 2.dp.toPx(), cap = androidx.compose.ui.graphics.StrokeCap.Round)
+                )
+            }
+
+            Slider(
+                value = layer.curve,
+                onValueChange = { viewModel.updateLayerCurve(layer, it) },
+                valueRange = -1f..1f,
+                modifier = Modifier.weight(1f),
+                colors = SliderDefaults.colors(
+                    thumbColor = Color.Black,
+                    activeTrackColor = Color.LightGray,
+                    inactiveTrackColor = Color.LightGray,
+                    activeTickColor = Color.Transparent,
+                    inactiveTickColor = Color.Transparent
+                )
+            )
+
+            // Up Curve Icon
+            Canvas(modifier = Modifier.size(24.dp)) {
+                drawArc(
+                    color = Color.Black,
+                    startAngle = 210f,
+                    sweepAngle = 120f,
+                    useCenter = false,
+                    style = androidx.compose.ui.graphics.drawscope.Stroke(width = 2.dp.toPx(), cap = androidx.compose.ui.graphics.StrokeCap.Round)
+                )
+            }
+        }
+
+        // 2. Action Buttons
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // None Button
+            CurveOptionButton(
+                selected = layer.curve == 0f,
+                onClick = { viewModel.updateLayerCurve(layer, 0f) }
+            ) {
+                Canvas(modifier = Modifier.size(24.dp)) {
+                    drawCircle(color = Color.Gray, style = androidx.compose.ui.graphics.drawscope.Stroke(width = 2.dp.toPx()))
+                    drawLine(
+                        color = Color.Gray,
+                        start = androidx.compose.ui.geometry.Offset(6.dp.toPx(), 18.dp.toPx()),
+                        end = androidx.compose.ui.geometry.Offset(18.dp.toPx(), 6.dp.toPx()),
+                        strokeWidth = 2.dp.toPx()
+                    )
+                }
+            }
+
+            // Arc Button
+            CurveOptionButton(
+                selected = layer.curveType == "arc" && layer.curve != 0f,
+                onClick = { 
+                    viewModel.updateLayerCurveType(layer, "arc")
+                    if (layer.curve == 0f) viewModel.updateLayerCurve(layer, 0.5f)
+                }
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("ABC", fontSize = 10.sp, fontWeight = FontWeight.Black, color = Color.Gray)
+                    Canvas(modifier = Modifier.size(width = 24.dp, height = 8.dp)) {
+                        drawArc(
+                            color = Color.Gray,
+                            startAngle = 210f,
+                            sweepAngle = 120f,
+                            useCenter = false,
+                            style = androidx.compose.ui.graphics.drawscope.Stroke(width = 2.dp.toPx(), cap = androidx.compose.ui.graphics.StrokeCap.Round)
+                        )
+                    }
+                }
+            }
+
+            // Wave Button
+            CurveOptionButton(
+                selected = layer.curveType == "wave",
+                onClick = { 
+                    viewModel.updateLayerCurveType(layer, "wave")
+                    if (layer.curve == 0f) viewModel.updateLayerCurve(layer, 0.5f)
+                }
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    val textColor = if (layer.curveType == "wave") Color.Black else Color.LightGray
+                    val iconColor = if (layer.curveType == "wave") Color.Black else Color.LightGray
+                    Text("ABC", fontSize = 10.sp, fontWeight = FontWeight.Black, color = textColor)
+                    Canvas(modifier = Modifier.size(width = 24.dp, height = 8.dp)) {
+                        val path = androidx.compose.ui.graphics.Path().apply {
+                            moveTo(0f, size.height / 2f)
+                            cubicTo(size.width * 0.25f, 0f, size.width * 0.25f, 0f, size.width * 0.5f, size.height / 2f)
+                            cubicTo(size.width * 0.75f, size.height, size.width * 0.75f, size.height, size.width, size.height / 2f)
+                        }
+                        drawPath(
+                            path = path,
+                            color = iconColor,
+                            style = androidx.compose.ui.graphics.drawscope.Stroke(width = 2.dp.toPx(), cap = androidx.compose.ui.graphics.StrokeCap.Round)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun CurveOptionButton(
+    selected: Boolean,
+    onClick: () -> Unit,
+    content: @Composable () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .size(56.dp)
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        content()
+        if (selected) {
+            // Optional: add a small blue dot or circle if you want to match the "blue highlight" look in some editors, 
+            // but the screenshot appears quite minimal.
         }
     }
 }
@@ -2128,8 +2244,110 @@ private suspend fun saveImage(context: Context, bitmap: Bitmap?) {
         val dir = context.getExternalFilesDir(null) ?: context.filesDir
         val fileName = "frame_${System.currentTimeMillis()}.png"
         val file = File(dir, fileName)
-        FileOutputStream(file).use { out ->
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+        java.io.FileOutputStream(file).use { out ->
+            bitmap.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, out)
         }
     }
 }
+
+@Composable
+private fun PresetPreviewItem(
+    presetId: String,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    // Simplified mapping for preview
+    val (style, previewText) = when (presetId) {
+        "Modern" -> Quad(Color.White, Color.Black, null, null) to "Modern"
+        "Minimal" -> Quad(Color.White, Color.Black, "cloud", null) to "Simple"
+        "Elegant" -> Quad(Color(0xFF37474F), Color.White, null, null) to "Elegant"
+        "Dark" -> Quad(Color.Black, Color.White, "burst", null) to "Dark"
+        "SoftCloud" -> Quad(Color.White, Color(0xFFF06292), "cloud", null) to "Soft"
+        "Classic" -> Quad(Color.White, Color.Black, "bubble_right", null) to "Classic"
+        "Neon" -> Quad(Color.Black, Color.Cyan, null, null) to "Neon"
+        "LoveStory" -> Quad(Color(0xFFFCE4EC), Color(0xFFC2185B), "heart", null) to "Love"
+        "KindaLoveThis" -> Quad(Color(0xFFF06292), Color.White, "bubble_right", null) to "Love"
+        "SASSY BUT CLASSY" -> Quad(Color(0xFFFFF176), Color(0xFF795548), "bubble_left", null) to "Sassy"
+        "obsessed" -> Quad(Color.White, Color.Black, "cloud", null) to "Obsessed"
+        "Broken" -> Quad(Color.Black, Color.White, "heart", null) to "Broken"
+        "OMG" -> Quad(Color.White, Color.Black, "burst", null) to "OMG"
+        "love ya" -> Quad(Color(0xFFFCE4EC), Color(0xFFE91E63), "cloud", null) to "LoveYa"
+        "so fetch" -> Quad(Color(0xFFF06292), Color.White, "heart", null) to "Fetch"
+        "WEEKEND MODE" -> Quad(Color.White, Color(0xFF4CAF50), "bubble_right", null) to "Weekend"
+        "ABSOLUTELY CHILL" -> Quad(Color(0xFFB2EBF2), Color(0xFF0097A7), "burst", null) to "Chill"
+        "SmallJoy" -> Quad(Color.White, Color.Black, "bubble_left", null) to "Joy"
+        "AtHome" -> Quad(Color(0xFFFCE4EC), Color.Black, null, null) to "Home"
+        "LatteLove" -> Quad(Color.White, Color(0xFF3E2723), "cloud", null) to "Coffee"
+        "BubblePink" -> Quad(Color.Transparent, Color.Black, null, "presets/bubble_pink.png") to "Pink"
+        "ThinkPink" -> Quad(Color.Transparent, Color.Black, null, "presets/think_pink.png") to "Think"
+        "ThinkWhite" -> Quad(Color.Transparent, Color.Black, null, "presets/think_white.png") to "Think"
+        "HeartPremium" -> Quad(Color.Transparent, Color.White, null, "presets/heart_premium.png") to "Heart"
+        "BubblePremium" -> Quad(Color.Transparent, Color.Black, null, "presets/bubble_premium.png") to "Premium"
+        "Stamp1999" -> Quad(Color.White, Color.Gray, null, null) to "1999"
+        "PremiumBubble" -> Quad(Color.Transparent, Color.White, null, "presets/bg_bubble_premium.png") to "Premium"
+        else -> Quad(Color(0xFFF5F5F5), Color.Gray, null, null) to presetId
+    }
+    val (bgColor, textColor, shapeName, bgImage) = style
+
+    val shape = if (shapeName != null) getPreviewShape(shapeName) else RoundedCornerShape(12.dp)
+    val isPng = bgImage != null
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(80.dp)
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(4.dp)
+                .then(
+                    if (!isPng) {
+                        Modifier
+                            .shadow(if (isSelected) 4.dp else 0.dp, shape)
+                            .background(bgColor, shape)
+                            .border(if (isSelected) 2.dp else 0.5.dp, if (isSelected) Color.Black else Color.LightGray.copy(alpha = 0.5f), shape)
+                    } else {
+                        // For PNG stickers, don't show the square background/shadow/border unless selected
+                        if (isSelected) Modifier.border(2.dp, Color(0xFF3F51B5), RoundedCornerShape(12.dp))
+                        else Modifier
+                    }
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            if (bgImage != null) {
+                val model = if (bgImage.startsWith("http") || bgImage.startsWith("file")) bgImage 
+                            else "file:///android_asset/$bgImage"
+                AsyncImage(
+                    model = model,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.FillBounds
+                )
+            }
+            Text(
+                text = previewText,
+                color = textColor,
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                maxLines = 1
+            )
+        }
+    }
+}
+
+private fun getPreviewShape(name: String): androidx.compose.ui.graphics.Shape {
+    return when (name) {
+        "heart" -> HeartShape
+        "cloud" -> CloudShape
+        "burst" -> BurstShape
+        "bubble_left" -> SpeechBubbleShape(isLeft = true)
+        "bubble_right" -> SpeechBubbleShape(isLeft = false)
+        else -> RoundedCornerShape(12.dp)
+    }
+}
+
+private data class Quad<A, B, C, D>(val first: A, val second: B, val third: C, val fourth: D)

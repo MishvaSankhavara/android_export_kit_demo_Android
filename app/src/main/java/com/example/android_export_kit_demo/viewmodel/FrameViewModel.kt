@@ -347,37 +347,90 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
         layer.curve = curve; notifyLayersChanged()
     }
 
+    fun updateLayerCurveType(layer: FrameLayer, type: String) {
+        pushUndo(); layer.curveType = type; notifyLayersChanged()
+    }
+
     fun applyTextPreset(layer: FrameLayer, presetId: String) {
         pushUndo()
+        
+        // Reset all background-related properties first to avoid carry-over
+        layer.backgroundColor = android.graphics.Color.TRANSPARENT
+        layer.backgroundImage = null
+        layer.backgroundShape = null
+        layer.backgroundRadius = 0f
+        layer.strokeWidth = 0f
+        layer.shadowBlur = 0f
+        layer.paddingHorizontal = 10
+        layer.paddingVertical = 5
+        layer.isBold = false
+        layer.isItalic = false
+        layer.font = "sans-serif"
+        
         when (presetId) {
             "Modern" -> {
-                layer.font = "Roboto"
+                layer.backgroundColor = Color.WHITE
                 layer.color = Color.BLACK
-                layer.isBold = true
-                layer.strokeWidth = 0f
-                layer.shadowBlur = 0f
+                layer.backgroundRadius = 12f
+                layer.strokeColor = Color.BLACK
+                layer.strokeWidth = 0.5f
+                layer.width = 280f
+                layer.height = 100f
+                layer.fontSize = 32f
+            }
+            "Minimal" -> {
+                layer.backgroundColor = Color.WHITE
+                layer.color = Color.BLACK
+                layer.backgroundShape = "cloud"
+                layer.width = 250f
+                layer.height = 200f
+                layer.fontSize = 28f
             }
             "Elegant" -> {
                 layer.font = "Serif"
-                layer.color = Color.parseColor("#444444")
-                layer.isBold = false
+                layer.backgroundColor = Color.parseColor("#37474F")
+                layer.color = Color.WHITE
+                layer.backgroundRadius = 8f
+                layer.width = 300f
+                layer.height = 110f
+                layer.fontSize = 32f
                 layer.isItalic = true
-                layer.shadowBlur = 4f
-                layer.shadowColor = Color.LTGRAY
+            }
+            "Dark" -> {
+                layer.backgroundColor = Color.BLACK
+                layer.color = Color.WHITE
+                layer.backgroundShape = "burst"
+                layer.width = 220f
+                layer.height = 220f
+                layer.fontSize = 32f
+            }
+            "SoftCloud" -> {
+                layer.backgroundColor = Color.WHITE
+                layer.color = Color.parseColor("#F06292")
+                layer.backgroundShape = "cloud"
+                layer.width = 250f
+                layer.height = 200f
+                layer.fontSize = 28f
+            }
+            "Classic" -> {
+                layer.backgroundColor = Color.WHITE
+                layer.color = Color.BLACK
+                layer.backgroundShape = "bubble_right"
+                layer.width = 300f
+                layer.height = 120f
+                layer.fontSize = 28f
             }
             "Neon" -> {
-                layer.font = "Cursive"
-                layer.color = Color.WHITE
-                layer.strokeColor = Color.CYAN
-                layer.strokeWidth = 2f
+                layer.color = Color.CYAN
                 layer.shadowColor = Color.CYAN
                 layer.shadowBlur = 10f
+                layer.backgroundShape = null
             }
             "Outline" -> {
                 layer.color = Color.TRANSPARENT
                 layer.strokeColor = Color.BLACK
                 layer.strokeWidth = 1.5f
-                layer.shadowBlur = 0f
+                layer.backgroundShape = null
             }
             "3D" -> {
                 layer.color = Color.WHITE
@@ -385,12 +438,14 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
                 layer.shadowBlur = 0f
                 layer.shadowOffsetX = 4f
                 layer.shadowOffsetY = 4f
+                layer.backgroundShape = null
             }
             "Summer" -> {
                 layer.font = "Cursive"
                 layer.color = Color.parseColor("#FFD600")
                 layer.shadowColor = Color.parseColor("#FF6D00")
                 layer.shadowBlur = 8f
+                layer.backgroundShape = null
             }
             "Christmas" -> {
                 layer.color = Color.parseColor("#D32F2F")
@@ -398,6 +453,7 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
                 layer.strokeWidth = 1f
                 layer.shadowColor = Color.parseColor("#388E3C")
                 layer.shadowBlur = 4f
+                layer.backgroundShape = null
             }
             "LoveStory" -> {
                 layer.font = "Serif"
@@ -405,18 +461,191 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
                 layer.isItalic = true
                 layer.shadowBlur = 6f
                 layer.shadowColor = Color.parseColor("#F48FB1")
+                layer.backgroundShape = "heart"
+                layer.backgroundColor = Color.parseColor("#FCE4EC")
+                layer.width = 200f
+                layer.height = 200f
+                layer.fontSize = 45f
             }
             "KindaLoveThis" -> {
-                layer.font = "SansSerif"
-                layer.backgroundColor = Color.parseColor("#FCE4EC")
+                layer.font = "sans-serif-medium"
+                layer.color = Color.WHITE
+                layer.fontSize = 24f
+                layer.backgroundColor = Color.parseColor("#F06292")
+                layer.paddingHorizontal = 30
+                layer.paddingVertical = 15
+                layer.backgroundRadius = 60f
+                layer.backgroundShape = "bubble_right"
+                layer.width = 300f
+                layer.height = 120f
+            }
+            "SmallJoy" -> {
+                layer.text = "small joy moment ✉️"
+                layer.backgroundColor = Color.WHITE
+                layer.color = Color.BLACK
+                layer.backgroundShape = "bubble_left"
                 layer.backgroundRadius = 15f
-                layer.color = Color.parseColor("#C2185B")
+                layer.paddingHorizontal = 25
+                layer.paddingVertical = 12
+                layer.width = 320f
+                layer.height = 110f
+                layer.fontSize = 24f
+            }
+            "AtHome" -> {
+                layer.text = "📍 AT HOME"
+                layer.backgroundColor = Color.parseColor("#FCE4EC")
+                layer.color = Color.BLACK
+                layer.backgroundRadius = 60f
+                layer.paddingHorizontal = 30
+                layer.paddingVertical = 12
+                layer.width = 240f
+                layer.height = 90f
+                layer.fontSize = 28f
+            }
+            "LatteLove" -> {
+                layer.text = "latte love ☕"
+                layer.backgroundColor = Color.WHITE
+                layer.color = Color.parseColor("#3E2723")
+                layer.backgroundShape = "cloud"
+                layer.width = 250f
+                layer.height = 200f
+                layer.fontSize = 30f
+                layer.isBold = true
+            }
+            "SASSY BUT CLASSY" -> {
+                layer.backgroundColor = Color.parseColor("#FFF176")
+                layer.backgroundRadius = 12f
+                layer.color = Color.parseColor("#795548")
+                layer.backgroundShape = "bubble_left"
+                layer.isBold = true
+                layer.width = 300f
+                layer.height = 120f
+            }
+            "obsessed" -> {
+                layer.backgroundColor = Color.WHITE
+                layer.color = Color.BLACK
+                layer.backgroundShape = "cloud"
+                layer.shadowBlur = 5f
+                layer.shadowColor = Color.LTGRAY
+                layer.width = 250f
+                layer.height = 200f
+                layer.fontSize = 35f
+            }
+            "Broken" -> {
+                layer.color = Color.WHITE
+                layer.backgroundColor = Color.BLACK
+                layer.backgroundShape = "heart"
+                layer.isBold = true
+                layer.width = 200f
+                layer.height = 200f
+                layer.fontSize = 44f
+            }
+            "OMG" -> {
+                layer.color = Color.BLACK
+                layer.backgroundColor = Color.WHITE
+                layer.backgroundShape = "burst"
+                layer.strokeColor = Color.BLACK
+                layer.strokeWidth = 1f
+                layer.isBold = true
+                layer.width = 200f
+                layer.height = 200f
+                layer.fontSize = 44f
+            }
+            "love ya" -> {
+                layer.backgroundColor = Color.parseColor("#FCE4EC")
+                layer.color = Color.parseColor("#E91E63")
+                layer.fontSize = 35f
+            }
+            "BubblePink" -> {
+                layer.backgroundImage = "presets/bubble_pink.png"
+                layer.color = Color.BLACK
+                layer.width = 300f
+                layer.height = 100f
+                layer.paddingHorizontal = 40
+                layer.paddingVertical = 20
+                layer.fontSize = 24f
+            }
+            "ThinkPink" -> {
+                layer.backgroundImage = "presets/think_pink.png"
+                layer.color = Color.BLACK
+                layer.width = 250f
+                layer.height = 180f
+                layer.paddingHorizontal = 30
+                layer.paddingVertical = 50
+                layer.fontSize = 24f
+            }
+            "ThinkWhite" -> {
+                layer.backgroundImage = "presets/think_white.png"
+                layer.color = Color.BLACK
+                layer.width = 250f
+                layer.height = 180f
+                layer.paddingHorizontal = 30
+                layer.paddingVertical = 50
+                layer.fontSize = 24f
+            }
+            "HeartPremium" -> {
+                layer.backgroundImage = "presets/heart_premium.png"
+                layer.color = Color.WHITE
+                layer.width = 230f
+                layer.height = 230f
+                layer.paddingHorizontal = 30
+                layer.paddingVertical = 40
+                layer.fontSize = 28f
+                layer.isBold = true
+            }
+            "BubblePremium" -> {
+                layer.backgroundImage = "presets/bubble_premium.png"
+                layer.color = Color.BLACK
+                layer.width = 320f
+                layer.height = 120f
+                layer.paddingHorizontal = 50
+                layer.paddingVertical = 20
+                layer.fontSize = 24f
+            }
+            "so fetch" -> {
+                layer.backgroundColor = Color.parseColor("#F06292")
+                layer.color = Color.WHITE
+                layer.backgroundShape = "heart"
+                layer.isBold = true
+                layer.width = 200f
+                layer.height = 200f
+                layer.fontSize = 44f
+            }
+            "WEEKEND MODE" -> {
+                layer.backgroundColor = Color.WHITE
+                layer.color = Color.parseColor("#4CAF50")
+                layer.backgroundShape = "bubble_right"
+                layer.strokeColor = Color.parseColor("#4CAF50")
+                layer.strokeWidth = 1f
+                layer.isBold = true
+                layer.width = 300f
+                layer.height = 120f
+                layer.fontSize = 28f
+            }
+            "ABSOLUTELY CHILL" -> {
+                layer.backgroundColor = Color.parseColor("#B2EBF2")
+                layer.color = Color.parseColor("#0097A7")
+                layer.backgroundShape = "burst"
+                layer.isBold = true
+                layer.width = 220f
+                layer.height = 220f
             }
             "Stamp1999" -> {
                 layer.font = "Monospace"
                 layer.color = Color.GRAY
                 layer.strokeColor = Color.DKGRAY
                 layer.strokeWidth = 0.5f
+                layer.backgroundShape = null
+            }
+            "PremiumBubble" -> {
+                layer.text = "Premium"
+                layer.color = Color.WHITE
+                layer.backgroundImage = "presets/bg_bubble_premium.png"
+                layer.backgroundShape = null
+                layer.paddingHorizontal = 30
+                layer.paddingVertical = 15
+                layer.width = 300f
+                layer.height = 120f
             }
         }
         notifyLayersChanged()
@@ -747,8 +976,29 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
         pushUndo(); layer.resetToOriginal(); notifyLayersChanged()
     }
 
-    fun addTextLayer(text: String) {
+    fun addTextLayerWithPreset(text: String, presetId: String) {
         val frame = _uiState.value.selectedFrame ?: return
+        pushUndo()
+        val w = 300f
+        val h = 150f
+        val newLayer = FrameLayer(
+            id = "text_preset_${System.currentTimeMillis()}",
+            name = "Preset Layer",
+            type = LayerType.TEXT,
+            x = (frame.canvasWidth - w) / 2,
+            y = (frame.canvasHeight - h) / 3,
+            width = w, height = h,
+            text = text, fontSize = 32f, color = Color.BLACK,
+            isSticker = true
+        )
+        applyTextPreset(newLayer, presetId)
+        frame.layers.add(newLayer)
+        selectLayer(newLayer)
+        notifyLayersChanged()
+    }
+
+    fun addTextLayer(text: String): FrameLayer? {
+        val frame = _uiState.value.selectedFrame ?: return null
         pushUndo()
         val w = 500f
         val h = 100f
@@ -759,12 +1009,13 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
             x = (frame.canvasWidth - w) / 2,
             y = (frame.canvasHeight - h) / 3,
             width = w, height = h,
-            text = text, fontSize = 84f, color = Color.BLACK,
+            text = text, fontSize = 32f, color = Color.BLACK,
             isSticker = true
         )
         frame.layers.add(newLayer)
         selectLayer(newLayer)
         notifyLayersChanged()
+        return newLayer
     }
 
     fun addStickerLayer(assetPath: String) {
@@ -926,6 +1177,13 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
                 s["strokeColor"]?.let { layer.strokeColor = (it as Number).toInt() }
                 layer.strokeWidth = (s["strokeWidth"] as? Number)?.toFloat() ?: 0f
                 layer.backgroundRadius = (s["backgroundRadius"] as? Number)?.toFloat() ?: 0f
+                layer.backgroundOpacity = (s["backgroundOpacity"] as? Number)?.toFloat() ?: 1f
+                layer.backgroundShape = s["backgroundShape"] as? String
+                layer.curve = (s["curve"] as? Number)?.toFloat() ?: 0f
+                layer.curveType = s["curveType"] as? String ?: "arc"
+                layer.paddingHorizontal = (s["paddingHorizontal"] as? Number)?.toInt() ?: 0
+                layer.paddingVertical = (s["paddingVertical"] as? Number)?.toInt() ?: 0
+                layer.backgroundImage = s["backgroundImage"] as? String
                 layer.isLocked = (s["isLocked"] as? Boolean) ?: false
             }
         }

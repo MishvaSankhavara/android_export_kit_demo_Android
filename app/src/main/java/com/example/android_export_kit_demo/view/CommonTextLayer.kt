@@ -9,28 +9,29 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.Fill
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.GenericFontFamily
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.android_export_kit_demo.model.FrameLayer
 import com.example.android_export_kit_demo.model.LayerType
 import kotlin.math.*
-import androidx.compose.ui.graphics.nativeCanvas
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import android.graphics.Path
 import android.graphics.Rect
 import android.graphics.Typeface
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 
 /**
  * CommonTextLayer — Unified text renderer for both template text and added stickers.
@@ -49,7 +50,7 @@ fun CommonTextLayer(
     onTransform: (FrameLayer, Float?, Float?, Float?, Float?, Float?, Float?) -> Unit
 ) {
     val density = androidx.compose.ui.platform.LocalDensity.current.density
-    var fontScale by remember(layer.id, layer.text, fontSize, wState.floatValue) { mutableFloatStateOf(1f) }
+    var fontScale by remember(layer.id, layer.backgroundImage) { mutableFloatStateOf(1f) }
     val scaledFontSize = (fontSize * scale * fontScale).coerceIn(4f, 400f)
 
     val textAlign = when (layer.justification.lowercase()) {
@@ -108,8 +109,23 @@ fun CommonTextLayer(
         modifier = Modifier
             .fillMaxSize()
             .then(
-                if (layer.backgroundColor != android.graphics.Color.TRANSPARENT) {
-                    Modifier.background(Color(layer.backgroundColor).copy(alpha = layer.backgroundOpacity), RoundedCornerShape((layer.backgroundRadius * scale).dp))
+                if (layer.backgroundColor != android.graphics.Color.TRANSPARENT || layer.backgroundShape != null) {
+                    val shape = when (layer.backgroundShape) {
+                        "heart" -> HeartShape
+                        "cloud" -> CloudShape
+                        "burst" -> BurstShape
+                        "bubble_left" -> SpeechBubbleShape(isLeft = true)
+                        "bubble_right" -> SpeechBubbleShape(isLeft = false)
+                        else -> RoundedCornerShape((layer.backgroundRadius * scale).dp)
+                    }
+                    val bgColor = if (layer.backgroundColor == android.graphics.Color.TRANSPARENT && layer.backgroundShape != null) {
+                        Color.LightGray.copy(alpha = 0.1f)
+                    } else {
+                        Color(layer.backgroundColor).copy(alpha = layer.backgroundOpacity.coerceIn(0f, 1f))
+                    }
+                    Modifier
+                        .background(bgColor, shape)
+                        .border(0.5.dp * scale, Color.Black.copy(alpha = 0.15f), shape)
                 } else Modifier
             )
             .then(
@@ -119,32 +135,54 @@ fun CommonTextLayer(
             ),
         contentAlignment = Alignment.Center
     ) {
+        if (layer.backgroundImage != null) {
+            val model = if (layer.backgroundImage!!.startsWith("http") || layer.backgroundImage!!.startsWith("file")) layer.backgroundImage!!
+                        else "file:///android_asset/${layer.backgroundImage!!}"
+            AsyncImage(
+                model = model,
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.FillBounds
+            )
+        }
         if (isEditingInline && isSelected && onTextChange != null) {
             BasicTextField(
                 value = layer.text ?: "",
                 onValueChange = onTextChange,
                 textStyle = style,
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(
+                        horizontal = (layer.paddingHorizontal * scale).dp,
+                        vertical = (layer.paddingVertical * scale).dp
+                    ),
                 onTextLayout = { result ->
+                    val padWPx = layer.paddingHorizontal * scale * density * 2f
+                    val padHPx = layer.paddingVertical * scale * density * 2f
                     val curW = wState.floatValue * density
                     val curH = hState.floatValue * density
-                    val reqW = result.size.width.toFloat()
-                    val reqH = result.size.height.toFloat()
+                    val reqW = result.size.width.toFloat() + padWPx
+                    val reqH = result.size.height.toFloat() + padHPx
 
-                    if ((reqW > curW + 2f || reqH > curH + 2f) && isSelected) {
+                    // 1. Expand layer if text + padding overflows while typing
+                    if (reqW > curW + 8f || reqH > curH + 8f) {
                         val newW = max(curW, reqW) / density
                         val newH = max(curH, reqH) / density
                         wState.floatValue = newW
                         hState.floatValue = newH
                         onTransform(layer, null, null, newW / scale, newH / scale, null, null)
-                    } else if (fontScale > 0.1f) {
-                        val targetH = curH
-                        if ((result.hasVisualOverflow || reqH > targetH + 1f)) {
-                            val ratio = targetH / reqH
-                            if (ratio < 0.98f) {
-                                fontScale *= (ratio * 0.95f)
-                            }
+                    } 
+                    // 2. Shrink font if it still overflows (respecting padding)
+                    else if ((result.hasVisualOverflow || reqH > curH - 2f) && fontScale > 0.1f) {
+                        val availableH = curH - padHPx
+                        val ratio = if (availableH > 0) availableH / result.size.height else 0.5f
+                        if (ratio < 0.99f) {
+                            fontScale = (fontScale * ratio * 0.95f).coerceAtLeast(0.1f)
                         }
+                    }
+                    // 3. Grow font back if there is space
+                    else if (result.size.height < (curH - padHPx) * 0.7f && fontScale < 1.0f) {
+                        fontScale = (fontScale * 1.05f).coerceAtMost(1.0f)
                     }
                 }
             )
@@ -183,19 +221,31 @@ fun CommonTextLayer(
                         }
 
                         val path = Path()
-                        val arcRadius = w * 0.8f / (abs(layer.curve) + 0.1f)
-                        val angle = 120f * layer.curve
-                        val rectF = android.graphics.RectF(
-                            w / 2f - arcRadius,
-                            if (layer.curve > 0) h / 2f else h / 2f - arcRadius * 2f,
-                            w / 2f + arcRadius,
-                            if (layer.curve > 0) h / 2f + arcRadius * 2f else h / 2f
-                        )
-                        
-                        if (layer.curve > 0) {
-                            path.addArc(rectF, 180f + (180f - angle) / 2f, angle)
+                        if (layer.curveType == "wave") {
+                            val amplitude = h * 0.2f * layer.curve
+                            val freq = 2f * Math.PI.toFloat() / w
+                            path.moveTo(0f, h / 2f)
+                            var px = 0f
+                            while (px <= w) {
+                                val py = h / 2f + amplitude * sin(freq * px)
+                                path.lineTo(px, py)
+                                px += 5f
+                            }
                         } else {
-                            path.addArc(rectF, (180f - abs(angle)) / 2f, abs(angle))
+                            val arcRadius = w * 0.8f / (abs(layer.curve) + 0.1f)
+                            val angle = 120f * layer.curve
+                            val rectF = android.graphics.RectF(
+                                w / 2f - arcRadius,
+                                if (layer.curve > 0) h / 2f else h / 2f - arcRadius * 2f,
+                                w / 2f + arcRadius,
+                                if (layer.curve > 0) h / 2f + arcRadius * 2f else h / 2f
+                            )
+                            
+                            if (layer.curve > 0) {
+                                path.addArc(rectF, 180f + (180f - angle) / 2f, angle)
+                            } else {
+                                path.addArc(rectF, (180f - abs(angle)) / 2f, abs(angle))
+                            }
                         }
 
                         // Draw Stroke first
@@ -218,12 +268,21 @@ fun CommonTextLayer(
                 }
             } else {
                 // Static Fill/Stroke Overlay
-                Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
+                Box(
+                    contentAlignment = Alignment.Center, 
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(
+                            horizontal = (layer.paddingHorizontal * scale).dp,
+                            vertical = (layer.paddingVertical * scale).dp
+                        )
+                ) {
                     if (strokeStyle != null) {
                         Text(
                             text = display,
                             style = strokeStyle,
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = textAlign
                         )
                     }
                     Text(
@@ -231,24 +290,32 @@ fun CommonTextLayer(
                         style = style,
                         modifier = Modifier.fillMaxWidth(),
                         onTextLayout = { result ->
+                            val padWPx = layer.paddingHorizontal * scale * density * 2f
+                            val padHPx = layer.paddingVertical * scale * density * 2f
                             val curW = wState.floatValue * density
                             val curH = hState.floatValue * density
-                            val reqW = result.size.width.toFloat()
-                            val reqH = result.size.height.toFloat()
+                            val reqW = result.size.width.toFloat() + padWPx
+                            val reqH = result.size.height.toFloat() + padHPx
 
-                            if ((reqW > curW + 2f || reqH > curH + 2f) && isSelected) {
+                            // 1. Expand layer if text + padding overflows
+                            if (isSelected && (reqW > curW + 8f || reqH > curH + 8f)) {
                                 val newW = max(curW, reqW) / density
                                 val newH = max(curH, reqH) / density
                                 wState.floatValue = newW
                                 hState.floatValue = newH
                                 onTransform(layer, null, null, newW / scale, newH / scale, null, null)
-                            } else {
-                                if ((result.hasVisualOverflow || result.size.height > curH) && fontScale > 0.1f) {
-                                    val ratio = curH / result.size.height
-                                    if (ratio < 0.99f) {
-                                        fontScale *= (ratio * 0.95f)
-                                    }
+                            } 
+                            // 2. Shrink font if it still overflows (respecting padding)
+                            else if ((result.hasVisualOverflow || (reqH > curH - 2f && !isSelected)) && fontScale > 0.1f) {
+                                val availableH = curH - padHPx
+                                val ratio = if (availableH > 0) availableH / result.size.height else 0.5f
+                                if (ratio < 0.99f) {
+                                    fontScale = (fontScale * ratio * 0.95f).coerceAtLeast(0.1f)
                                 }
+                            }
+                            // 3. Grow font back if there is significant extra space
+                            else if (result.size.height < (curH - padHPx) * 0.7f && fontScale < 1.0f) {
+                                fontScale = (fontScale * 1.05f).coerceAtMost(1.0f)
                             }
                         }
                     )

@@ -302,7 +302,9 @@ fun StickerView(
             modifier = Modifier
                 .fillMaxSize()
                 .then(
-                    if (layer.backgroundColor != android.graphics.Color.TRANSPARENT)
+                    // Only apply standard rounded background for image stickers.
+                    // Text stickers handle their specialized backgrounds (hearts, bubbles, etc) inside CommonTextLayer.
+                    if (layer.type == LayerType.IMAGE && layer.backgroundColor != android.graphics.Color.TRANSPARENT)
                         Modifier.background(Color(layer.backgroundColor).copy(alpha = layer.backgroundOpacity.coerceIn(0f, 1f)), RoundedCornerShape((layer.backgroundRadius * scale).dp)) else Modifier
                 )
                 .graphicsLayer {
