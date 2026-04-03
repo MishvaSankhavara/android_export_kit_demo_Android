@@ -45,6 +45,7 @@ fun CommonTextLayer(
     hState: MutableFloatState,
     fontSize: Float,
     isEditingInline: Boolean = false,
+    isEditing: Boolean = false, // New: Indicates if the text is being edited (bottom panel)
     isSelected: Boolean = false,
     onTextChange: ((String) -> Unit)? = null,
     onTransform: (FrameLayer, Float?, Float?, Float?, Float?, Float?, Float?) -> Unit
@@ -156,10 +157,11 @@ fun CommonTextLayer(
                 contentAlignment = Alignment.Center
             ) {
                 BasicTextField(
+                    maxLines = Int.MAX_VALUE,
                     value = layer.text ?: "",
                     onValueChange = onTextChange,
                     textStyle = style.copy(textAlign = textAlign),
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().wrapContentHeight(),
                     onTextLayout = { result ->
                         val padWPx = layer.paddingHorizontal * scale * density * 2f
                         val padHPx = layer.paddingVertical * scale * density * 2f
@@ -168,25 +170,26 @@ fun CommonTextLayer(
                         val reqW = result.size.width.toFloat() + padWPx
                         val reqH = result.size.height.toFloat() + padHPx
 
-                        // 1. Expand layer if text + padding overflows
-                        // During inline editing, we ALWAYS prefer expansion over shrinking
-                        // to keep the text readable for the user.
-                        if (reqW > curW + 2f || reqH > curH + 2f) {
+                        // Calculate if we should expand the layer or shrink the font
+                        val isPreset = layer.presetId != null || layer.backgroundImage != null || layer.backgroundShape != null
+                        val canExpand = isSelected && !isPreset
+
+                        // 1. Expand layer if text + padding overflows and expansion is allowed
+                        if (canExpand && (reqW > curW + 2f || reqH > curH + 2f)) {
                             val newW = max(curW, reqW) / density
                             val newH = max(curH, reqH) / density
                             wState.floatValue = newW
                             hState.floatValue = newH
                             onTransform(layer, null, null, newW / scale, newH / scale, null, null)
                         } 
-                        // 2. ONLY shrink font if NOT in inline editing mode or if dimensions are locked
-                        else if (!isEditingInline && curW > 10f && curH > 10f && 
-                                (result.hasVisualOverflow || reqW > curW || reqH > curH) && fontScale > 0.1f) {
+                        // 2. Shrink font if expansion is NOT allowed/possible and text overflows
+                        else if (curW > 10f && curH > 10f && (result.hasVisualOverflow || reqW > curW || reqH > curH) && fontScale > 0.1f) {
                             val ratioW = (curW - padWPx) / result.size.width
                             val ratioH = (curH - padHPx) / result.size.height
                             val minRatio = min(ratioW, ratioH).coerceIn(0.1f, 0.99f)
                             fontScale = (fontScale * minRatio * 0.95f).coerceAtLeast(0.1f)
                         }
-                        // 3. Grow font back if there is space and we are not editing
+                        // 3. Grow font back if there is space and we are not editing (optional, keep for non-preset)
                         else if (!isEditingInline && curW > 10f && result.size.height < (curH - padHPx) * 0.6f && fontScale < 1.0f) {
                             fontScale = (fontScale * 1.05f).coerceAtMost(1.0f)
                         }
@@ -204,7 +207,7 @@ fun CommonTextLayer(
             
             if (layer.curve != 0f) {
                 // Curved Text Rendering
-                androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxSize()) {
+                androidx.compose.foundation.Canvas(modifier = Modifier.wrapContentSize()) {
                     val w = size.width
                     val h = size.height
                     
@@ -273,10 +276,14 @@ fun CommonTextLayer(
                         nativeCanvas.drawTextOnPath(display, path, 0f, 0f, nativePaint)
                     }
                 }
-            } else {
-                // Static Fill/Stroke Overlay
+            } // ONLY showing the FIXED PART (replace inside your else block)
+
+            else {
+                var textBounds by remember { mutableStateOf<androidx.compose.ui.geometry.Rect?>(null) }
+                val dashEffect = remember { PathEffect.dashPathEffect(floatArrayOf(6f, 6f), 0f) }
+
                 Box(
-                    contentAlignment = Alignment.Center, 
+                    contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(
@@ -284,48 +291,116 @@ fun CommonTextLayer(
                             vertical = (layer.paddingVertical * scale).dp
                         )
                 ) {
-                    if (strokeStyle != null) {
-                        Text(
-                            text = display,
-                            style = strokeStyle,
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = textAlign
-                        )
-                    }
-                    Text(
-                        text = display,
-                        style = style,
-                        modifier = Modifier.fillMaxWidth(),
-                        onTextLayout = { result ->
-                            val padWPx = layer.paddingHorizontal * scale * density * 2f
-                            val padHPx = layer.paddingVertical * scale * density * 2f
-                            val curW = wState.floatValue * density
-                            val curH = hState.floatValue * density
-                            val reqW = result.size.width.toFloat() + padWPx
-                            val reqH = result.size.height.toFloat() + padHPx
+                    Box(modifier = Modifier.fillMaxWidth().wrapContentHeight(), contentAlignment = Alignment.Center) {
+                        if (isEditing && textBounds != null) {
+                            androidx.compose.foundation.Canvas(
+                                modifier = Modifier.matchParentSize()
+                            ) {
+                                val rect = textBounds!!
+                                val pad = 2.dp.toPx()
 
-                            // 1. Expand layer if text + padding overflows
-                            if (isSelected && (reqW > curW + 8f || reqH > curH + 8f)) {
-                                val newW = max(curW, reqW) / density
-                                val newH = max(curH, reqH) / density
-                                wState.floatValue = newW
-                                hState.floatValue = newH
-                                onTransform(layer, null, null, newW / scale, newH / scale, null, null)
-                            } 
-                            // 2. Shrink font if it still overflows (respecting padding)
-                            else if ((result.hasVisualOverflow || (reqH > curH - 2f && !isSelected)) && fontScale > 0.1f) {
-                                val availableH = curH - padHPx
-                                val ratio = if (availableH > 0) availableH / result.size.height else 0.5f
-                                if (ratio < 0.99f) {
-                                    fontScale = (fontScale * ratio * 0.95f).coerceAtLeast(0.1f)
-                                }
-                            }
-                            // 3. Grow font back if there is significant extra space
-                            else if (result.size.height < (curH - padHPx) * 0.7f && fontScale < 1.0f) {
-                                fontScale = (fontScale * 1.05f).coerceAtMost(1.0f)
+                                drawRect(
+                                    color = Color.White,
+                                    topLeft = androidx.compose.ui.geometry.Offset(
+                                        rect.left - pad,
+                                        rect.top - pad
+                                    ),
+                                    size = androidx.compose.ui.geometry.Size(
+                                        rect.width + pad * 2,
+                                        rect.height + pad * 2
+                                    ),
+                                    style = Stroke(
+                                        width = 1.5.dp.toPx(),
+                                        pathEffect = dashEffect
+                                    )
+                                )
                             }
                         }
-                    )
+
+                        if (strokeStyle != null) {
+                            Text(
+                                text = display,
+                                style = strokeStyle,
+                                modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+                                textAlign = textAlign
+                            )
+                        }
+
+                        Text(
+                            text = display,
+                            style = style,
+                            modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+                            onTextLayout = { result ->
+                                val padWPx = layer.paddingHorizontal * scale * density * 2f
+                                val padHPx = layer.paddingVertical * scale * density * 2f
+                                val curW = wState.floatValue * density
+                                val curH = hState.floatValue * density
+                                val reqW = result.size.width.toFloat() + padWPx
+                                val reqH = result.size.height.toFloat() + padHPx
+
+                                val maxLineW = (0 until result.lineCount)
+                                    .map { i -> result.getLineRight(i) - result.getLineLeft(i) }
+                                    .maxOrNull() ?: 0f
+                                val textH = result.size.height.toFloat()
+
+                                // Since the parent Box is wrapContentWidth, and Text is wrapContentWidth,
+                                // the Text's top-left is effectively (0,0) relative to the Box.
+                                // However, if there are multiple lines, the Text composable is as wide as the widest line.
+                                // Alignments (Center/Right) are handled by the inner Box's own alignment or by the text layout.
+                                val leftBase = when (textAlign) {
+                                    TextAlign.Center -> (result.size.width - maxLineW) / 2f
+                                    TextAlign.Right -> result.size.width - maxLineW
+                                    else -> 0f
+                                }
+
+                                val newBounds = androidx.compose.ui.geometry.Rect(
+                                    left = leftBase,
+                                    top = 0f,
+                                    right = leftBase + maxLineW,
+                                    bottom = textH
+                                )
+                                // Only update textBounds if there is a real change (> 0.5 px)
+                                if (textBounds == null || 
+                                    kotlin.math.abs(textBounds!!.width - newBounds.width) > 1.5f ||
+                                    kotlin.math.abs(textBounds!!.height - newBounds.height) > 1.5f ||
+                                    kotlin.math.abs(textBounds!!.left - newBounds.left) > 1.5f) {
+                                    textBounds = newBounds
+                                }
+
+                                val isPreset = layer.presetId != null || layer.backgroundImage != null || layer.backgroundShape != null
+                                val canExpand = isSelected && !isPreset
+
+                                if (canExpand && (reqW > curW + 12f || reqH > curH + 12f)) {
+                                    val newW = max(curW, reqW) / density
+                                    val newH = max(curH, reqH) / density
+                                    wState.floatValue = newW
+                                    hState.floatValue = newH
+                                    onTransform(layer, null, null, newW / scale, newH / scale, null, null)
+                                }
+                                else if (curW > 10f && curH > 10f && (result.hasVisualOverflow || reqW > curW + 5f || reqH > curH + 5f) && fontScale > 0.1f) {
+                                    // Shrink with more precision and a larger safety margin (5px buffer)
+                                    val availableH = curH - padHPx
+                                    val availableW = curW - padWPx
+                                    val hRatio = if (result.size.height > 0) availableH / result.size.height else 0.9f
+                                    val wRatio = if (result.size.width > 0) availableW / result.size.width else 0.9f
+                                    val targetRatio = min(hRatio, wRatio).coerceIn(0.1f, 0.98f)
+
+                                    val newScale = (fontScale * targetRatio).coerceAtLeast(0.1f)
+
+// 🔥 Only update if BIG change (avoid blinking)
+                                    if (kotlin.math.abs(newScale - fontScale) > 0.02f) {
+                                        fontScale = newScale
+                                    }
+                                }
+                                else if (result.size.height < (curH - padHPx) * 0.5f && 
+                                         result.size.width < (curW - padWPx) * 0.5f && 
+                                         fontScale < 1.0f) {
+                                    // Grow very conservatively only if there is massive extra space (> 50%)
+                                    fontScale = (fontScale * 1.01f).coerceAtMost(1.0f)
+                                }
+                            }
+                        )
+                    }
                 }
             }
         }

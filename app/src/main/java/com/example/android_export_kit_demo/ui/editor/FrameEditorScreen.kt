@@ -69,6 +69,8 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import com.example.android_export_kit_demo.ui.editor.EmojiData
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -95,6 +97,7 @@ fun FrameEditorScreen(
     var activeEditorTab by remember { mutableStateOf("Edit") }
     var activeSubEditor by remember { mutableStateOf<String?>(null) }
     var textInput by remember { mutableStateOf("") }
+    var currentTextTab by remember { mutableStateOf(TextEditorTab.Font) }
     var capturedBitmap by remember { mutableStateOf<Bitmap?>(null) }
     var showImageSheet by remember { mutableStateOf(false) }
 
@@ -108,15 +111,26 @@ fun FrameEditorScreen(
         }
     }
 
-    // Sync textInput with selected layer text
-    LaunchedEffect(uiState.selectedLayer?.id, uiState.selectedLayer?.text) {
+    // 1. Sync currentTextTab when layer selection changes (ID changes)
+    LaunchedEffect(uiState.selectedLayer?.id) {
         val sel = uiState.selectedLayer
         if (sel != null && sel.type == LayerType.TEXT) {
-            textInput = sel.text ?: ""
+            // Default tab logic only when selecting a NEW layer
+            if (currentTextTab == TextEditorTab.Keyboard || currentTextTab == TextEditorTab.Font || currentTextTab == TextEditorTab.Preset) {
+                currentTextTab = if (sel.presetId != null) TextEditorTab.Preset else TextEditorTab.Font
+            }
             // When selecting a text layer, close the Filter panel to switch to text editing
             if (activeSubEditor == "Filters") {
                 activeSubEditor = null
             }
+        }
+    }
+
+    // 2. Sync textInput when layer text changes (Undo/Redo or External changes)
+    LaunchedEffect(uiState.selectedLayer?.id, uiState.selectedLayer?.text) {
+        val sel = uiState.selectedLayer
+        if (sel != null && sel.text != null && sel.text != textInput) {
+            textInput = sel.text!!
         }
     }
 
@@ -181,7 +195,9 @@ fun FrameEditorScreen(
                                     onOpenSubEditor = { activeSubEditor = if (activeSubEditor == it) null else it },
                                     onDone = { activeSubEditor = null; viewModel.deselectAll() },
                                     viewModel = viewModel,
-                                    frame = frame
+                                    frame = frame,
+                                    currentTab = currentTextTab,
+                                    onTabChange = { currentTextTab = it }
                                 )
                             } else if (isImage) {
                                 ImageEditorBar(
@@ -279,6 +295,7 @@ fun FrameEditorScreen(
                                 activeSubEditor = "Stickers"
                             } else if (layer.type == LayerType.TEXT) {
                                 activeSubEditor = "Edit Text"
+                                currentTextTab = TextEditorTab.Keyboard
                             } else if (layer.type == LayerType.IMAGE && layer.isPhotoSlot) {
                                 showImageSheet = true
                             }
@@ -291,6 +308,7 @@ fun FrameEditorScreen(
                                     activeSubEditor = "Stickers"
                                 } else {
                                     activeSubEditor = null
+                                    currentTextTab = if (layer.presetId != null) TextEditorTab.Preset else TextEditorTab.Font
                                 }
                             } else {
                                 // Clear for non-text layers (images, slots)
@@ -334,7 +352,8 @@ fun FrameEditorScreen(
                 },
                 onDrawingStart = { x, y -> viewModel.startDrawing(x, y) },
                 onDrawingUpdate = { x, y -> viewModel.updateDrawing(x, y) },
-                onDrawingEnd = { viewModel.endDrawing() }
+                onDrawingEnd = { viewModel.endDrawing() },
+                isEditing = activeSubEditor == "Edit Text" && currentTextTab == TextEditorTab.Keyboard
             )
                     }
                 }
@@ -581,13 +600,11 @@ private fun TextEditorBar(
     onOpenSubEditor: (String) -> Unit,
     onDone: () -> Unit,
     viewModel: FrameViewModel,
-    frame: FrameModel
+    frame: FrameModel,
+    currentTab: TextEditorTab,
+    onTabChange: (TextEditorTab) -> Unit
 ) {
     if (layer.isLocked) return
-
-    var currentTab by remember(layer.id) { 
-        mutableStateOf(if (layer.presetId != null) TextEditorTab.Preset else TextEditorTab.Font) 
-    }
 
     Column(
         modifier = Modifier
@@ -603,11 +620,11 @@ private fun TextEditorBar(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp) // Subtle spacing between weight items
         ) {
-            TextEditorTabIcon(Icons.Default.Keyboard, "Keyboard", currentTab == TextEditorTab.Keyboard, Modifier.weight(1f)) { currentTab = TextEditorTab.Keyboard }
-            TextEditorTabIcon(Icons.Default.TextFields, "Font", currentTab == TextEditorTab.Font, Modifier.weight(1f)) { currentTab = TextEditorTab.Font }
-            TextEditorTabIcon(Icons.Default.Palette, "Style", currentTab == TextEditorTab.Style, Modifier.weight(1f)) { currentTab = TextEditorTab.Style }
-            TextEditorTabIcon(Icons.Default.Star, "Preset", currentTab == TextEditorTab.Preset, Modifier.weight(1f)) { currentTab = TextEditorTab.Preset }
-            TextEditorTabIcon(Icons.Default.Abc, "Curve", currentTab == TextEditorTab.Curve, Modifier.weight(1f)) { currentTab = TextEditorTab.Curve }
+            TextEditorTabIcon(Icons.Default.Keyboard, "Keyboard", currentTab == TextEditorTab.Keyboard, Modifier.weight(1f)) { onTabChange(TextEditorTab.Keyboard) }
+            TextEditorTabIcon(Icons.Default.TextFields, "Font", currentTab == TextEditorTab.Font, Modifier.weight(1f)) { onTabChange(TextEditorTab.Font) }
+            TextEditorTabIcon(Icons.Default.Palette, "Style", currentTab == TextEditorTab.Style, Modifier.weight(1f)) { onTabChange(TextEditorTab.Style) }
+            TextEditorTabIcon(Icons.Default.Star, "Preset", currentTab == TextEditorTab.Preset, Modifier.weight(1f)) { onTabChange(TextEditorTab.Preset) }
+            TextEditorTabIcon(Icons.Default.Abc, "Curve", currentTab == TextEditorTab.Curve, Modifier.weight(1f)) { onTabChange(TextEditorTab.Curve) }
             
             // Done Checkmark styled same as tabs for uniformity
             Column(
@@ -631,10 +648,10 @@ private fun TextEditorBar(
                 .height(200.dp) // Professional fixed height
         ) {
             when (currentTab) {
-                TextEditorTab.Keyboard -> KeyboardPanelContent(layer, textInput, onTextInputChange)
+                TextEditorTab.Keyboard -> KeyboardPanelContent(layer, textInput, onTextInputChange) { onTabChange(TextEditorTab.Preset) }
                 TextEditorTab.Font -> AdvancedFontPanelContent(viewModel, layer)
                 TextEditorTab.Style -> StylePanelContent(viewModel, layer)
-                TextEditorTab.Preset -> PresetPanelContent(viewModel, layer)
+                TextEditorTab.Preset -> PresetPanelContent(viewModel, layer) { onTabChange(TextEditorTab.Keyboard) }
                 TextEditorTab.Curve -> CurvePanelContent(viewModel, layer)
                 TextEditorTab.Size -> ResizePanelContent(viewModel, layer)
             }
@@ -669,21 +686,59 @@ private fun TextEditorTabIcon(icon: ImageVector, label: String, isSelected: Bool
 }
 
 @Composable
-private fun KeyboardPanelContent(layer: FrameLayer, textInput: String, onTextInputChange: (String) -> Unit) {
-    Box(modifier = Modifier.fillMaxSize().padding(24.dp), contentAlignment = Alignment.TopCenter) {
+private fun KeyboardPanelContent(
+    layer: FrameLayer,
+    textInput: String,
+    onTextInputChange: (String) -> Unit,
+    onDone: () -> Unit
+) {
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 24.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         OutlinedTextField(
             value = textInput,
             onValueChange = onTextInputChange,
-            modifier = Modifier.fillMaxWidth(),
-            textStyle = TextStyle(textAlign = TextAlign.Center, fontSize = 18.sp, fontWeight = FontWeight.Medium),
-            placeholder = { Text("Enter text...", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center, color = Color.Gray) },
-            shape = RoundedCornerShape(16.dp),
+            modifier = Modifier
+                .weight(1f)
+                .focusRequester(focusRequester),
+            textStyle = TextStyle(textAlign = TextAlign.Start, fontSize = 16.sp, fontWeight = FontWeight.Medium),
+            placeholder = { Text("Enter text...", fontSize = 16.sp, color = Color.Gray) },
+            shape = RoundedCornerShape(12.dp),
+            singleLine = true,
+            trailingIcon = {
+                if (textInput.isNotEmpty()) {
+                    IconButton(onClick = { onTextInputChange("") }) {
+                        Icon(Icons.Default.Close, contentDescription = "Clear", modifier = Modifier.size(20.dp))
+                    }
+                }
+            },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Color(0xFF3F51B5),
                 unfocusedBorderColor = Color(0xFFEEEEEE),
-                cursorColor = Color(0xFF3F51B5)
+                cursorColor = Color(0xFF3F51B5),
+                focusedContainerColor = Color(0xFFF9F9F9),
+                unfocusedContainerColor = Color(0xFFF9F9F9)
             )
         )
+        
+        IconButton(
+            onClick = onDone,
+            modifier = Modifier
+                .size(48.dp)
+                .background(Color(0xFF3F51B5), RoundedCornerShape(12.dp))
+        ) {
+            Icon(Icons.Default.Check, contentDescription = "Done", tint = Color.White)
+        }
     }
 }
 
@@ -1833,7 +1888,7 @@ private fun StyleColorRow(selectedColor: Int, showNone: Boolean = false, onColor
 }
 
 @Composable
-private fun PresetPanelContent(viewModel: FrameViewModel, layer: FrameLayer) {
+private fun PresetPanelContent(viewModel: FrameViewModel, layer: FrameLayer, onPresetSelected: () -> Unit) {
     var selectedCategory by remember { mutableStateOf("Hot") }
     val categories = listOf("None", "Mood", "Hot", "Bubble", "Simple")
     
@@ -1901,6 +1956,7 @@ private fun PresetPanelContent(viewModel: FrameViewModel, layer: FrameLayer) {
                     isSelected = layer.presetId == preset,
                     onClick = { 
                         viewModel.applyTextPreset(layer, preset)
+                        onPresetSelected()
                     }
                 )
             }

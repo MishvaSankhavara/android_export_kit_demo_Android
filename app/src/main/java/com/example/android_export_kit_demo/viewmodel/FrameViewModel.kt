@@ -496,16 +496,20 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
                 layer.backgroundRadius = 12f
                 layer.strokeColor = Color.BLACK
                 layer.strokeWidth = 0.5f
-                layer.width = 280f
-                layer.height = 100f
+                layer.width = 350f
+                layer.height = 120f
+                layer.paddingHorizontal = 20
+                layer.paddingVertical = 10
                 layer.fontSize = 32f
             }
             "Minimal" -> {
                 layer.backgroundColor = Color.WHITE
                 layer.color = Color.BLACK
                 layer.backgroundShape = "cloud"
-                layer.width = 250f
-                layer.height = 200f
+                layer.width = 320f
+                layer.height = 240f
+                layer.paddingHorizontal = 30
+                layer.paddingVertical = 25
                 layer.fontSize = 28f
             }
             "Elegant" -> {
@@ -513,8 +517,10 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
                 layer.backgroundColor = Color.parseColor("#37474F")
                 layer.color = Color.WHITE
                 layer.backgroundRadius = 8f
-                layer.width = 300f
-                layer.height = 110f
+                layer.width = 350f
+                layer.height = 140f
+                layer.paddingHorizontal = 25
+                layer.paddingVertical = 15
                 layer.fontSize = 32f
                 layer.isItalic = true
             }
@@ -522,8 +528,10 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
                 layer.backgroundColor = Color.BLACK
                 layer.color = Color.WHITE
                 layer.backgroundShape = "burst"
-                layer.width = 220f
-                layer.height = 220f
+                layer.width = 260f
+                layer.height = 260f
+                layer.paddingHorizontal = 20
+                layer.paddingVertical = 20
                 layer.fontSize = 32f
             }
             "SoftCloud" -> {
@@ -538,8 +546,10 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
                 layer.backgroundColor = Color.WHITE
                 layer.color = Color.BLACK
                 layer.backgroundShape = "bubble_right"
-                layer.width = 300f
-                layer.height = 120f
+                layer.width = 380f
+                layer.height = 160f
+                layer.paddingHorizontal = 50
+                layer.paddingVertical = 25
                 layer.fontSize = 28f
             }
             "Neon" -> {
@@ -585,8 +595,10 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
                 layer.shadowColor = Color.parseColor("#F48FB1")
                 layer.backgroundShape = "heart"
                 layer.backgroundColor = Color.parseColor("#FCE4EC")
-                layer.width = 200f
-                layer.height = 200f
+                layer.width = 240f
+                layer.height = 240f
+                layer.paddingHorizontal = 25
+                layer.paddingVertical = 25
                 layer.fontSize = 45f
             }
             "KindaLoveThis" -> {
@@ -598,8 +610,10 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
                 layer.paddingVertical = 25
                 layer.backgroundRadius = 60f
                 layer.backgroundShape = "bubble_right"
-                layer.width = 350f
-                layer.height = 160f
+                layer.width = 400f
+                layer.height = 180f
+                layer.paddingHorizontal = 60
+                layer.paddingVertical = 35
             }
             "SmallJoy" -> {
                 layer.text = "small joy moment ✉️"
@@ -620,8 +634,10 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
                 layer.backgroundRadius = 60f
                 layer.paddingHorizontal = 45
                 layer.paddingVertical = 20
-                layer.width = 280f
-                layer.height = 110f
+                layer.width = 320f
+                layer.height = 130f
+                layer.paddingHorizontal = 55
+                layer.paddingVertical = 25
                 layer.fontSize = 28f
             }
             "LatteLove" -> {
@@ -642,8 +658,10 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
                 layer.isBold = true
                 layer.paddingHorizontal = 40
                 layer.paddingVertical = 25
-                layer.width = 320f
-                layer.height = 150f
+                layer.width = 380f
+                layer.height = 180f
+                layer.paddingHorizontal = 55
+                layer.paddingVertical = 35
             }
             "obsessed" -> {
                 layer.backgroundColor = Color.WHITE
@@ -660,9 +678,9 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
                 layer.backgroundColor = Color.BLACK
                 layer.backgroundShape = "heart"
                 layer.isBold = true
-                layer.width = 200f
-                layer.height = 200f
-                layer.fontSize = 44f
+                layer.width = 400f
+                layer.height = 400f
+                layer.fontSize = 50f
             }
             "OMG" -> {
                 layer.color = Color.BLACK
@@ -683,47 +701,47 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
             "BubblePink" -> {
                 layer.backgroundImage = "presets/bubble_pink.png"
                 layer.color = Color.BLACK
-                layer.width = 350f
-                layer.height = 140f
-                layer.paddingHorizontal = 60
-                layer.paddingVertical = 30
+                layer.width = 420f
+                layer.height = 180f
+                layer.paddingHorizontal = 80
+                layer.paddingVertical = 45
                 layer.fontSize = 24f
             }
             "ThinkPink" -> {
                 layer.backgroundImage = "presets/think_pink.png"
                 layer.color = Color.BLACK
-                layer.width = 250f
-                layer.height = 180f
-                layer.paddingHorizontal = 30
-                layer.paddingVertical = 50
+                layer.width = 320f
+                layer.height = 220f
+                layer.paddingHorizontal = 40
+                layer.paddingVertical = 60
                 layer.fontSize = 24f
             }
             "ThinkWhite" -> {
                 layer.backgroundImage = "presets/think_white.png"
                 layer.color = Color.BLACK
-                layer.width = 250f
-                layer.height = 180f
-                layer.paddingHorizontal = 30
-                layer.paddingVertical = 50
+                layer.width = 320f
+                layer.height = 220f
+                layer.paddingHorizontal = 40
+                layer.paddingVertical = 60
                 layer.fontSize = 24f
             }
             "HeartPremium" -> {
                 layer.backgroundImage = "presets/heart_premium.png"
                 layer.color = Color.WHITE
-                layer.width = 230f
-                layer.height = 230f
-                layer.paddingHorizontal = 30
-                layer.paddingVertical = 40
+                layer.width = 300f
+                layer.height = 300f
+                layer.paddingHorizontal = 45
+                layer.paddingVertical = 55
                 layer.fontSize = 28f
                 layer.isBold = true
             }
             "BubblePremium" -> {
                 layer.backgroundImage = "presets/bubble_premium.png"
                 layer.color = Color.BLACK
-                layer.width = 320f
-                layer.height = 120f
-                layer.paddingHorizontal = 50
-                layer.paddingVertical = 20
+                layer.width = 400f
+                layer.height = 160f
+                layer.paddingHorizontal = 70
+                layer.paddingVertical = 30
                 layer.fontSize = 24f
             }
             "so fetch" -> {
@@ -731,9 +749,11 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
                 layer.color = Color.WHITE
                 layer.backgroundShape = "heart"
                 layer.isBold = true
-                layer.width = 200f
-                layer.height = 200f
+                layer.width = 240f
+                layer.height = 240f
                 layer.fontSize = 44f
+                layer.paddingHorizontal = 25
+                layer.paddingVertical = 25
             }
             "WEEKEND MODE" -> {
                 layer.backgroundColor = Color.WHITE

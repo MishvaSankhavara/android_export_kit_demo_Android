@@ -85,6 +85,7 @@ fun FrameCanvasView(
     onStickerTextChange: (layer: FrameLayer, text: String) -> Unit,
     onDeleteLayer: (FrameLayer) -> Unit,
     onToggleFlip: (FrameLayer) -> Unit,
+    isEditing: Boolean = false,
     onDrawingStart: (x: Float, y: Float) -> Unit,
     onDrawingUpdate: (x: Float, y: Float) -> Unit,
     onDrawingEnd: () -> Unit
@@ -154,6 +155,7 @@ fun FrameCanvasView(
                         layer        = layer,
                         scale        = scale,
                         isSelected   = isSelected,
+                        isEditing    = isEditing && isSelected,
                         updateCount  = updateCount,
                         shiftY       = layerShiftPx,
                         onTap        = { onLayerTap(layer) },

@@ -73,6 +73,7 @@ fun StickerView(
     layer: FrameLayer,
     scale: Float,
     isSelected: Boolean,
+    isEditing: Boolean = false,
     onTap: () -> Unit,
     onDelete: () -> Unit,
     onFlip: () -> Unit,
@@ -287,14 +288,10 @@ fun StickerView(
             } else Modifier)
             // Tap: select, or toggle inline text editing for text stickers
             .pointerInput(layer.id, isSelected, layer.isLocked) {
-                detectTapGestures {
-                    if (isSelected && layer.type == LayerType.TEXT) {
-                        isEditingText = !isEditingText
-                    } else {
-                        isEditingText = false
-                        onTap()
-                    }
-                }
+                detectTapGestures(
+                    onTap = { onTap() },
+                    onDoubleTap = { if (layer.type == LayerType.TEXT) onTap() }
+                )
             }
     ) {
         // ── Visual content (flip applied here only, not to handles) ──────────────
@@ -321,6 +318,7 @@ fun StickerView(
                         localHeight,
                         localFS.floatValue,
                         isEditingText,
+                        isEditing || isEditingText,
                         isSelected,
                         updateCount,
                         onTextChange,
@@ -489,6 +487,7 @@ private fun StickerTextContent(
     hState: MutableFloatState,
     fontSize: Float,
     isEditingInline: Boolean,
+    isEditing: Boolean,
     isSelected: Boolean,
     updateCount: Int = 0,
     onTextChange: ((String) -> Unit)?,
@@ -501,6 +500,7 @@ private fun StickerTextContent(
         hState = hState,
         fontSize = fontSize,
         isEditingInline = isEditingInline,
+        isEditing = isEditing,
         isSelected = isSelected,
         onTextChange = onTextChange,
         onTransform = onTransform
