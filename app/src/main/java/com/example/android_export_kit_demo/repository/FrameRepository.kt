@@ -1,4 +1,4 @@
-package com.example.android_export_kit_demo.repository
+package com.example.android_export_kit_demo.uime.repository
 
 import android.content.Context
 import com.example.android_export_kit_demo.model.FrameLayer
@@ -7,11 +7,9 @@ import com.example.android_export_kit_demo.model.LayerType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
-import org.json.JSONArray
 import java.io.File
 import java.io.InputStream
 import java.util.zip.ZipInputStream
-
 
 class FrameRepository(private val context: Context) {
 
@@ -91,12 +89,10 @@ class FrameRepository(private val context: Context) {
                     if (jsonData.has("layers")) {
                         val jsonDir = file.parent ?: dirPath
                         // The skin/asset base is parent of json folder
-                        val assetBase = File(jsonDir).parent ?: jsonDir
+                        val assetBase = File(jsonDir).parent ?: dirPath
 
-                        val jsonMap = jsonData.toMap()
-                        val frame = FrameModel.fromJson(jsonMap, extractedDir = assetBase)
-                        frame.extractedDir = assetBase
-                        resolveLayerAssets(frame, assetBase, jsonDir)
+                        val frame = FrameModel.fromJson(jsonData as Map<String, Any>, extractedDir = assetBase)
+                        frame.extractedDir?.let { resolveLayerAssets(frame, assetBase, jsonDir) }
                         frames.add(frame)
                     }
                 } catch (e: Exception) {
@@ -252,32 +248,3 @@ class FrameRepository(private val context: Context) {
         }
     }
 }
-
-// ─────────────────────────────────────────────
-// Extension: JSONObject → Map
-// ─────────────────────────────────────────────
-
-fun JSONObject.toMap(): Map<String, Any?> {
-    val map = mutableMapOf<String, Any?>()
-    keys().forEach { key ->
-        map[key] = when (val value = get(key)) {
-            is JSONObject -> value.toMap()
-            is JSONArray -> value.toList()
-            JSONObject.NULL -> null
-            else -> value
-        }
-    }
-    return map
-}
-
-fun JSONArray.toList(): List<Any?> {
-    return (0 until length()).map { i ->
-        when (val value = get(i)) {
-            is JSONObject -> value.toMap()
-            is JSONArray -> value.toList()
-            JSONObject.NULL -> null
-            else -> value
-        }
-    }
-}
-

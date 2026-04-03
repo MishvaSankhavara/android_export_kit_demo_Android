@@ -476,19 +476,6 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
         layer.presetId = presetId
         pushUndo()
         
-        // Set text content based on preset - default to ID but allow custom mapping
-        layer.text = when (presetId) {
-            "so fetch" -> "so fetch"
-            "ABSOLUTELY CHILL" -> "ABSOLUTELY CHILL"
-            "SASSY BUT CLASSY" -> "SASSY BUT CLASSY"
-            "WEEKEND MODE" -> "WEEKEND MODE"
-            "SmallJoy" -> "small joy moment ✉️"
-            "AtHome" -> "📍 AT HOME"
-            "LatteLove" -> "latte love ☕"
-            "PremiumBubble" -> "Premium"
-            else -> presetId
-        }
-
         // Reset all background-related properties first to avoid carry-over
         layer.backgroundColor = android.graphics.Color.TRANSPARENT
         layer.backgroundImage = null
@@ -501,8 +488,6 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
         layer.isBold = false
         layer.isItalic = false
         layer.font = "sans-serif"
-
-
         
         when (presetId) {
             "Modern" -> {
@@ -631,6 +616,7 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
                 layer.paddingVertical = 35
             }
             "SmallJoy" -> {
+                layer.text = "small joy moment ✉️"
                 layer.backgroundColor = Color.WHITE
                 layer.color = Color.BLACK
                 layer.backgroundShape = "bubble_left"
@@ -642,6 +628,7 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
                 layer.fontSize = 24f
             }
             "AtHome" -> {
+                layer.text = "📍 AT HOME"
                 layer.backgroundColor = Color.parseColor("#FCE4EC")
                 layer.color = Color.BLACK
                 layer.backgroundRadius = 60f
@@ -654,6 +641,7 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
                 layer.fontSize = 28f
             }
             "LatteLove" -> {
+                layer.text = "latte love ☕"
                 layer.backgroundColor = Color.WHITE
                 layer.color = Color.parseColor("#3E2723")
                 layer.backgroundShape = "cloud"
@@ -794,6 +782,7 @@ class FrameViewModel(private val service: FrameService) : ViewModel() {
                 layer.backgroundShape = null
             }
             "PremiumBubble" -> {
+                layer.text = "Premium"
                 layer.color = Color.WHITE
                 layer.backgroundImage = "presets/bg_bubble_premium.png"
                 layer.backgroundShape = null

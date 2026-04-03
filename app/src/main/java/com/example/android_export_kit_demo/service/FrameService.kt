@@ -157,10 +157,13 @@ class FrameService(private val context: Context) {
 
             if (resolvedFile.exists()) {
                 layer.src = resolvedFile.absolutePath
-                // If it's in a skins folder, it should NOT be a photo slot
+                // If it's in a skins folder, it should NOT be a photo slot UNLESS 
+                // it was already marked as one (e.g. is_profile in JSON)
                 if (resolvedFile.absolutePath.contains("skins", ignoreCase = true)) {
-                    layer.isPhotoSlot = false
-                    layer.isSticker = true
+                    if (!layer.isPhotoSlot) {
+                        layer.isPhotoSlot = false // Just to be explicit
+                        layer.isSticker = true
+                    }
                     layer.type = LayerType.IMAGE
                 }
 

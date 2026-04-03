@@ -431,7 +431,6 @@ private fun ImageLayerContent(layer: FrameLayer, w: Float, h: Float, scale: Floa
 
     val imageModel: Any? = when {
         layer.customImage != null -> layer.customImage
-        layer.isPhotoSlot && !layer.isBackground -> null // Placeholder
         layer.src != null -> {
             val file = File(layer.src!!)
             if (file.exists()) file else null
