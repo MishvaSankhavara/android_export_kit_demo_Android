@@ -129,19 +129,95 @@ class FrameService(private val context: Context) {
     // ─────────────────────────────────────────────
 
     private fun resolveLayerAssets(frame: FrameModel, assetBase: String, jsonDir: String) {
+        val extractedDir = frame.extractedDir ?: assetBase
+        
         for (layer in frame.layers) {
             val src = layer.src ?: continue
-            layer.src = when {
-                src.startsWith("../") -> {
-                    File(jsonDir, src).canonicalPath
+            
+            // 1. Try resolving relative to jsonDir (folder with the .json)
+            var resolvedFile = File(jsonDir, src)
+            
+            // 2. If not found and not absolute, try relative to assetBase
+            if (!resolvedFile.exists() && !src.startsWith("/")) {
+                resolvedFile = File(assetBase, src)
+            }
+            
+            // 3. AGGRESSIVE: Search in "skins/" folder for the filename if still not found
+            if (!resolvedFile.exists()) {
+                val fileName = src.substringAfterLast("/")
+                val skinsDir = findSkinsDir(File(extractedDir))
+                if (skinsDir != null) {
+                    val potentialFile = File(skinsDir, fileName)
+                    if (potentialFile.exists()) {
+                        resolvedFile = potentialFile
+                    }
                 }
-                !src.startsWith("/") -> {
-                    File(assetBase, src).absolutePath
+            }
+
+
+            if (resolvedFile.exists()) {
+                layer.src = resolvedFile.absolutePath
+                // If it's in a skins folder, it should NOT be a photo slot
+                if (resolvedFile.absolutePath.contains("skins", ignoreCase = true)) {
+                    layer.isPhotoSlot = false
+                    layer.isSticker = true
+                    layer.type = LayerType.IMAGE
                 }
-                else -> src
+
+            } else {
+                // Final fallback: canonical path for ../ logic
+                if (src.startsWith("../")) {
+                    try {
+                        layer.src = File(jsonDir, src).canonicalPath
+                    } catch (_: Exception) {}
+                }
+            }
+        }
+        
+        // 4. Auto-discover additional stickers from skins folder
+        discoverExtraSkins(frame, extractedDir)
+    }
+
+    private fun findSkinsDir(dir: File): File? {
+        if (dir.name.equals("skins", ignoreCase = true)) return dir
+        return dir.listFiles()?.firstNotNullOfOrNull { file ->
+            if (file.isDirectory) findSkinsDir(file) else null
+        }
+    }
+
+    private fun discoverExtraSkins(frame: FrameModel, extractedDir: String) {
+        val skinsDir = findSkinsDir(File(extractedDir)) ?: return
+        val existingPaths = frame.layers.mapNotNull { it.src }.toSet()
+        var offsetCount = 0
+        
+        skinsDir.listFiles()?.sortedBy { it.name }?.forEach { file ->
+            if (file.isFile && (file.extension == "png" || file.extension == "jpg" || file.extension == "jpeg" || file.extension == "webp")) {
+                if (!existingPaths.contains(file.absolutePath)) {
+                    val isBackground = file.name.contains("BG", ignoreCase = true) || file.name.contains("background", ignoreCase = true)
+                    
+                    // Add as a new sticker layer at the VERY BACK (index 0)
+                    val newLayer = FrameLayer(
+                        id = "skin_${file.nameWithoutExtension}_${System.currentTimeMillis()}",
+                        name = if (isBackground) "Background" else "Sticker",
+                        type = LayerType.IMAGE,
+                        x = if (isBackground) 0f else (frame.canvasWidth / 4 + (offsetCount * 20)),
+                        y = if (isBackground) 0f else (frame.canvasHeight / 4 + (offsetCount * 20)),
+                        width = if (isBackground) frame.canvasWidth else 200f,
+                        height = if (isBackground) frame.canvasHeight else 200f,
+                        src = file.absolutePath,
+                        isSticker = true,
+                        isPhotoSlot = false,
+                        isBackground = isBackground
+                    )
+                    // Insert at beginning of list to put behind everything else (like user photos)
+                    frame.layers.add(0, newLayer)
+                    if (!isBackground) offsetCount++
+                }
             }
         }
     }
+
+
 
     // ─────────────────────────────────────────────
     // Resolve font path

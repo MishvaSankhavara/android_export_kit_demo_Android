@@ -199,6 +199,35 @@ fun FrameCanvasView(
     }
 }
 
+fun filterToColorFilter(filter: String): ColorFilter? = when (filter) {
+    "grayscale" -> ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(0f) })
+    "sepia" -> ColorFilter.colorMatrix(ColorMatrix(floatArrayOf(
+        0.393f, 0.769f, 0.189f, 0f, 0f,
+        0.349f, 0.686f, 0.168f, 0f, 0f,
+        0.272f, 0.534f, 0.131f, 0f, 0f,
+        0f,     0f,     0f,     1f, 0f
+    )))
+    "invert" -> ColorFilter.colorMatrix(ColorMatrix(floatArrayOf(
+        -1f, 0f, 0f, 0f, 255f,
+        0f,-1f, 0f, 0f, 255f,
+        0f, 0f,-1f, 0f, 255f,
+        0f, 0f, 0f, 1f,   0f
+    )))
+    "warm" -> ColorFilter.colorMatrix(ColorMatrix(floatArrayOf(
+        1.2f, 0f, 0f, 0f, 0f,
+        0f,  1f, 0f, 0f, 0f,
+        0f,  0f, 0.8f, 0f, 0f,
+        0f,  0f, 0f, 1f, 0f
+    )))
+    "cool" -> ColorFilter.colorMatrix(ColorMatrix(floatArrayOf(
+        0.8f, 0f, 0f, 0f, 0f,
+        0f,   1f, 0f, 0f, 0f,
+        0f,   0f, 1.2f, 0f, 0f,
+        0f,   0f, 0f,   1f, 0f
+    )))
+    else -> null
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // LayerView — renders one layer with correct position, size, rotation
 // ─────────────────────────────────────────────────────────────────────────────

@@ -386,15 +386,15 @@ data class FrameLayer(
             }
 
             val name = json["name"] as? String ?: ""
-            val isPhotoSlot = (json["is_profile"] == true) ||
+            val isPhotoSlot = (json["is_profile"] == true) || 
                 name.lowercase().contains("portrait") ||
                 name.lowercase().contains("photo") ||
                 name.lowercase().contains("user") ||
                 name.lowercase().contains("picture") ||
                 name.lowercase().contains("person") ||
-                name.lowercase().contains("boy") ||
-                name.lowercase().contains("girl") ||
-                name.lowercase().contains("baby")
+                name.lowercase().contains("placeholder")
+
+
 
             val strokesJson = json["strokes"] as? List<Map<String, Any>>
             return FrameLayer(
